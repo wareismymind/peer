@@ -1,25 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.Json;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
-using Peer.Models;
+using Peer.Domain;
+using Peer.Domain.Models;
 using Peer.ThirdPartyAPIs;
 
-namespace Peer.ConnectorAPI
+namespace Peer.ConnectorApi
 {
-    public class PRListAPI
+    public class PRListApi
     {
-        List<IPRModel> PRList;
-        public PRListAPI()
+        private readonly List<IPullRequestSource> _sources;
+        List<PullRequest> PRList;
+
+        public PRListApi(IEnumerable<IPullRequestSource> sources)
         {
+            _sources = sources.ToList();
             // default constructor
         }
 
-        public List<IPRModel> GetPRListFromGithub()
+        public async Task<List<PullRequest>> GetPullRequests()
         {
-            PRList = JsonSerializer.Deserialize<List<IPRModel>>(new PRListGithub().FetchPRListFromGithub());
+            var tasks = _sources.Select(x => x.FetchPullRequests());
+            var prs = await Task.WhenAll(tasks);
+            PRList = prs.SelectMany(x => x).ToList();
             return PRList;
         }
     }
