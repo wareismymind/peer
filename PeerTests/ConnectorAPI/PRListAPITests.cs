@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit;
-
-using Peer.ConnectorAPI;
+﻿using Xunit;
 
 namespace Peer.ConnectorAPI.Tests
 {
@@ -14,7 +7,7 @@ namespace Peer.ConnectorAPI.Tests
         // TODO: Finish unit test
         public void GetPRListFromGithubTest()
         {
-            Assert.Fail();
+            Assert.True(false);
         }
     }
 }

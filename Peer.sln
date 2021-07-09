@@ -5,7 +5,11 @@ VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Peer", "Peer\Peer.csproj", "{09DC5B77-D73B-4B88-9650-DB1BBE0CE846}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PeerTests", "PeerTests\PeerTests.csproj", "{65684FF4-0578-4B18-863C-0A8DF3060959}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PeerTests", "PeerTests\PeerTests.csproj", "{65684FF4-0578-4B18-863C-0A8DF3060959}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Peer.Connectors", "Peer.Connectors\Peer.Connectors.csproj", "{83BDCA0F-04A3-4147-9367-0486815C0738}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Peer.Domain", "Peer.Domain\Peer.Domain.csproj", "{142282B4-B280-467C-AC5B-6C53906878E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{65684FF4-0578-4B18-863C-0A8DF3060959}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{65684FF4-0578-4B18-863C-0A8DF3060959}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{65684FF4-0578-4B18-863C-0A8DF3060959}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83BDCA0F-04A3-4147-9367-0486815C0738}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83BDCA0F-04A3-4147-9367-0486815C0738}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83BDCA0F-04A3-4147-9367-0486815C0738}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83BDCA0F-04A3-4147-9367-0486815C0738}.Release|Any CPU.Build.0 = Release|Any CPU
+		{142282B4-B280-467C-AC5B-6C53906878E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{142282B4-B280-467C-AC5B-6C53906878E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{142282B4-B280-467C-AC5B-6C53906878E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{142282B4-B280-467C-AC5B-6C53906878E0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
