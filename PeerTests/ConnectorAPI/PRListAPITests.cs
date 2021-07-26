@@ -1,6 +1,4 @@
-﻿using Xunit;
-
-namespace Peer.ConnectorAPI.Tests
+﻿namespace Peer.ConnectorAPI.Tests
 {
     public class PRListAPITests
     {

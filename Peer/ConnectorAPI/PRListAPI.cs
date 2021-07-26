@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Peer.Domain;
 using Peer.Domain.Models;
@@ -10,7 +9,7 @@ namespace Peer.ConnectorApi
     public class PRListApi
     {
         private readonly List<IPullRequestSource> _sources;
-        List<PeerPullRequest> PRList;
+        private List<PeerPullRequest> PRList;
 
         public PRListApi(IEnumerable<IPullRequestSource> sources)
         {
