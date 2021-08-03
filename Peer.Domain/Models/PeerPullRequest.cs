@@ -2,16 +2,13 @@
 {
     public class PeerPullRequest
     {
-        private string _title;
-        private object _assignee;
-
-        public PeerPullRequest(string Title, object Assignee)
+        public PeerPullRequest(string title, object assignee)
         {
-            _title = Title;
-            _assignee = Assignee;
+            Title = title;
+            Assignee = assignee;
         }
 
         public string Title { get; set; }
-        public string Assignee { get; set; }
+        public object Assignee { get; set; }
     }
 }

@@ -1,27 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.TeamFoundation.Core.WebApi;
+using Microsoft.TeamFoundation.SourceControl.WebApi;
 using Peer.Domain;
 using Peer.Domain.Models;
 using Peer.User;
 
 namespace Peer.Connectors
 {
-    class AzdoPullRequestSource : IPullRequestSource
+    public class AzdoPullRequestSource : IPullRequestSource<AzdoPullRequestSource>
     {
-        private readonly ConfigModel _config;
-        private static IClient<AzdoClient> _user;
+        private readonly AppConfig _config;
+        private static IClient<UserAzdoClient> _userClient;
 
-        public AzdoPullRequestSource(ConfigModel config, IClient<AzdoClient> user)
+        public AzdoPullRequestSource(AppConfig config, IClient<UserAzdoClient> userClient)
         {
             _config = config;
-            _user = user;
+            _userClient = userClient;
         }
 
-        // TODO: implement the method to fetch the PRs
-        public Task<IEnumerable<PeerPullRequest>> FetchPullRequests()
+        public async Task<IEnumerable<PeerPullRequest>> FetchPullRequests()
         {
-            throw new NotImplementedException();
+
+            var userclient = _userClient.CreateClient();
+            var AzClient = userclient.AzClient;
+            var AzProjClient = userclient.AzProjClient;
+
+            var projects = await AzProjClient.GetProjects();
+
+            List<GitPullRequest> prs = new();
+
+            foreach (TeamProjectReference project in projects)
+            {
+                prs.AddRange(await AzClient.GetPullRequestsByProjectAsync(project.Id, null));
+            }
+
+            var status = prs.Select(x => new PeerPullRequest(
+               title: x.Title,
+               assignee: x.CreatedBy
+               )).ToList();
+
+            return status;
         }
     }
 }

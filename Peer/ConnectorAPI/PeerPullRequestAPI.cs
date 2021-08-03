@@ -6,12 +6,12 @@ using Peer.Domain.Models;
 
 namespace Peer.ConnectorApi
 {
-    public class PRListApi
+    public class PeerPullRequestAPI<T> where T : class
     {
-        private readonly List<IPullRequestSource> _sources;
+        private readonly List<IPullRequestSource<T>> _sources;
         private List<PeerPullRequest> PRList;
 
-        public PRListApi(IEnumerable<IPullRequestSource> sources)
+        public PeerPullRequestAPI(IEnumerable<IPullRequestSource<T>> sources)
         {
             _sources = sources.ToList();
         }

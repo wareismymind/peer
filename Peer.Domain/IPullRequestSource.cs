@@ -4,7 +4,7 @@ using Peer.Domain.Models;
 
 namespace Peer.Domain
 {
-    public interface IPullRequestSource
+    public interface IPullRequestSource<T> where T : class
     {
         Task<IEnumerable<PeerPullRequest>> FetchPullRequests();
     }

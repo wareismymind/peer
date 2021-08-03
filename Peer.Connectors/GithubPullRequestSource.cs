@@ -9,23 +9,24 @@ using Peer.User;
 
 namespace Peer.Connectors
 {
-    public class GithubPullRequestSource : IPullRequestSource
+    public class GithubPullRequestSource : IPullRequestSource<GithubPullRequestSource>
     {
         private static readonly Regex _paramRegex = new Regex(@"(?<orgName>[\w\-]+)/(?<repoName>[\w\-]+)/issues/\d+");
-        private readonly ConfigModel _config;
-        private static IClient<GithubClient> _user;
+        private readonly AppConfig _config;
+        private static IClient<UserGithubClient> _userClient;
+        private static GitHubClient _githubClient;
 
-        public GithubPullRequestSource(ConfigModel config, IClient<GithubClient> user)
+        public GithubPullRequestSource(AppConfig config, IClient<UserGithubClient> userClient)
         {
             _config = config;
-            _user = user;
+            _userClient = userClient;
         }
 
         public async Task<IEnumerable<PeerPullRequest>> FetchPullRequests()
         {
-            var userclient = _user.CreateClient().GitClient;
+            _githubClient = _userClient.CreateClient().GitClient;
 
-            var issues = await userclient.Search.SearchIssues(new SearchIssuesRequest()
+            var issues = await _githubClient.Search.SearchIssues(new SearchIssuesRequest()
             {
                 Archived = false,
                 Involves = _config.Github.Name,
@@ -37,8 +38,8 @@ namespace Peer.Connectors
             var prs = await Task.WhenAll(issues.Items.Select(x => GetInfoFromIssue(x)));
 
             var status = prs.Select(x => new PeerPullRequest(
-               Title: x.Title,
-               Assignee: x.Assignee
+               title: x.Title,
+               assignee: x.Assignee
                )).ToList();
 
             return status;
@@ -48,7 +49,7 @@ namespace Peer.Connectors
             var match = _paramRegex.Match(iss.Url);
             var orgName = match.Groups["orgName"].Value;
             var repo = match.Groups["repoName"].Value;
-            var pr = await _user.Client.GitClient.PullRequest.Get(orgName, repo, iss.Number);
+            var pr = await _githubClient.PullRequest.Get(orgName, repo, iss.Number);
             return pr;
         }
     }

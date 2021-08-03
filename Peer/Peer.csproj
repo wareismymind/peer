@@ -17,12 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Peer.Connectors\Peer.Connectors.csproj" />
     <ProjectReference Include="..\Peer.Domain\Peer.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <ProjectReference Include="..\Peer.IO\Peer.IO.csproj" />
   </ItemGroup>
 
 </Project>
