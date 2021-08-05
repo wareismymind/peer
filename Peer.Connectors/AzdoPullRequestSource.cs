@@ -21,25 +21,26 @@ namespace Peer.Connectors
             _userClient = userClient;
         }
 
-        public async Task<IEnumerable<PeerPullRequest>> FetchPullRequests()
+        public async Task<IEnumerable<PeerPullRequest>> FetchPullRequestsAsync()
         {
 
             var userclient = _userClient.CreateClient();
-            var AzClient = userclient.AzClient;
-            var AzProjClient = userclient.AzProjClient;
+            var azClient = userclient.AzClient;
+            var azProjClient = userclient.AzProjClient;
 
-            var projects = await AzProjClient.GetProjects();
+            var projects = await azProjClient.GetProjects();
 
-            List<GitPullRequest> prs = new();
+            var prs = new List<GitPullRequest>();
 
             foreach (TeamProjectReference project in projects)
             {
-                prs.AddRange(await AzClient.GetPullRequestsByProjectAsync(project.Id, null));
+                prs.AddRange(await azClient.GetPullRequestsByProjectAsync(project.Id, null));
             }
 
             var status = prs.Select(x => new PeerPullRequest(
                title: x.Title,
-               assignee: x.CreatedBy
+               assignee: x.CreatedBy,
+               id: x.PullRequestId
                )).ToList();
 
             return status;

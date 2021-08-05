@@ -9,7 +9,7 @@ namespace Peer.ConnectorApi
     public class PeerPullRequestAPI<T> where T : class
     {
         private readonly List<IPullRequestSource<T>> _sources;
-        private List<PeerPullRequest> PRList;
+        private List<PeerPullRequest> prList;
 
         public PeerPullRequestAPI(IEnumerable<IPullRequestSource<T>> sources)
         {
@@ -18,10 +18,10 @@ namespace Peer.ConnectorApi
 
         public async Task<List<PeerPullRequest>> GetPullRequests()
         {
-            var tasks = _sources.Select(x => x.FetchPullRequests());
+            var tasks = _sources.Select(x => x.FetchPullRequestsAsync());
             var prs = await Task.WhenAll(tasks);
-            PRList = prs.SelectMany(x => x).ToList();
-            return PRList;
+            prList = prs.SelectMany(x => x).ToList();
+            return prList;
         }
     }
 }

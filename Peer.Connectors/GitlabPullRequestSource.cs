@@ -19,15 +19,16 @@ namespace Peer.Connectors
             _userClient = userClient;
         }
 
-        public async Task<IEnumerable<PeerPullRequest>> FetchPullRequests()
+        public async Task<IEnumerable<PeerPullRequest>> FetchPullRequestsAsync()
         {
-            var _githubClient = _userClient.CreateClient().GitlabClient;
+            var _gitlabClient = _userClient.CreateClient().GitlabClient;
 
-            var prs = await _githubClient.MergeRequests.GetAsync(x => x.State = QueryMergeRequestState.Opened);
+            var prs = await _gitlabClient.MergeRequests.GetAsync(x => x.State = QueryMergeRequestState.Opened);
 
             var status = prs.Select(x => new PeerPullRequest(
                title: x.Title,
-               assignee: x.Assignee
+               assignee: x.Assignee,
+               id: x.Id
                )).ToList();
 
             return status;

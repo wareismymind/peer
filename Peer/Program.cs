@@ -22,7 +22,8 @@ namespace Peer
             PeerPullRequestAPI<GithubPullRequestSource> GitpRListApi;
             PeerPullRequestAPI<AzdoPullRequestSource> AzDopRListApi;
             PeerPullRequestAPI<GitlabPullRequestSource> GitlabpRListApi;
-            BuildServices(services, out GitpRListApi, out AzDopRListApi, out GitlabpRListApi);
+            var serviceProvider = services.BuildServiceProvider();
+            BuildServices(serviceProvider, out GitpRListApi, out AzDopRListApi, out GitlabpRListApi);
 
             _ = await GitpRListApi.GetPullRequests();
             _ = await AzDopRListApi.GetPullRequests();
@@ -41,17 +42,11 @@ namespace Peer
             return configModel;
         }
 
-        private static void BuildServices(IServiceCollection services, out PeerPullRequestAPI<GithubPullRequestSource> GitpRListApi, out PeerPullRequestAPI<AzdoPullRequestSource> AzDopRListApi, out PeerPullRequestAPI<GitlabPullRequestSource> GitlabpRListApi)
+        private static void BuildServices(ServiceProvider serviceProvider, out PeerPullRequestAPI<GithubPullRequestSource> GitpRListApi, out PeerPullRequestAPI<AzdoPullRequestSource> AzDopRListApi, out PeerPullRequestAPI<GitlabPullRequestSource> GitlabpRListApi)
         {
-            GitpRListApi = services
-                            .BuildServiceProvider()
-                            .GetRequiredService<PeerPullRequestAPI<GithubPullRequestSource>>();
-            AzDopRListApi = services
-                            .BuildServiceProvider()
-                            .GetRequiredService<PeerPullRequestAPI<AzdoPullRequestSource>>();
-            GitlabpRListApi = services
-                            .BuildServiceProvider()
-                            .GetRequiredService<PeerPullRequestAPI<GitlabPullRequestSource>>();
+            GitpRListApi = serviceProvider.GetRequiredService<PeerPullRequestAPI<GithubPullRequestSource>>();
+            AzDopRListApi = serviceProvider.GetRequiredService<PeerPullRequestAPI<AzdoPullRequestSource>>();
+            GitlabpRListApi = serviceProvider.GetRequiredService<PeerPullRequestAPI<GitlabPullRequestSource>>();
         }
 
         private static void RegisterServices(IServiceCollection services, AppConfig configModel)

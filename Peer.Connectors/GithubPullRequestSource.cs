@@ -14,7 +14,7 @@ namespace Peer.Connectors
         private static readonly Regex _paramRegex = new Regex(@"(?<orgName>[\w\-]+)/(?<repoName>[\w\-]+)/issues/\d+");
         private readonly AppConfig _config;
         private static IClient<UserGithubClient> _userClient;
-        private static GitHubClient _githubClient;
+        private static IGitHubClient _githubClient;
 
         public GithubPullRequestSource(AppConfig config, IClient<UserGithubClient> userClient)
         {
@@ -22,7 +22,7 @@ namespace Peer.Connectors
             _userClient = userClient;
         }
 
-        public async Task<IEnumerable<PeerPullRequest>> FetchPullRequests()
+        public async Task<IEnumerable<PeerPullRequest>> FetchPullRequestsAsync()
         {
             _githubClient = _userClient.CreateClient().GitClient;
 
@@ -39,7 +39,8 @@ namespace Peer.Connectors
 
             var status = prs.Select(x => new PeerPullRequest(
                title: x.Title,
-               assignee: x.Assignee
+               assignee: x.Assignee,
+               id: x.Id
                )).ToList();
 
             return status;

@@ -14,13 +14,15 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="coverlet.collector" Version="1.3.0">
+	<PackageReference Include="coverlet.collector" Version="1.3.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Peer.Connectors\Peer.Connectors.csproj" />
+    <ProjectReference Include="..\Peer.User\Peer.User.csproj" />
     <ProjectReference Include="..\Peer\Peer.csproj" />
   </ItemGroup>
 

@@ -6,6 +6,6 @@ namespace Peer.Domain
 {
     public interface IPullRequestSource<T> where T : class
     {
-        Task<IEnumerable<PeerPullRequest>> FetchPullRequests();
+        Task<IEnumerable<PeerPullRequest>> FetchPullRequestsAsync();
     }
 }
