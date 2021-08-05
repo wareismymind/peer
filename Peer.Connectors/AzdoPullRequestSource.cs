@@ -39,7 +39,7 @@ namespace Peer.Connectors
 
             var status = prs.Select(x => new PeerPullRequest(
                title: x.Title,
-               assignee: x.CreatedBy,
+               assignee: x.CreatedBy.DisplayName,
                id: x.PullRequestId
                )).ToList();
 
