@@ -4,13 +4,16 @@ namespace Peer
 {
     public class ConsoleWriter
     {
-        private int _previousWriteLength;
+        private int _previousWriteHeight;
 
         public void Display(IList<string> lines, CancellationToken token)
         {
             var maxLength = lines.Max(x => x.Length);
-            var consoleWidth = Console.BufferWidth > maxLength ? Console.BufferWidth : maxLength;
-            var sb = new StringBuilder((consoleWidth+1)*_previousWriteLength);
+            
+            var consoleWidth = Math.Max(maxLength, Console.BufferWidth);
+            var writeHeight = Math.Max(lines.Count, _previousWriteHeight);
+
+            var sb = new StringBuilder((consoleWidth+1)* writeHeight);
             
             foreach (var line in lines)
             {
@@ -24,7 +27,7 @@ namespace Peer
             }
 
             var filler = new string(' ', consoleWidth);
-            var fillAmount = _previousWriteLength - lines.Count;
+            var fillAmount = writeHeight - lines.Count;
             for (int i = 0; i <= fillAmount; i++)
             {
                 sb.AppendLine(filler);
@@ -33,7 +36,7 @@ namespace Peer
             Console.SetCursorPosition(0, 0);
             Console.Write(sb.ToString());
 
-            _previousWriteLength = Console.CursorTop + 1;
+            _previousWriteHeight = lines.Count;
         }
     }
 }
