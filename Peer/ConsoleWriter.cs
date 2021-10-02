@@ -28,7 +28,8 @@ namespace Peer
 
             var filler = new string(' ', consoleWidth);
             var fillAmount = writeHeight - lines.Count;
-            for (int i = 0; i <= fillAmount; i++)
+
+            for (var i = 0; i <= fillAmount; i++)
             {
                 sb.AppendLine(filler);
             }
