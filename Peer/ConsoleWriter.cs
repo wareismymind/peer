@@ -8,7 +8,8 @@ namespace Peer
 
         public void Display(IList<string> lines, CancellationToken token)
         {
-            var consoleWidth = Console.BufferWidth;
+            var maxLength = lines.Max(x => x.Length);
+            var consoleWidth = Console.BufferWidth > maxLength ? Console.BufferWidth : maxLength;
             var sb = new StringBuilder((consoleWidth+1)*_previousWriteLength);
             
             foreach (var line in lines)
@@ -16,11 +17,6 @@ namespace Peer
                 if (token.IsCancellationRequested)
                 {
                     return;
-                }
-
-                if (consoleWidth < line.Length)
-                {
-                    consoleWidth = line.Length;
                 }
 
                 var padded = line.PadRight(consoleWidth);
