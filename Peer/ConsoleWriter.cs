@@ -9,7 +9,7 @@ namespace Peer
         public void Display(IList<string> lines, CancellationToken token)
         {
             var consoleWidth = Console.BufferWidth;
-            var sb = new StringBuilder();
+            var sb = new StringBuilder((consoleWidth+1)*_previousWriteLength);
             
             foreach (var line in lines)
             {
