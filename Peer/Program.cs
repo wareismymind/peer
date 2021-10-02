@@ -1,6 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-namespace Peer
+﻿namespace Peer
 {
     public static class Program
     {
@@ -66,7 +64,7 @@ namespace Peer
             for (var i = 0; i < 100; i++)
             {
                 consoleJiggy.Display(lines.TakeLast(1 + _rando.Next(lines.Length)).OrderByDescending(x => x == "LAST_LINE" ? int.MinValue : _rando.Next(0, 200)).ToList(), default);
-                await Task.Delay(1000);
+                await Task.Delay(30);
             }
         }
     }
