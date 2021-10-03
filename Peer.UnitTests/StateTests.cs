@@ -15,7 +15,7 @@ namespace Peer.UnitTests
             }
 
             [Fact]
-            public void TotalCommentsGreaterThanActiveComments_Throws()
+            public void ActiveCommentsGreaterThanTotalComments_Throws()
             {
                 Assert.Throws<ArgumentException>(() => new State(PullRequestStatus.Conflict, 10, 11));
             }
