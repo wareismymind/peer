@@ -18,7 +18,9 @@ public class CompactFormatter : IPullRequestFormatter
 {
     private readonly ISymbolProvider _symbolProvider;
     private const char _ellipsis = '\u2026';
-    private static readonly string _header = $"{"Id",-4} {"Title",-40} {"\ud83d\udea7"} Url";
+    private const string _constructionSign = "\ud83d\udea7";
+
+    private static readonly string _header = $"{"Id",-4} {"Title",-40} {_constructionSign} Url";
     public CompactFormatter(ISymbolProvider symbolProvider)
     {
         _symbolProvider = symbolProvider;
