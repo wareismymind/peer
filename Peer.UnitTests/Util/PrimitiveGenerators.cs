@@ -30,8 +30,9 @@ namespace Peer.UnitTests.Util
 
         public static T RandomEnumValue<T>() where T : struct, Enum
         {
-            var count = Enum.GetValues<T>().Length;
-            return (T)(object)GetInt(max: count);
+            var values = Enum.GetValues<T>();
+            var value = values[GetInt(max: values.Length)];
+            return value;
         }
 
         public static string RandomBranchName()
