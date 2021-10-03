@@ -1,4 +1,8 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
 
 namespace Peer
 {
@@ -9,12 +13,12 @@ namespace Peer
         public void Display(IList<string> lines, CancellationToken token)
         {
             var maxLength = lines.Max(x => x.Length);
-            
+
             var consoleWidth = Math.Max(maxLength, Console.BufferWidth);
             var writeHeight = Math.Max(lines.Count, _previousWriteHeight);
 
-            var sb = new StringBuilder((consoleWidth+1)* writeHeight);
-            
+            var sb = new StringBuilder((consoleWidth + 1) * writeHeight);
+
             foreach (var line in lines)
             {
                 if (token.IsCancellationRequested)

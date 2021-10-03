@@ -1,0 +1,5 @@
+*.cs text eol=lf
+*.csproj text eol=lf
+*.sln text eol=lf
+*.json text eol=lf
+*.yaml text eol=lf
