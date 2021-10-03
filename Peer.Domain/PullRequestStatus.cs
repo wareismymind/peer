@@ -9,7 +9,7 @@
         ActionsQueued,
         ActionsPending,
         AwaitingReview,
-        FixesRequired,
+        FixesRequested,
         ReadyToMerge,
         Merged,
         Stale

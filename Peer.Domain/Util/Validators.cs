@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Peer.Domain
+namespace Peer.Domain.Util
 {
     [ExcludeFromCodeCoverage]
     public class Validators

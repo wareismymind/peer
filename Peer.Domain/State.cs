@@ -1,4 +1,5 @@
 ﻿using System;
+using Peer.Domain.Util;
 
 namespace Peer.Domain
 {
