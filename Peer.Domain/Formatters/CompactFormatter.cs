@@ -47,7 +47,7 @@ public class CompactFormatter : IPullRequestFormatter
 
     private string PadOrTruncate(string value, int length)
     {
-        return value.EnumerateRunes().Count() > length
+        return value.Length > length
             ? value[0..(length - 1)] + _ellipsis
             : value.PadRight(length);
     }
