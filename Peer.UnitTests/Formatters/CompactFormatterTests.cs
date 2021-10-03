@@ -39,10 +39,9 @@ namespace Peer.UnitTests.Formatters
                 Assert.Equal(11, res.Count());
             }
 
-            private CompactFormatter Construct()
+            private static CompactFormatter Construct()
             {
                 return new CompactFormatter(new DefaultEmojiProvider());
-
             }
         }
     }
