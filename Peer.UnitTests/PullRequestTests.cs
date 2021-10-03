@@ -21,15 +21,15 @@ namespace Peer.UnitTests
             }
 
             [Fact]
-            public void IdWhitespace_Throws()
-            {
-                Assert.Throws<ArgumentException>(() => new PullRequest("\t \r\n", _url, _descriptor, _state, _gitInfo));
-            }
-
-            [Fact]
             public void IdEmpty_Throws()
             {
                 Assert.Throws<ArgumentException>(() => new PullRequest(string.Empty, _url, _descriptor, _state, _gitInfo));
+
+            }
+            [Fact]
+            public void IdWhitespace_Throws()
+            {
+                Assert.Throws<ArgumentException>(() => new PullRequest("\t \r\n", _url, _descriptor, _state, _gitInfo));
             }
 
             [Fact]

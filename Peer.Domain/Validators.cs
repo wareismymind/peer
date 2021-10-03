@@ -8,7 +8,7 @@ namespace Peer.Domain
     public class Validators
     {
         public const string NotLessThanOrEqualToZero = "Cannot be less than or equal to zero";
-        public const string NotNullEmptyOrWhitespace = "Cannot be null, empty or only whitespace";
+        public const string NotEmptyOrWhitespace = "Cannot be string.Empty or only whitespace";
         public const string NotGuidEmpty = "Cannot be Guid.Empty";
         public const string NotEmpty = "Cannot be empty";
         public const string UndefinedEnum = "Enum value cannot be undefined";
@@ -25,7 +25,7 @@ namespace Peer.Domain
                 throw new ArgumentNullException(name);
 
             if (string.IsNullOrWhiteSpace(value))
-                throw new ArgumentException(NotNullEmptyOrWhitespace, name);
+                throw new ArgumentException(NotEmptyOrWhitespace, name);
         }
 
         public static void ArgIsNotNull(object value, string name)
