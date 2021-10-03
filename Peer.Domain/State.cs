@@ -10,10 +10,7 @@ namespace Peer.Domain
 
         public State(PullRequestStatus status, int totalComments, int activeComments)
         {
-            if (!Enum.IsDefined(status))
-            {
-                throw new ArgumentException("Enum value was undefined", nameof(status));
-            }
+            Validators.ArgIsDefined(status, nameof(status));
 
             if (activeComments > totalComments)
             {
