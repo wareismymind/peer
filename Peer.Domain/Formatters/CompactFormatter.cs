@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Peer.Domain.Util;
 
 namespace Peer.Domain.Formatters;
@@ -17,7 +18,7 @@ public class CompactFormatter : IPullRequestFormatter
 {
     private readonly ISymbolProvider _symbolProvider;
     private const char _ellipsis = '\u2026';
-    private static readonly string _header = $"{"Id",-4} {"Title",-40} {"S",-1} Url";
+    private static readonly string _header = $"{"Id",-4} {"Title",-40} {"\ud83d\udea7"} Url";
     public CompactFormatter(ISymbolProvider symbolProvider)
     {
         _symbolProvider = symbolProvider;
@@ -46,7 +47,7 @@ public class CompactFormatter : IPullRequestFormatter
 
     private string PadOrTruncate(string value, int length)
     {
-        return value.Length > length
+        return value.EnumerateRunes().Count() > length
             ? value[0..(length - 1)] + _ellipsis
             : value.PadRight(length);
     }
