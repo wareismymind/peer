@@ -89,7 +89,6 @@ namespace Peer
 
             var compactFormatter = new CompactFormatter(new DefaultEmojiProvider());
             var formatted = compactFormatter.FormatLines(prList).ToList();
-            Console.WriteLine($"Line count = {formatted.ToList().Count}");
             consoleJiggy.Display(formatted, true, default);
         }
     }
