@@ -6,7 +6,11 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <AnalysisLevel>latest</AnalysisLevel>
+    <AssemblyName>$(MSBuildProjectName.ToLower())</AssemblyName>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.8.0" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Peer.Domain\Peer.Domain.csproj" />
   </ItemGroup>

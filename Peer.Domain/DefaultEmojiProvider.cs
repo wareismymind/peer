@@ -15,7 +15,7 @@ public class DefaultEmojiProvider : ISymbolProvider
             PullRequestStatus.FailedChecks => "\uD83D\uDD25", //fire
             PullRequestStatus.AwaitingReview => "\uD83D\uDEA9", //triangle flag (usually red)
             PullRequestStatus.FixesRequested => "\u274C", //cross mark (usually red)
-            PullRequestStatus.ReadyToMerge => "\u2714\uFE0F", //heavy check mark
+            PullRequestStatus.ReadyToMerge => "\u2714\uFE0F", //heavy check mark with variant modifier (emoji)
             PullRequestStatus.Merged => "\uD83C\uDF8A", // confetti ball
             _ => throw new UnreachableException()
         };
