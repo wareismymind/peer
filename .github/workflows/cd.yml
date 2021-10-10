@@ -1,0 +1,54 @@
+name: Continuous deployment
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build-and-test:
+    uses: wareismymind/peer/.github/workflows/build-and-test.yml
+
+  calculate-version:
+    needs: [build-and-test]
+    runs_on: ubuntu-latest
+    outputs:
+      version_tag: ${{ steps.version_tag.outputs.version_tag }}
+      should_release: ${{ steps.release.outputs.release_created }}
+    steps:
+      - name: Setup Release Please
+        uses: GoogleCloudPlatform/release-please-action@v2
+        id: release
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          release-type: simple
+          package-name: peer
+
+      - name: Create Version Tag
+        if: ${{ steps.release.outputs.release_created }}
+        id: version_tag
+        env:
+          VERSION_TAG: "${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}"
+        run: echo "::set-output name=version_tag::${VERSION_TAG}"
+
+  publish:
+    runs_on: ubuntu-latest
+    needs: [calculate-version]
+    strategy:
+      matrix:
+        os: [win-x64, linux-x64, osx-x64]
+    if: ${{ needs.calculate-version.should_release }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+
+      - name: publish
+        run: >
+          dotnet publish -o ./output
+          -r "${{ matrix.os }}"
+          /p:Version=${{ needs.calculate-version.version_tag }}
+          /p:AssemblyVersion=${{ needs.calculate-version.version_tag }}

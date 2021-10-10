@@ -1,0 +1,24 @@
+on:
+  workflow_call:
+
+jobs:
+  build_and_test:
+    strategy:
+      matrix:
+        os: [win-x64, linux-x64, osx-x64]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+
+      - name: Run Build
+        run: dotnet build -c Release
+
+      - name: Run Tests
+        run: dotnet test -c Release --no-build
