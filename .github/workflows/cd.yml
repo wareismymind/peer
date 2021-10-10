@@ -2,11 +2,11 @@ name: Continuous deployment
 
 on:
   push:
-    branches: [master]
+    branches: [main]
 
 jobs:
   build-and-test:
-    uses: wareismymind/peer/.github/workflows/build-and-test.yml
+    uses: wareismymind/peer/.github/workflows/build-and-test.yml@main
 
   calculate-version:
     needs: [build-and-test]
