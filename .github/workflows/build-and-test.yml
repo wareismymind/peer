@@ -3,11 +3,7 @@ on:
 
 jobs:
   build_and_test:
-    strategy:
-      matrix:
-        os: [win-x64, linux-x64, osx-x64]
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
