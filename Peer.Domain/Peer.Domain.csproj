@@ -5,4 +5,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="wimm.Secundatives" Version="2.10.0" />
+  </ItemGroup>
+
 </Project>
