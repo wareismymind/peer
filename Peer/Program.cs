@@ -14,6 +14,21 @@ namespace Peer
 
         public static async Task Main(string[] _)
         {
+            await Show();
+        }
+
+        public static async Task Show()
+        {
+            var fetcher = new GitHubRequestFetcher();
+            var pullRequests = await fetcher.GetPullRequestsAsync();
+            var formatter = new CompactFormatter(new DefaultEmojiProvider());
+            var writer = new ConsoleWriter();
+            var output = formatter.FormatLines(pullRequests).ToList();
+            writer.Display(output, true, default);
+        }
+
+        public static async Task OldMain(string[] _)
+        {
             var consoleJiggy = new ConsoleWriter();
 
             var lines = new[]

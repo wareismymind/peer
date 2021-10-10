@@ -4,6 +4,6 @@ namespace Peer.Domain
 {
     public interface IPullRequestFormatter
     {
-        public IEnumerable<string> FormatLines(IEnumerable<PullRequest> pullRequests);
+        IEnumerable<string> FormatLines(IEnumerable<PullRequest> pullRequests);
     }
 }
