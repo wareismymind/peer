@@ -20,7 +20,7 @@ public class CompactFormatter : IPullRequestFormatter
     private const char _ellipsis = '\u2026';
     private const string _constructionSign = "\ud83d\udea7";
 
-    private static readonly string _header = $"{"Id",-4} {"Title",-40} {_constructionSign} Url";
+    private static readonly string _header = $"{"Id",-4} {"Title",-40} {"Comments",-9} {_constructionSign} Url";
     public CompactFormatter(ISymbolProvider symbolProvider)
     {
         _symbolProvider = symbolProvider;
@@ -42,9 +42,10 @@ public class CompactFormatter : IPullRequestFormatter
     {
         var id = PadOrTruncate(pr.Id, 4);
         var title = PadOrTruncate(pr.Descriptor.Title, 40);
+        var comments = PadOrTruncate($"{pr.State.ActiveComments}/{pr.State.TotalComments}", 9);
         var status = _symbolProvider.GetSymbol(pr.State.Status);
 
-        return $"{id} {title} {status} {pr.Url}";
+        return $"{id} {title} {comments} {status}  {pr.Url}";
     }
 
     private string PadOrTruncate(string value, int length)
