@@ -10,61 +10,54 @@ namespace Peer
 {
     public class GitHubRequestFetcher: IPullRequestFetcher
     {
-        // involves
-
-        private const string _initialQueryFmt = @"{{
-            search(query: ""is:pr is:open archived:false {0}"", type: ISSUE, first: 20) {{
-                issueCount
-                nodes {{
-                    ... on PullRequest {{
-                        id
-                        number
-                        url
-                        title
-                        body
-                        baseRefName
-                        headRefName
-                        reviewThreads(first: 100) {{
-                            nodes {{ isResolved }}
-                            pageInfo {{ hasNextPage, endCursor }}
-                        }}
-                    }}
-                }}
-                pageInfo {{ endCursor }}
-            }}
-        }}";
-
-        private const string _pageQueryItemFmt = @"{0}: node(id: ""{0}"") {{
-            ... on PullRequest {{
-                reviewThreads(first: 100, after: ""{1}"") {{
-                    nodes {{ isResolved }}
-                    pageInfo {{ endCursor, hasNextPage }}
-                }}
-            }}
-        }}";
-
         private readonly GraphQLHttpClient _gqlClient;
-        private readonly string _usersClause;
+        private readonly GraphQLHttpRequest _searchRequest;
 
         public GitHubRequestFetcher(GraphQLHttpClient gqlClient, IEnumerable<string> users)
         {
             _gqlClient = gqlClient ?? throw new ArgumentNullException(nameof(gqlClient));
 
             var usersList = users?.ToList() ?? throw new ArgumentNullException(nameof(users));
-            if (usersList.Count == 0) throw new ArgumentException("Must not be empty", nameof(users));
-            _usersClause = string.Join(' ', usersList.Select(u => $"user:{u}"));
+            if (usersList.Count == 0) throw new ArgumentException("Must not be empty.", nameof(users));
+
+            var usersClauses = string.Join(' ', usersList.Select(u => $"user:{u}"));
+
+            _searchRequest = new GraphQLHttpRequest(GenerateInitialSearch(usersClauses));
         }
 
         public async Task<IEnumerable<PullRequest>> GetPullRequestsAsync()
         {
-            var query = string.Format(_initialQueryFmt, _usersClause);
-            var request = new GraphQLHttpRequest(query);
-            var response = await _gqlClient.SendQueryAsync<GqlQueryResult>(request);
+            var searchResponse = await _gqlClient.SendQueryAsync<GqlQueryResult>(_searchRequest);
 
-            // todo: Count total/active comments with paging
-            return response.Data.Search.Nodes
+            // todo: Handle errors.
+
+            var prs = searchResponse.Data.Search.Nodes.ToDictionary(pr => pr.Id);
+
+            var prsWithMoreThreads =
+                prs.Values.Where(pr => pr.ReviewThreads.PageInfo.HasNextPage).ToList();
+
+            while (prsWithMoreThreads.Any())
+            {
+                var query = GenerateThreadPageQuery(prsWithMoreThreads);
+                var queryRequest = new GraphQLHttpRequest(query);
+                var queryResponse =
+                    await _gqlClient.SendQueryAsync<Dictionary<string, GqlPullRequest>>(
+                        queryRequest);
+
+                var prThreadPages = queryResponse.Data.Values;
+
+                foreach (var pr in prThreadPages)
+                {
+                    prs[pr.Id].ReviewThreads.Nodes.AddRange(pr.ReviewThreads.Nodes);
+                }
+
+                prsWithMoreThreads =
+                    prThreadPages.Where(pr => pr.ReviewThreads.PageInfo.HasNextPage).ToList();
+            }
+
+            return prs.Values
                 .Select(pr => {
-                    // todo: Real status
+                    // todo: Calculate status.
                     var status = PullRequestStatus.ReadyToMerge;
                     var totalComments = pr.ReviewThreads.Nodes.Count;
                     var activeComments = pr.ReviewThreads.Nodes.Count(t => !t.IsResolved);
@@ -75,6 +68,57 @@ namespace Peer
                         new State(status, totalComments, activeComments),
                         new GitInfo(pr.HeadRefName, pr.BaseRefName));
                 });
+        }
+
+        private static string GenerateInitialSearch(string searchTerms)
+        {
+            // todo: Include 'involves' in the search.
+
+            return string.Format(
+                @"{{
+                    search(query: ""is:pr is:open archived:false {0}"", type: ISSUE, first: 20) {{
+                        issueCount
+                        nodes {{
+                            ... on PullRequest {{
+                                id
+                                number
+                                url
+                                title
+                                body
+                                baseRefName
+                                headRefName
+                                reviewThreads(first: 1) {{
+                                    nodes {{ isResolved }}
+                                    pageInfo {{ hasNextPage, endCursor }}
+                                }}
+                            }}
+                        }}
+                        pageInfo {{ endCursor }}
+                    }}
+                }}",
+                searchTerms);
+        }
+
+        private static string GenerateThreadPageQuery(IEnumerable<GqlPullRequest> prs)
+        {
+            var queryItems = prs.Select(GenerateThreadPageQueryItem);
+            return $"query {{ {string.Join('\n', queryItems)} }}";
+        }
+
+        private static string GenerateThreadPageQueryItem(GqlPullRequest pr)
+        {
+            return string.Format(
+                @"{0}: node(id: ""{0}"") {{
+                    ... on PullRequest {{
+                        id
+                        reviewThreads(first: 1, after: ""{1}"") {{
+                            nodes {{ isResolved }}
+                            pageInfo {{ endCursor, hasNextPage }}
+                        }}
+                    }}
+                }}",
+                pr.Id,
+                pr.ReviewThreads.PageInfo.EndCursor);
         }
 
         public class GqlQueryResult
