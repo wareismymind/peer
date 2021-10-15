@@ -3,19 +3,21 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <!--<RuntimeIdentifier>win-x64</RuntimeIdentifier>-->
     <ImplicitUsings>disable</ImplicitUsings>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <AnalysisLevel>latest</AnalysisLevel>
     <AssemblyName>$(MSBuildProjectName.ToLower())</AssemblyName>
-    <!--<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>-->
-    <!--<UseAppHost>True</UseAppHost>-->
-    <PublishSingleFile>true</PublishSingleFile>
-    <!--<SelfContained>true</SelfContained>-->
-    <!--<PublishTrimmed>true</PublishTrimmed>-->
-    <!--<PublishReadyToRun>true</PublishReadyToRun>-->
     <EnableTrimAnalyzer>True</EnableTrimAnalyzer>
-    <!--<TrimMode>link</TrimMode>-->
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <PublishSingleFile>true</PublishSingleFile>
+    <PublishTrimmed>true</PublishTrimmed>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <TrimMode>link</TrimMode>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <UseAppHost>True</UseAppHost>
+    <SelfContained>true</SelfContained>
   </PropertyGroup>
 
   <ItemGroup>
