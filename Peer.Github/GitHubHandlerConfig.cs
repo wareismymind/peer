@@ -15,13 +15,12 @@ namespace Peer.GitHub
                 return GithubConfigError.ConfigurationBlockMissing;
             }
 
-            //CN: Addl
-            if (Configuration.AccessToken == null)
+            if (string.IsNullOrWhiteSpace(Configuration.AccessToken))
             {
                 return GithubConfigError.AccessTokenInvalid;
             }
 
-            if (Configuration.Username == null)
+            if (string.IsNullOrWhiteSpace(Configuration.Username))
             {
                 return GithubConfigError.UsernameMissing;
             }

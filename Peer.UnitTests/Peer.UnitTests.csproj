@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Peer.Domain\Peer.Domain.csproj" />
+    <ProjectReference Include="..\Peer.Github\Peer.GitHub.csproj" />
   </ItemGroup>
 
 </Project>
