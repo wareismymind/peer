@@ -6,4 +6,4 @@ on:
 
 jobs:
   build_and_test:
-    uses: wareismymind/peer/.github/workflows/build-and-test.yml@${{github.sha}}
+    uses: wareismymind/peer/.github/workflows/build-and-test.yml@main
