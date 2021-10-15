@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace Peer.Domain;
+namespace Peer.Domain.Exceptions;
 
 public class UnreachableException : Exception
 {
