@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Peer.UnitTests.Github
+﻿namespace Peer.UnitTests.Github
 {
     public class GithubPeerConfigDto
     {

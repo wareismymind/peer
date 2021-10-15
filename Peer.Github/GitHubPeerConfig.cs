@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Peer.GitHub
+﻿namespace Peer.GitHub
 {
     public class GithubPeerConfig
     {
