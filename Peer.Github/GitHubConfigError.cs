@@ -3,7 +3,7 @@
     public enum GithubConfigError
     {
         AccessTokenInvalid,
-        UsernameMissing,
+        UsernameInvalid,
         ConfigurationBlockMissing,
         InvalidOrgConfig,
     }

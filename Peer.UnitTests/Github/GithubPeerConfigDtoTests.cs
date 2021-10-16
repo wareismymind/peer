@@ -10,16 +10,15 @@ namespace Peer.UnitTests.Github
         public class Into
         {
             [Theory]
-            [InlineData(null)]
             [InlineData("")]
             [InlineData("\r\t\r\n  ")]
-            public void UsernameNullEmptyOrWhitespace_ReturnsBadUsername(string username)
+            public void UsernameEmptyOrWhitespace_ReturnsUsernameInvalid(string username)
             {
                 var underTest = CreateConfig(x => x.Configuration.Username = username);
                 var res = underTest.Into();
 
                 Assert.True(res.IsError);
-                Assert.Equal(GithubConfigError.UsernameMissing ,res.Error);
+                Assert.Equal(GithubConfigError.UsernameInvalid, res.Error);
             }
 
             [Theory]
@@ -43,7 +42,7 @@ namespace Peer.UnitTests.Github
                     x.Configuration.ExcludedOrgs = new List<string>() { "wareismymind" };
                     x.Configuration.Orgs = new List<string>() { "dotnet" };
                 });
-                
+
                 var res = underTest.Into();
                 Assert.True(res.IsError);
                 Assert.Equal(GithubConfigError.InvalidOrgConfig, res.Error);
@@ -53,6 +52,14 @@ namespace Peer.UnitTests.Github
             public void ValidConfig_Succeeds()
             {
                 var underTest = CreateConfig();
+                var res = underTest.Into();
+                Assert.True(res.IsValue);
+            }
+
+            [Fact]
+            public void ValidConfigNullUsername_Succeeds()
+            {
+                var underTest = CreateConfig(x => x.Configuration.Username = null);
                 var res = underTest.Into();
                 Assert.True(res.IsValue);
             }

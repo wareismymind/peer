@@ -19,14 +19,14 @@ namespace Peer.GitHub
                 return GithubConfigError.AccessTokenInvalid;
             }
 
-            if (string.IsNullOrWhiteSpace(Configuration.Username))
+            if (Configuration.Username != null && Configuration.Username.All(x => char.IsWhiteSpace(x)))
             {
-                return GithubConfigError.UsernameMissing;
+                return GithubConfigError.UsernameInvalid;
             }
 
             var realizedExcluded = Configuration.ExcludedOrgs.ToList();
             var realizedIncluded = Configuration.ExcludedOrgs.ToList();
-            
+
             if (realizedExcluded.Any() && realizedIncluded.Any())
             {
                 return GithubConfigError.InvalidOrgConfig;
