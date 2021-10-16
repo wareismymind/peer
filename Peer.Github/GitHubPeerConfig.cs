@@ -16,6 +16,5 @@
             Orgs = orgs ?? throw new ArgumentNullException(nameof(orgs));
             ExcludedOrgs = excludedOrgs ?? throw new ArgumentNullException(nameof(excludedOrgs));
         }
-
     }
 }

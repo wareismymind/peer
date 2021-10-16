@@ -7,7 +7,6 @@ namespace Peer.GitHub
         public string Name { get; set; } = string.Empty;
         public GithubPeerConfigDto? Configuration { get; set; }
 
-
         public Result<GithubPeerConfig, GithubConfigError> Into()
         {
             if (Configuration == null)

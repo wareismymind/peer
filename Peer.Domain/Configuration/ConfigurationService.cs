@@ -13,7 +13,6 @@ namespace Peer.Domain.Configuration
     {
         private readonly Dictionary<string, IRegistrationHandler> _handlers;
 
-
         public ConfigurationService(IEnumerable<IRegistrationHandler> handlers)
         {
             _handlers = handlers.ToDictionary(x => x.ProviderKey, x => x);
@@ -23,7 +22,6 @@ namespace Peer.Domain.Configuration
         {
             var providerTypes = configuration.GetSection("Providers").GetChildren();
 
-            Console.WriteLine(configuration.GetSection("Providers").Value);
             if (!providerTypes.Any())
             {
                 return ConfigError.NoProvidersConfigured;

@@ -34,7 +34,6 @@ namespace Peer.UnitTests.Github
                 Assert.True(res.IsError);
                 Assert.Equal(GithubConfigError.AccessTokenInvalid, res.Error);
             }
-
         }
 
         public static GithubHandlerConfig CreateConfig(Action<GithubHandlerConfig> customization = null)

@@ -26,7 +26,6 @@ namespace Peer
             Console.WriteLine(res);
         }
 
-        [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
         public static Task<string> ShowStubAsync(ShowOptions opts)
         {
             var services = new ServiceCollection();
