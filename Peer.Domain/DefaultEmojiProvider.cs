@@ -1,4 +1,6 @@
-﻿namespace Peer.Domain;
+﻿using Peer.Domain.Exceptions;
+
+namespace Peer.Domain;
 
 public class DefaultEmojiProvider : ISymbolProvider
 {
