@@ -24,12 +24,20 @@ namespace Peer.GitHub
                 return GithubConfigError.UsernameMissing;
             }
 
+            var realizedExcluded = Configuration.ExcludedOrgs.ToList();
+            var realizedIncluded = Configuration.ExcludedOrgs.ToList();
+            
+            if (realizedExcluded.Any() && realizedIncluded.Any())
+            {
+                return GithubConfigError.InvalidOrgConfig;
+            }
+
             return new GithubPeerConfig(
                 Name,
                 Configuration.AccessToken,
                 Configuration.Username,
-                Configuration.Orgs,
-                Configuration.ExcludedOrgs);
+                realizedIncluded,
+                realizedExcluded);
         }
     }
 }

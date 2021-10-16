@@ -5,5 +5,6 @@
         AccessTokenInvalid,
         UsernameMissing,
         ConfigurationBlockMissing,
+        InvalidOrgConfig,
     }
 }

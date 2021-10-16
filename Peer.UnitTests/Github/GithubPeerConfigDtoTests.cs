@@ -34,6 +34,28 @@ namespace Peer.UnitTests.Github
                 Assert.True(res.IsError);
                 Assert.Equal(GithubConfigError.AccessTokenInvalid, res.Error);
             }
+
+            [Fact]
+            public void OrgsAndExcludedOrgsDefined_ReturnsInvalidOrgConfig()
+            {
+                var underTest = CreateConfig(x =>
+                {
+                    x.Configuration.ExcludedOrgs = new List<string>() { "wareismymind" };
+                    x.Configuration.Orgs = new List<string>() { "dotnet" };
+                });
+                
+                var res = underTest.Into();
+                Assert.True(res.IsError);
+                Assert.Equal(GithubConfigError.InvalidOrgConfig, res.Error);
+            }
+
+            [Fact]
+            public void ValidConfig_Succeeds()
+            {
+                var underTest = CreateConfig();
+                var res = underTest.Into();
+                Assert.True(res.IsValue);
+            }
         }
 
         public static GithubHandlerConfig CreateConfig(Action<GithubHandlerConfig> customization = null)
@@ -45,7 +67,7 @@ namespace Peer.UnitTests.Github
                 {
                     AccessToken = "waka",
                     Username = "somevalidName",
-                    ExcludedOrgs = new List<string>() { "wareismymind" },
+                    ExcludedOrgs = new List<string>(),
                     Orgs = new List<string>() { "dotnet" }
                 }
             };
