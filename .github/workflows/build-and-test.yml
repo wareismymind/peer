@@ -15,7 +15,7 @@ jobs:
           include-prerelease: true
 
       - name: Run Build
-        run: dotnet build -c Release -r win-x64
+        run: dotnet build
 
       - name: Run Tests
-        run: dotnet test -c Release --no-build -r win-x64
+        run: dotnet test --no-build
