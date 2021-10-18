@@ -38,8 +38,6 @@ namespace Peer
                 new GithubWebRegistrationHandler(services)
             });
 
-            Console.WriteLine($"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}/peer.json");
-
             var configuration = new ConfigurationBuilder()
                 .AddJsonFile($"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}/peer.json", optional: true)
                 .AddEnvironmentVariables()
