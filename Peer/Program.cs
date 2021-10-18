@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
 using CommandLine;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Peer.Domain;
 using Peer.Domain.Configuration;
+using Peer.Domain.Formatters;
 using Peer.GitHub;
 using Peer.Verbs;
 
@@ -16,6 +18,8 @@ namespace Peer
     {
         public static async Task Main(string[] args)
         {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+
             var res = await Parser.Default.ParseArguments<ShowOptions, OpenOptions>(args)
                 .MapResult(
                     (ShowOptions x) => ShowStubAsync(x),
@@ -26,7 +30,7 @@ namespace Peer
             Console.WriteLine(res);
         }
 
-        public static Task<string> ShowStubAsync(ShowOptions opts)
+        public async static Task<string> ShowStubAsync(ShowOptions opts)
         {
             var services = new ServiceCollection();
 
@@ -41,9 +45,15 @@ namespace Peer
             _ = configLoader.RegisterProvidersForConfiguration(configuration, services);
 
             var p = services.BuildServiceProvider();
-            _ = p.GetRequiredService<IPullRequestFetcher>();
+            var fetcher = p.GetRequiredService<IPullRequestFetcher>();
 
-            return Task.FromResult("ok");
+            var pullRequests = await fetcher.GetPullRequestsAsync();
+            var formatter = new CompactFormatter(new DefaultEmojiProvider());
+            var writer = new ConsoleWriter();
+            var output = formatter.FormatLines(pullRequests).ToList();
+            writer.Display(output, true, default);
+
+            return string.Empty;
         }
     }
 }

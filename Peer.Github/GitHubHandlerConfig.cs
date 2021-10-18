@@ -1,4 +1,5 @@
-﻿using wimm.Secundatives;
+﻿using System.Linq;
+using wimm.Secundatives;
 
 namespace Peer.GitHub
 {
@@ -25,7 +26,7 @@ namespace Peer.GitHub
             }
 
             var realizedExcluded = Configuration.ExcludedOrgs.ToList();
-            var realizedIncluded = Configuration.ExcludedOrgs.ToList();
+            var realizedIncluded = Configuration.Orgs.ToList();
 
             if (realizedExcluded.Any() && realizedIncluded.Any())
             {

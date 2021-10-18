@@ -1,6 +1,7 @@
-﻿namespace Peer.Domain;
-
-public interface ISymbolProvider
+﻿namespace Peer.Domain
 {
-    public string GetSymbol(PullRequestStatus status);
+    public interface ISymbolProvider
+    {
+        public string GetSymbol(PullRequestStatus status);
+    }
 }
