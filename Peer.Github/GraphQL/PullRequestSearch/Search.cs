@@ -6,7 +6,10 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
     public static class Search
     {
         public static string Generate(
-            string involves, IEnumerable<string> orgs, IEnumerable<string> excludedOrgs, int first)
+            string involves,
+            IEnumerable<string> orgs,
+            IEnumerable<string> excludedOrgs,
+            int first)
         {
             var involvesClause = $"involves:{involves}";
             var orgsClauses = string.Join(' ', orgs.Select(o => $"org:{o}"));
