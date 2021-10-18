@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Threading.Tasks;
 using CommandLine;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Peer.Domain;
+using Peer.Domain.Commands;
 using Peer.Domain.Configuration;
 using Peer.Domain.Formatters;
 using Peer.GitHub;
@@ -40,18 +39,25 @@ namespace Peer
             });
 
             var configuration = new ConfigurationBuilder()
-                .AddJsonFile("Test.json", optional: false)
+                .AddJsonFile($"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}/peer.json", optional: true)
+                .AddEnvironmentVariables()
                 .Build();
-            _ = configLoader.RegisterProvidersForConfiguration(configuration, services);
+            var configResults = configLoader.RegisterProvidersForConfiguration(configuration, services);
 
+            if (configResults.IsError)
+            {
+                Console.WriteLine("Error in config");
+            }
+
+            services.AddSingleton<IConsoleWriter, ConsoleWriter>();
+            services.AddSingleton(new ConsoleConfig(inline: true));
+            services.AddSingleton<IPullRequestFormatter, CompactFormatter>();
+            services.AddSingleton<ISymbolProvider, DefaultEmojiProvider>();
+            services.AddSingleton<IPeerApplication, PeerApplication>();
             var p = services.BuildServiceProvider();
-            var fetcher = p.GetRequiredService<IPullRequestFetcher>();
 
-            var pullRequests = await fetcher.GetPullRequestsAsync();
-            var formatter = new CompactFormatter(new DefaultEmojiProvider());
-            var writer = new ConsoleWriter();
-            var output = formatter.FormatLines(pullRequests).ToList();
-            writer.Display(output, true, default);
+            var app = p.GetRequiredService<IPeerApplication>();
+            await app.ShowAsync(new Show(), default);
 
             return string.Empty;
         }

@@ -3,14 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Peer.Domain;
 
 namespace Peer
 {
-    public class ConsoleWriter
+    public class ConsoleConfig
     {
+        public bool Inline { get; }
+
+        public ConsoleConfig(bool inline)
+        {
+            Inline = inline;
+        }
+    }
+
+    public class ConsoleWriter : IConsoleWriter
+    {
+        private readonly ConsoleConfig _config;
         private int _previousWriteHeight;
 
-        public void Display(IList<string> lines, bool inline, CancellationToken token)
+        public ConsoleWriter(ConsoleConfig config)
+        {
+            _config = config;
+        }
+
+        public void Display(IList<string> lines, CancellationToken token)
         {
             var maxLength = lines.Max(x => x.Length);
             var consoleWidth = Math.Max(maxLength, Console.WindowWidth - 1);
@@ -37,7 +54,7 @@ namespace Peer
                 sb.AppendLine(filler);
             }
 
-            if (!inline)
+            if (!_config.Inline)
             {
                 Console.SetCursorPosition(0, 0);
             }
