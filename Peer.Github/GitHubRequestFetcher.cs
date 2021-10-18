@@ -54,7 +54,8 @@ namespace Peer.GitHub
             }
 
             return prs.Values
-                .Select(pr => {
+                .Select(pr =>
+                {
                     // todo: Calculate status.
                     var status = PullRequestStatus.ReadyToMerge;
                     var totalComments = pr.ReviewThreads.Nodes.Count;
