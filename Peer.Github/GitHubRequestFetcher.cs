@@ -24,8 +24,10 @@ namespace Peer.GitHub
 
             // todo: Get username via GraphQL query if it's not set in config.
 
-            _searchRequest = new GraphQLHttpRequest(
-                PRSearch.Search.Generate(_config.Username!, _config.Orgs, _config.ExcludedOrgs, PRSearchLimit));
+            var searchParams = new PRSearch.SearchParams(
+                _config.Username!, _config.Orgs, _config.ExcludedOrgs, PRSearchLimit);
+
+            _searchRequest = new GraphQLHttpRequest(PRSearch.Search.Generate(searchParams));
         }
 
         public async Task<IEnumerable<PullRequest>> GetPullRequestsAsync()

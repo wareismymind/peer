@@ -1,24 +1,19 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 
 namespace Peer.GitHub.GraphQL.PullRequestSearch
 {
     public static class Search
     {
-        public static string Generate(
-            string involves,
-            IEnumerable<string> orgs,
-            IEnumerable<string> excludedOrgs,
-            int first)
+        public static string Generate(SearchParams search)
         {
-            var involvesClause = $"involves:{involves}";
-            var orgsClauses = string.Join(' ', orgs.Select(o => $"org:{o}"));
-            var excludedOrgsClauses = string.Join(' ', excludedOrgs.Select(o => $"!org:{o}"));
+            var involvesClause = $"involves:{search.Involves}";
+            var orgsClauses = string.Join(' ', search.Orgs.Select(o => $"org:{o}"));
+            var excludedOrgsClauses = string.Join(' ', search.ExcludedOrgs.Select(o => $"!org:{o}"));
 
             var searchTerms = $"{involvesClause} {orgsClauses} {excludedOrgsClauses}";
 
             return $@"{{
-                    search(query: ""is:pr is:open archived:false {searchTerms}"", type: ISSUE, first: {first}) {{
+                    search(query: ""is:pr is:open archived:false {searchTerms}"", type: ISSUE, first: {search.PageSize}) {{
                         issueCount
                         nodes {{
                             ... on PullRequest {{
