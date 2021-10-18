@@ -1,14 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GraphQL.Client.Http;
 using Peer.Domain;
+using GQL = Peer.GitHub.GraphQL;
+using PRSearch = Peer.GitHub.GraphQL.PullRequestSearch;
+using ThreadQuery = Peer.GitHub.GraphQL.PullRequestThreadPageQuery;
 
 namespace Peer.GitHub
 {
     public class GitHubRequestFetcher : IPullRequestFetcher
     {
+        private const int PRSearchLimit = 20;
+
         private readonly GraphQLHttpClient _gqlClient;
         private readonly GithubPeerConfig _config;
         private readonly GraphQLHttpRequest _searchRequest;
@@ -18,14 +22,17 @@ namespace Peer.GitHub
             _gqlClient = client;
             _config = githubPeerConfig;
 
-            var orgsClauses = string.Join(' ', _config.Orgs.Select(o => $"org:{o}"));
-            var involvesClause = $"involves:{_config.Username}";
-            _searchRequest = new GraphQLHttpRequest(GenerateInitialSearch($"{involvesClause} {orgsClauses}"));
+            // todo: Get username via GraphQL query if it's not set in config.
+
+            var searchParams = new PRSearch.SearchParams(
+                _config.Username!, _config.Orgs, _config.ExcludedOrgs, PRSearchLimit);
+
+            _searchRequest = new GraphQLHttpRequest(PRSearch.Search.Generate(searchParams));
         }
 
         public async Task<IEnumerable<PullRequest>> GetPullRequestsAsync()
         {
-            var searchResponse = await _gqlClient.SendQueryAsync<GqlQueryResult>(_searchRequest);
+            var searchResponse = await _gqlClient.SendQueryAsync<GQL.SearchResult<PRSearch.Result>>(_searchRequest);
 
             // todo: Handle errors.
 
@@ -36,11 +43,9 @@ namespace Peer.GitHub
 
             while (prsWithMoreThreads.Any())
             {
-                var query = GenerateThreadPageQuery(prsWithMoreThreads);
-                var queryRequest = new GraphQLHttpRequest(query);
                 var queryResponse =
-                    await _gqlClient.SendQueryAsync<Dictionary<string, GqlPullRequest>>(
-                        queryRequest);
+                    await _gqlClient.SendQueryAsync<Dictionary<string, PRSearch.PullRequest>>(
+                        ThreadPageQuery(prsWithMoreThreads));
 
                 var prThreadPages = queryResponse.Data.Values;
 
@@ -53,114 +58,16 @@ namespace Peer.GitHub
                     prThreadPages.Where(pr => pr.ReviewThreads.PageInfo.HasNextPage).ToList();
             }
 
-            return prs.Values
-                .Select(pr =>
-                {
-                    // todo: Calculate status.
-                    var status = PullRequestStatus.ReadyToMerge;
-                    var totalComments = pr.ReviewThreads.Nodes.Count;
-                    var activeComments = pr.ReviewThreads.Nodes.Count(t => !t.IsResolved);
-                    return new PullRequest(
-                        pr.Number.ToString(),
-                        pr.Url,
-                        new Descriptor(pr.Title, pr.Body ?? string.Empty),
-                        new State(status, totalComments, activeComments),
-                        new GitInfo(pr.HeadRefName, pr.BaseRefName));
-                });
+            return prs.Values.Select(pr => pr.Into());
         }
 
-        private static string GenerateInitialSearch(string searchTerms)
+        private GraphQLHttpRequest ThreadPageQuery(IEnumerable<PRSearch.PullRequest> prs)
         {
-            return string.Format(
-                @"{{
-                    search(query: ""is:pr is:open archived:false {0}"", type: ISSUE, first: 20) {{
-                        issueCount
-                        nodes {{
-                            ... on PullRequest {{
-                                id
-                                number
-                                url
-                                title
-                                body
-                                baseRefName
-                                headRefName
-                                reviewThreads(first: 100) {{
-                                    nodes {{ isResolved }}
-                                    pageInfo {{ hasNextPage, endCursor }}
-                                }}
-                            }}
-                        }}
-                        pageInfo {{ endCursor }}
-                    }}
-                }}",
-                searchTerms);
-        }
+            var query = ThreadQuery.Query.Generate(
+                   prs.Select(
+                       pr => new ThreadQuery.QueryParams(pr.Id, pr.ReviewThreads.PageInfo.EndCursor)));
 
-        private static string GenerateThreadPageQuery(IEnumerable<GqlPullRequest> prs)
-        {
-            var queryItems = prs.Select(GenerateThreadPageQueryItem);
-            return $"query {{ {string.Join('\n', queryItems)} }}";
+            return new GraphQLHttpRequest(query);
         }
-
-        private static string GenerateThreadPageQueryItem(GqlPullRequest pr)
-        {
-            return string.Format(
-                @"{0}: node(id: ""{0}"") {{
-                    ... on PullRequest {{
-                        id
-                        reviewThreads(first: 100, after: ""{1}"") {{
-                            nodes {{ isResolved }}
-                            pageInfo {{ endCursor, hasNextPage }}
-                        }}
-                    }}
-                }}",
-                pr.Id,
-                pr.ReviewThreads.PageInfo.EndCursor);
-        }
-
-#nullable disable
-        public class GqlQueryResult
-        {
-            public GqlSearchResult Search { get; set; }
-        }
-
-        public class GqlSearchResult
-        {
-            public int IssueCount { get; set; }
-            public List<GqlPullRequest> Nodes { get; set; }
-            public GqlPageInfo PageInfo { get; set; }
-        }
-
-        public class GqlPullRequest
-        {
-            public string Id { get; set; }
-            public int Number { get; set; }
-            public Uri Url { get; set; }
-            public string Title { get; set; }
-            public string Body { get; set; }
-            public string BaseRefName { get; set; }
-            public string HeadRefName { get; set; }
-            public GqlReviewThreads ReviewThreads { get; set; }
-        }
-
-        public class GqlReviewThreads
-        {
-            public List<GqlReviewThread> Nodes { get; set; }
-            public GqlPageInfo PageInfo { get; set; }
-        }
-
-        public class GqlReviewThread
-        {
-            public bool IsResolved { get; set; }
-        }
-
-        public class GqlPageInfo
-        {
-            public bool HasNextPage { get; set; }
-            public string EndCursor { get; set; }
-            public bool HasPreviousPage { get; set; }
-            public string StartCursor { get; set; }
-        }
-#nullable enable
     }
 }
