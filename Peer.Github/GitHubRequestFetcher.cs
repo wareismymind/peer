@@ -117,6 +117,7 @@ namespace Peer.GitHub
                 pr.ReviewThreads.PageInfo.EndCursor);
         }
 
+#nullable disable
         public class GqlQueryResult
         {
             public GqlSearchResult Search { get; set; }
@@ -159,5 +160,6 @@ namespace Peer.GitHub
             public bool HasPreviousPage { get; set; }
             public string StartCursor { get; set; }
         }
+#nullable enable
     }
 }
