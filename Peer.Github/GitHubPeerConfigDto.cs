@@ -2,7 +2,7 @@
 
 namespace Peer.GitHub
 {
-    public class GithubPeerConfigDto
+    public class GitHubPeerConfigDto
     {
         public string? AccessToken { get; set; } //TODO:CN -- Maybe make this Variant<AccessToken,SecretRef?>
         public string? Username { get; set; }

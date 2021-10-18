@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using Peer.GitHub;
 using Xunit;
 
-namespace Peer.UnitTests.Github
+namespace Peer.UnitTests.GitHub
 {
-    public class GithubPeerConfigDtoTests
+    public class GitHubPeerConfigDtoTests
     {
         public class Into
         {
@@ -18,7 +18,7 @@ namespace Peer.UnitTests.Github
                 var res = underTest.Into();
 
                 Assert.True(res.IsError);
-                Assert.Equal(GithubConfigError.UsernameInvalid, res.Error);
+                Assert.Equal(GitHubConfigError.UsernameInvalid, res.Error);
             }
 
             [Theory]
@@ -31,7 +31,7 @@ namespace Peer.UnitTests.Github
                 var res = underTest.Into();
 
                 Assert.True(res.IsError);
-                Assert.Equal(GithubConfigError.AccessTokenInvalid, res.Error);
+                Assert.Equal(GitHubConfigError.AccessTokenInvalid, res.Error);
             }
 
             [Fact]
@@ -45,7 +45,7 @@ namespace Peer.UnitTests.Github
 
                 var res = underTest.Into();
                 Assert.True(res.IsError);
-                Assert.Equal(GithubConfigError.InvalidOrgConfig, res.Error);
+                Assert.Equal(GitHubConfigError.InvalidOrgConfig, res.Error);
             }
 
             [Fact]
@@ -65,12 +65,12 @@ namespace Peer.UnitTests.Github
             }
         }
 
-        public static GithubHandlerConfig CreateConfig(Action<GithubHandlerConfig> customization = null)
+        public static GitHubHandlerConfig CreateConfig(Action<GitHubHandlerConfig> customization = null)
         {
-            var value = new GithubHandlerConfig()
+            var value = new GitHubHandlerConfig()
             {
                 Name = "wat",
-                Configuration = new GithubPeerConfigDto
+                Configuration = new GitHubPeerConfigDto
                 {
                     AccessToken = "waka",
                     Username = "somevalidName",

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Peer.GitHub
 {
-    public class GithubPeerConfig
+    public class GitHubPeerConfig
     {
         public string Name { get; }
         public string AccessToken { get; } //TODO:CN -- Maybe make this Variant<AccessToken,SecretRef?>
@@ -11,7 +11,7 @@ namespace Peer.GitHub
         public IEnumerable<string> Orgs { get; }
         public IEnumerable<string> ExcludedOrgs { get; }
 
-        public GithubPeerConfig(string name, string accessToken, string? username, IEnumerable<string> orgs, IEnumerable<string> excludedOrgs)
+        public GitHubPeerConfig(string name, string accessToken, string? username, IEnumerable<string> orgs, IEnumerable<string> excludedOrgs)
         {
             Name = name ?? throw new ArgumentNullException(name);
             AccessToken = accessToken ?? throw new ArgumentNullException(nameof(accessToken));

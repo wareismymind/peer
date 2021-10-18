@@ -3,26 +3,26 @@ using wimm.Secundatives;
 
 namespace Peer.GitHub
 {
-    public class GithubHandlerConfig
+    public class GitHubHandlerConfig
     {
         public string Name { get; set; } = string.Empty;
-        public GithubPeerConfigDto? Configuration { get; set; }
+        public GitHubPeerConfigDto? Configuration { get; set; }
 
-        public Result<GithubPeerConfig, GithubConfigError> Into()
+        public Result<GitHubPeerConfig, GitHubConfigError> Into()
         {
             if (Configuration == null)
             {
-                return GithubConfigError.ConfigurationBlockMissing;
+                return GitHubConfigError.ConfigurationBlockMissing;
             }
 
             if (string.IsNullOrWhiteSpace(Configuration.AccessToken))
             {
-                return GithubConfigError.AccessTokenInvalid;
+                return GitHubConfigError.AccessTokenInvalid;
             }
 
             if (Configuration.Username != null && Configuration.Username.All(x => char.IsWhiteSpace(x)))
             {
-                return GithubConfigError.UsernameInvalid;
+                return GitHubConfigError.UsernameInvalid;
             }
 
             var realizedExcluded = Configuration.ExcludedOrgs.ToList();
@@ -30,10 +30,10 @@ namespace Peer.GitHub
 
             if (realizedExcluded.Any() && realizedIncluded.Any())
             {
-                return GithubConfigError.InvalidOrgConfig;
+                return GitHubConfigError.InvalidOrgConfig;
             }
 
-            return new GithubPeerConfig(
+            return new GitHubPeerConfig(
                 Name,
                 Configuration.AccessToken,
                 Configuration.Username,

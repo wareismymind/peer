@@ -14,13 +14,13 @@ namespace Peer.GitHub
         private const int PRSearchLimit = 20;
 
         private readonly GraphQLHttpClient _gqlClient;
-        private readonly GithubPeerConfig _config;
+        private readonly GitHubPeerConfig _config;
         private readonly GraphQLHttpRequest _searchRequest;
 
-        public GitHubRequestFetcher(GraphQLHttpClient client, GithubPeerConfig githubPeerConfig)
+        public GitHubRequestFetcher(GraphQLHttpClient client, GitHubPeerConfig gitHubPeerConfig)
         {
             _gqlClient = client;
-            _config = githubPeerConfig;
+            _config = gitHubPeerConfig;
 
             // todo: Get username via GraphQL query if it's not set in config.
 

@@ -29,13 +29,13 @@ namespace Peer
             Console.WriteLine(res);
         }
 
-        public async static Task<string> ShowStubAsync(ShowOptions opts)
+        public static async Task<string> ShowStubAsync(ShowOptions opts)
         {
             var services = new ServiceCollection();
 
             var configLoader = new ConfigurationService(new List<IRegistrationHandler>
             {
-                new GithubWebRegistrationHandler(services)
+                new GitHubWebRegistrationHandler(services)
             });
 
             var configuration = new ConfigurationBuilder()
