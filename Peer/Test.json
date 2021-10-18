@@ -1,0 +1,15 @@
+{
+	"Providers": {
+		"github": [
+			{
+				"Name": "doot",
+				"Configuration": {
+					"AccessToken": "wakawaka",
+					"ExcludedOrgs": [],
+					"Orgs": [ "wareismymind" ],
+					"Username": "insomniak47"
+				}
+			}
+		]
+	}
+}

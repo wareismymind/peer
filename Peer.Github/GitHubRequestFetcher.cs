@@ -1,28 +1,26 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GraphQL.Client.Http;
-using Newtonsoft.Json;
 using Peer.Domain;
 
-namespace Peer
+namespace Peer.GitHub
 {
-    public class GitHubRequestFetcher: IPullRequestFetcher
+    public class GitHubRequestFetcher : IPullRequestFetcher
     {
         private readonly GraphQLHttpClient _gqlClient;
+        private readonly GithubPeerConfig _config;
         private readonly GraphQLHttpRequest _searchRequest;
 
-        public GitHubRequestFetcher(GraphQLHttpClient gqlClient, IEnumerable<string> users)
+        public GitHubRequestFetcher(GraphQLHttpClient client, GithubPeerConfig githubPeerConfig)
         {
-            _gqlClient = gqlClient ?? throw new ArgumentNullException(nameof(gqlClient));
+            _gqlClient = client;
+            _config = githubPeerConfig;
 
-            var usersList = users?.ToList() ?? throw new ArgumentNullException(nameof(users));
-            if (usersList.Count == 0) throw new ArgumentException("Must not be empty.", nameof(users));
-
-            var usersClauses = string.Join(' ', usersList.Select(u => $"user:{u}"));
-
-            _searchRequest = new GraphQLHttpRequest(GenerateInitialSearch(usersClauses));
+            var orgsClauses = string.Join(' ', _config.Orgs.Select(o => $"org:{o}"));
+            var involvesClause = $"involves:{_config.Username}";
+            _searchRequest = new GraphQLHttpRequest(GenerateInitialSearch($"{involvesClause} {orgsClauses}"));
         }
 
         public async Task<IEnumerable<PullRequest>> GetPullRequestsAsync()
@@ -72,8 +70,6 @@ namespace Peer
 
         private static string GenerateInitialSearch(string searchTerms)
         {
-            // todo: Include 'involves' in the search.
-
             return string.Format(
                 @"{{
                     search(query: ""is:pr is:open archived:false {0}"", type: ISSUE, first: 20) {{
@@ -87,7 +83,7 @@ namespace Peer
                                 body
                                 baseRefName
                                 headRefName
-                                reviewThreads(first: 1) {{
+                                reviewThreads(first: 100) {{
                                     nodes {{ isResolved }}
                                     pageInfo {{ hasNextPage, endCursor }}
                                 }}
@@ -111,7 +107,7 @@ namespace Peer
                 @"{0}: node(id: ""{0}"") {{
                     ... on PullRequest {{
                         id
-                        reviewThreads(first: 1, after: ""{1}"") {{
+                        reviewThreads(first: 100, after: ""{1}"") {{
                             nodes {{ isResolved }}
                             pageInfo {{ endCursor, hasNextPage }}
                         }}
