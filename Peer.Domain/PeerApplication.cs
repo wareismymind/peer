@@ -28,9 +28,9 @@ namespace Peer.Domain
             var tasks = _fetchers.Select(async x => await x.GetPullRequestsAsync());
             var prs = await Task.WhenAll(tasks);
 
-            var together = prs.SelectMany(x => x);
+            var combined = prs.SelectMany(x => x);
 
-            _writer.Display(_formatter.FormatLines(together).ToList(), token);
+            _writer.Display(_formatter.FormatLines(combined).ToList(), token);
 
             return Maybe.None;
         }
