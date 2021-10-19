@@ -36,7 +36,7 @@ jobs:
     strategy:
       matrix:
         os: [win-x64, linux-x64, osx-x64]
-    if: ${{ needs.calculate-version.should_release }}
+    if: ${{ needs.calculate-version.outputs.should_release }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -51,5 +51,5 @@ jobs:
         run: >
           dotnet publish -o ./output
           -r "${{ matrix.os }}"
-          /p:Version=${{ needs.calculate-version.version_tag }}
-          /p:AssemblyVersion=${{ needs.calculate-version.version_tag }}
+          /p:Version=${{ needs.calculate-version.outputs.version_tag }}
+          /p:AssemblyVersion=${{ needs.calculate-version.outputs.version_tag }}
