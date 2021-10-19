@@ -40,11 +40,9 @@ namespace Peer.Domain
                 return MatchError.TooManySegments;
             }
 
-            Array.Reverse(split);
-
-            foreach (var (partialSegment, localSegment) in split.Zip(Enumerate()))
+            foreach (var (partialSegment, localSegment) in split.Reverse().Zip(EnumerateValues()))
             {
-                if (!partialSegment.Equals(localSegment, StringComparison.InvariantCultureIgnoreCase))
+                if (!partialSegment.Equals(localSegment, StringComparison.OrdinalIgnoreCase))
                 {
                     return false;
                 }
@@ -53,7 +51,7 @@ namespace Peer.Domain
             return true;
         }
 
-        private IEnumerable<string> Enumerate()
+        private IEnumerable<string> EnumerateValues()
         {
             yield return Id;
             yield return Repo;

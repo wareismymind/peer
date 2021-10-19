@@ -23,6 +23,5 @@ namespace Peer.Domain
             State = state ?? throw new ArgumentNullException(nameof(state));
             GitInfo = gitInfo ?? throw new ArgumentNullException(nameof(gitInfo));
         }
-
     }
 }

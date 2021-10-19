@@ -41,9 +41,12 @@ namespace Peer.Domain
         {
             var prs = await FetchAllSources(token);
 
-            var res = prs.Select(pr => pr.Identifier.IsMatch(openOptions.Partial)
-                .Map(match => new { Match = match, PullRequest = pr }))
-                .Collect(); //CN: Being lazy here but we should really have a fn that can handle this kinda thing
+            var res = prs.Select(pr =>
+            {
+                return pr.Identifier.IsMatch(openOptions.Partial)
+                    .Map(match => new { Match = match, PullRequest = pr });
+            })
+            .Collect(); //CN: Being lazy here but we should really have a fn that can handle this kinda thing
 
             if (res.IsError)
             {

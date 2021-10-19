@@ -33,7 +33,6 @@ namespace Peer
         {
 
             var services = SetupServices();
-            services.AddSingleton(new ConsoleConfig(inline: true));
             var p = services.BuildServiceProvider();
             var app = p.GetRequiredService<IPeerApplication>();
             await app.ShowAsync(new Show(), default);
@@ -44,12 +43,10 @@ namespace Peer
         public static async Task<string> OpenAsync(OpenOptions opts)
         {
             var services = SetupServices();
-            services.AddSingleton(new ConsoleConfig(inline: true));
             var p = services.BuildServiceProvider();
             var app = p.GetRequiredService<IPeerApplication>();
-
             await app.OpenAsync(new Open(opts.Partial ?? ""), default);
-            return "ooook";
+            return string.Empty;
         }
 
         private static IServiceCollection SetupServices()
@@ -78,7 +75,7 @@ namespace Peer
             services.AddSingleton<ISymbolProvider, DefaultEmojiProvider>();
             services.AddSingleton<IPeerApplication, PeerApplication>();
             services.AddSingleton<IOSInfoProvider, OSInfoProvider>();
-
+            services.AddSingleton(new ConsoleConfig(inline: true));
             return services;
         }
     }

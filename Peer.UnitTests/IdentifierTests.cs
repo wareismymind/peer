@@ -36,7 +36,7 @@ namespace Peer.UnitTests
             }
 
             [Fact]
-            public void PartialIsEmpty_ReturnsEmptyPath()
+            public void PartialIsEmpty_ReturnsNoSegmentsToMatch()
             {
                 var res = _identifier.IsMatch(string.Empty);
                 Assert.True(res.IsError);
@@ -44,7 +44,7 @@ namespace Peer.UnitTests
             }
 
             [Fact]
-            public void PartialHasTooManySections_ReturnsBadFormat()
+            public void PartialHasTooManySections_ReturnsTooManySegments()
             {
                 var res = _identifier.IsMatch("a/b/c/d/e/f/g/h");
 
