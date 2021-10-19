@@ -42,6 +42,10 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
                                         }}
                                     }}
                                 }}
+                                baseRepository {{
+                                    name
+                                    owner {{ login }}
+                                }}
                             }}
                         }}
                         pageInfo {{ endCursor }}

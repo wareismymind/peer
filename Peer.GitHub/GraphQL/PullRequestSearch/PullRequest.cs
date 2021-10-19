@@ -33,6 +33,7 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
             Mergeable == "MERGEABLE"
                 && (Commits.Nodes[0].Commit.StatusCheckRollup?.State.Equals("SUCCESS") ?? true)
                 && ReviewDecision.In("APPROVED", null);
+        public BaseRepository BaseRepository { get; set; }
 
         public Domain.PullRequest Into()
         {
@@ -41,6 +42,7 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
             var activeComments = ReviewThreads.Nodes.Count(t => !t.IsResolved);
             return new Domain.PullRequest(
                 Number.ToString(),
+                new Identifier(Number.ToString(), BaseRepository.Name, BaseRepository.Owner.Login, ProviderConstants.Github),
                 Url,
                 new Descriptor(Title, Body ?? string.Empty),
                 new State(status, totalComments, activeComments),
