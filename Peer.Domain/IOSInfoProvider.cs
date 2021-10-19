@@ -5,6 +5,6 @@ namespace Peer.Domain
 {
     public interface IOSInfoProvider
     {
-        public Maybe<OSPlatform> GetPlatform();
+        Maybe<OSPlatform> GetPlatform();
     }
 }
