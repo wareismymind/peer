@@ -21,12 +21,26 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
                                 number
                                 url
                                 title
+                                createdAt
                                 body
                                 baseRefName
                                 headRefName
                                 reviewThreads(first: 100) {{
                                     nodes {{ isResolved }}
                                     pageInfo {{ hasNextPage, endCursor }}
+                                }}
+                                isDraft
+                                state
+                                mergeable
+                                reviewDecision
+                                commits (last: 1) {{
+                                    nodes {{
+                                        commit {{
+                                            statusCheckRollup {{
+                                                state
+                                            }}
+                                        }}
+                                    }}
                                 }}
                                 baseRepository {{
                                     name
