@@ -22,7 +22,7 @@ namespace Peer
             var res = await Parser.Default.ParseArguments<ShowOptions, OpenOptions>(args)
                 .MapResult(
                     (ShowOptions x) => ShowStubAsync(x),
-                    (OpenOptions _) => Task.FromResult("This is where open will happen when it's done"),
+                    (OpenOptions x) => OpenAsync(x),
                     (ConfigOptions _) => Task.FromResult("This is where config will happen when it's done"),
                     err => Task.FromResult("Saaad"));
 
@@ -30,6 +30,29 @@ namespace Peer
         }
 
         public static async Task<string> ShowStubAsync(ShowOptions opts)
+        {
+
+            var services = SetupServices();
+            services.AddSingleton(new ConsoleConfig(inline: true));
+            var p = services.BuildServiceProvider();
+            var app = p.GetRequiredService<IPeerApplication>();
+            await app.ShowAsync(new Show(), default);
+
+            return string.Empty;
+        }
+
+        public static async Task<string> OpenAsync(OpenOptions opts)
+        {
+            var services = SetupServices();
+            services.AddSingleton(new ConsoleConfig(inline: true));
+            var p = services.BuildServiceProvider();
+            var app = p.GetRequiredService<IPeerApplication>();
+
+            await app.OpenAsync(new Open(opts.Partial), default);
+            return "ooook";
+        }
+
+        private static IServiceCollection SetupServices()
         {
             var services = new ServiceCollection();
 
@@ -42,24 +65,21 @@ namespace Peer
                 .AddJsonFile($"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}/peer.json", optional: true)
                 .AddEnvironmentVariables()
                 .Build();
+
             var configResults = configLoader.RegisterProvidersForConfiguration(configuration, services);
 
             if (configResults.IsError)
             {
-                Console.WriteLine("Error in config");
+                Console.Error.WriteLine($"Error in config: {configResults.Error}");
             }
 
             services.AddSingleton<IConsoleWriter, ConsoleWriter>();
-            services.AddSingleton(new ConsoleConfig(inline: true));
             services.AddSingleton<IPullRequestFormatter, CompactFormatter>();
             services.AddSingleton<ISymbolProvider, DefaultEmojiProvider>();
             services.AddSingleton<IPeerApplication, PeerApplication>();
-            var p = services.BuildServiceProvider();
+            services.AddSingleton<IOSInfoProvider, OSInfoProvider>();
 
-            var app = p.GetRequiredService<IPeerApplication>();
-            await app.ShowAsync(new Show(), default);
-
-            return string.Empty;
+            return services;
         }
     }
 }

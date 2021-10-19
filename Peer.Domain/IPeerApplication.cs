@@ -8,6 +8,7 @@ namespace Peer.Domain
     public interface IPeerApplication
     {
         Task<Result<None, ShowError>> ShowAsync(Show showOptions, CancellationToken token = default);
+        Task<Result<None, OpenError>> OpenAsync(Open openOptions, CancellationToken token = default);
     }
 
     public enum ShowError
@@ -17,6 +18,9 @@ namespace Peer.Domain
 
     public enum OpenError
     {
-        Fire
+        Fire,
+        FormatError,
+        AmbiguousPattern,
+        FailedToOpen
     }
 }
