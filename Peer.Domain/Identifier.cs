@@ -40,15 +40,11 @@ namespace Peer.Domain
                 return MatchError.TooManySegments;
             }
 
-            foreach (var (partialSegment, localSegment) in split.Reverse().Zip(EnumerateValues()))
-            {
-                if (!partialSegment.Equals(localSegment, StringComparison.OrdinalIgnoreCase))
-                {
-                    return false;
-                }
-            }
+            return split.Reverse()
+                .Zip(EnumerateValues())
+                .All(((string segment, string local) x) 
+                    => x.segment.Equals(x.local, StringComparison.OrdinalIgnoreCase));
 
-            return true;
         }
 
         private IEnumerable<string> EnumerateValues()

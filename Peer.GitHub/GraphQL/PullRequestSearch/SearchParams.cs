@@ -27,7 +27,7 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
             Orgs = orgs ?? throw new ArgumentNullException(nameof(orgs));
             ExcludedOrgs = excludedOrgs ?? throw new ArgumentNullException(nameof(excludedOrgs));
 
-            if (pageSize < 1 || pageSize > 100) 
+            if (pageSize < 1 || pageSize > 100)
                 throw new ArgumentOutOfRangeException(nameof(pageSize), "Must be between 1 and 100");
 
             PageSize = pageSize;
