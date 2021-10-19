@@ -48,7 +48,7 @@ namespace Peer
             var p = services.BuildServiceProvider();
             var app = p.GetRequiredService<IPeerApplication>();
 
-            await app.OpenAsync(new Open(opts.Partial), default);
+            await app.OpenAsync(new Open(opts.Partial ?? ""), default);
             return "ooook";
         }
 

@@ -32,16 +32,5 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
                 new GitInfo(HeadRefName, BaseRefName));
         }
     }
-
-    public class BaseRepository
-    {
-        public string Name { get; set; }
-        public Owner Owner { get; set; }
-    }
-
-    public class Owner
-    {
-        public string Login { get; set; }
-    }
 #nullable enable
 }
