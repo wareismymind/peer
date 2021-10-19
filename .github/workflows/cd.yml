@@ -51,5 +51,5 @@ jobs:
         run: >
           dotnet publish -o ./output
           -r "${{ matrix.os }}"
-          /p:Version=${{ needs.calculate-version.version_tag }}
-          /p:AssemblyVersion=${{ needs.calculate-version.version_tag }}
+          /p:Version=${{ needs.calculate-version.outputs.version_tag }}
+          /p:AssemblyVersion=${{ needs.calculate-version.outputs.version_tag }}
