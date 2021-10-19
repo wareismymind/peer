@@ -6,7 +6,6 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Peer.Domain.Commands;
-using Peer.Domain.Exceptions;
 using Peer.Domain.Util;
 using wimm.Secundatives;
 
@@ -65,12 +64,9 @@ namespace Peer.Domain
                 return OpenError.AmbiguousPattern;
             }
 
-            if (!OpenUrl(matches.First().PullRequest.Url).Exists)
-            {
-                return OpenError.FailedToOpen;
-            }
-
-            return Maybe.None;
+            return OpenUrl(matches.First().PullRequest.Url)
+                .OkOr(OpenError.FailedToOpen)
+                .Map(_ => Maybe.None);
         }
 
         private Maybe<Process?> OpenUrl(Uri url)
@@ -82,7 +78,7 @@ namespace Peer.Domain
                     var x when x == OSPlatform.Windows => Process.Start(new ProcessStartInfo { UseShellExecute = true, FileName = url.ToString() }),
                     var x when x == OSPlatform.Linux => Process.Start("xdg-open", url.ToString()),
                     var x when x == OSPlatform.OSX => Process.Start("open", url.ToString()),
-                    _ => throw new UnreachableException()
+                    _ => Maybe<Process?>.None
                 });
         }
 
@@ -93,34 +89,6 @@ namespace Peer.Domain
             var combined = prs.SelectMany(x => x);
 
             return combined;
-        }
-    }
-
-    public interface IOSInfoProvider
-    {
-        public Maybe<OSPlatform> GetPlatform();
-    }
-
-    public class OSInfoProvider : IOSInfoProvider
-    {
-        public Maybe<OSPlatform> GetPlatform()
-        {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                return OSPlatform.Windows;
-            }
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                return OSPlatform.Linux;
-            }
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                return OSPlatform.OSX;
-            }
-
-            //TODO:CN -- Maybe a result but seems like "Couldn't find your OS" is valid
-            return Maybe.None;
         }
     }
 }
