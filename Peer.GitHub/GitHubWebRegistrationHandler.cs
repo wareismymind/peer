@@ -12,19 +12,19 @@ using wimm.Secundatives;
 
 namespace Peer.GitHub
 {
-    public class GithubWebRegistrationHandler : IRegistrationHandler
+    public class GitHubWebRegistrationHandler : IRegistrationHandler
     {
         private readonly IServiceCollection _services;
         public string ProviderKey => "github";
 
-        public GithubWebRegistrationHandler(IServiceCollection services)
+        public GitHubWebRegistrationHandler(IServiceCollection services)
         {
             _services = services;
         }
 
         public Result<None, RegistrationError> Register(IConfigurationSection config)
         {
-            var childConfigs = config.GetChildren().Select(x => x.Get<GithubHandlerConfig>())
+            var childConfigs = config.GetChildren().Select(x => x.Get<GitHubHandlerConfig>())
                             .Select(x => x.Into())
                             .Collect();
 
@@ -34,19 +34,19 @@ namespace Peer.GitHub
                 return RegistrationError.BadConfig;
             }
 
-            foreach (var githubConfig in childConfigs.Value)
+            foreach (var gitHubConfig in childConfigs.Value)
             {
                 _services.AddSingleton(sp =>
                 {
                     var client = new GraphQLHttpClient("https://api.github.com/graphql", new NewtonsoftJsonSerializer());
-                    client.HttpClient.DefaultRequestHeaders.Authorization = new("Bearer", githubConfig.AccessToken);
-                    return new NamedGraphQLBinding(githubConfig.Name, client);
+                    client.HttpClient.DefaultRequestHeaders.Authorization = new("Bearer", gitHubConfig.AccessToken);
+                    return new NamedGraphQLBinding(gitHubConfig.Name, client);
                 });
 
                 _services.AddSingleton<IPullRequestFetcher, GitHubRequestFetcher>(sp =>
                 {
-                    var client = sp.GetRequiredService<IGraphQLClientFactory>().GetClient(githubConfig.Name);
-                    return new GitHubRequestFetcher(client, githubConfig);
+                    var client = sp.GetRequiredService<IGraphQLClientFactory>().GetClient(gitHubConfig.Name);
+                    return new GitHubRequestFetcher(client, gitHubConfig);
                 });
             }
 

@@ -1,6 +1,6 @@
 ﻿namespace Peer.GitHub
 {
-    public enum GithubConfigError
+    public enum GitHubConfigError
     {
         AccessTokenInvalid,
         UsernameInvalid,

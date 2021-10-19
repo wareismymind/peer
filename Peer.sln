@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Peer.Domain", "Peer.Domain\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Peer.UnitTests", "Peer.UnitTests\Peer.UnitTests.csproj", "{0247FB40-D417-4D35-9507-E1541D51522B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Peer.GitHub", "Peer.Github\Peer.GitHub.csproj", "{1CF091CD-AC11-405F-92D5-CA153CAC4658}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Peer.GitHub", "Peer.GitHub\Peer.GitHub.csproj", "{1CF091CD-AC11-405F-92D5-CA153CAC4658}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
