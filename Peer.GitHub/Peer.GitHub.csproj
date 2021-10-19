@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Peer.Domain\Peer.Domain.csproj" />
+    <ProjectReference Include="..\Peer.Utils\Peer.Utils.csproj" />
   </ItemGroup>
 
 </Project>

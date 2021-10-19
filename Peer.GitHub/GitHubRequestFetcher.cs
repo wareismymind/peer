@@ -3,9 +3,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using GraphQL.Client.Http;
 using Peer.Domain;
+using Peer.Utils;
 using GQL = Peer.GitHub.GraphQL;
 using PRSearch = Peer.GitHub.GraphQL.PullRequestSearch;
 using ThreadQuery = Peer.GitHub.GraphQL.PullRequestThreadPageQuery;
+using ViewerQuery = Peer.GitHub.GraphQL.ViewerQuery;
 
 namespace Peer.GitHub
 {
@@ -15,24 +17,19 @@ namespace Peer.GitHub
 
         private readonly GraphQLHttpClient _gqlClient;
         private readonly GitHubPeerConfig _config;
-        private readonly GraphQLHttpRequest _searchRequest;
+        private readonly AsyncLazy<GraphQLHttpRequest> _searchRequest;
 
         public GitHubRequestFetcher(GraphQLHttpClient client, GitHubPeerConfig gitHubPeerConfig)
         {
             _gqlClient = client;
             _config = gitHubPeerConfig;
-
-            // todo: Get username via GraphQL query if it's not set in config.
-
-            var searchParams = new PRSearch.SearchParams(
-                _config.Username!, _config.Orgs, _config.ExcludedOrgs, PRSearchLimit);
-
-            _searchRequest = new GraphQLHttpRequest(PRSearch.Search.Generate(searchParams));
+            _searchRequest = new AsyncLazy<GraphQLHttpRequest>(GenerateSearchRequest);
         }
 
         public async Task<IEnumerable<PullRequest>> GetPullRequestsAsync()
         {
-            var searchResponse = await _gqlClient.SendQueryAsync<GQL.SearchResult<PRSearch.Result>>(_searchRequest);
+            var searchResponse =
+                await _gqlClient.SendQueryAsync<GQL.SearchResult<PRSearch.Result>>(await _searchRequest);
 
             // todo: Handle errors.
 
@@ -59,6 +56,25 @@ namespace Peer.GitHub
             }
 
             return prs.Values.Select(pr => pr.Into());
+        }
+
+        private async Task<GraphQLHttpRequest> GenerateSearchRequest()
+        {
+            var username = string.IsNullOrEmpty(_config.Username)
+                ? await GetUsername()
+                : _config.Username;
+
+            var searchParams = new PRSearch.SearchParams(
+                username, _config.Orgs, _config.ExcludedOrgs, PRSearchLimit);
+
+            return new GraphQLHttpRequest(PRSearch.Search.Generate(searchParams));
+        }
+
+        private async Task<string> GetUsername()
+        {
+            var query = new GraphQLHttpRequest(ViewerQuery.Query.Generate());
+            var viewerResponse = await _gqlClient.SendQueryAsync<ViewerQuery.Result>(query);
+            return viewerResponse.Data.Viewer.Login;
         }
 
         private GraphQLHttpRequest ThreadPageQuery(IEnumerable<PRSearch.PullRequest> prs)
