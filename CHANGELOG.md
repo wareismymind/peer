@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.0.1](https://www.github.com/wareismymind/peer/compare/v1.0.0...v1.0.1) (2021-10-19)
+
+
+### Bug Fixes
+
+* fix workflow file dependency ([#44](https://www.github.com/wareismymind/peer/issues/44)) ([f5ef8ea](https://www.github.com/wareismymind/peer/commit/f5ef8eab56ed8ea3a7cf3b823fadc4753dba8428))
+
 ## 1.0.0 (2021-10-19)
 
 
