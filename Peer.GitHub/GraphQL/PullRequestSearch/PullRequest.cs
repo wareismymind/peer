@@ -15,6 +15,7 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
         public string BaseRefName { get; set; }
         public string HeadRefName { get; set; }
         public ReviewThreads ReviewThreads { get; set; }
+        public BaseRepository BaseRepository { get; set; }
 
         public Domain.PullRequest Into()
         {
@@ -24,6 +25,7 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
             var activeComments = ReviewThreads.Nodes.Count(t => !t.IsResolved);
             return new Domain.PullRequest(
                 Number.ToString(),
+                new Identifier(Number.ToString(), BaseRepository.Name, BaseRepository.Owner.Login, ProviderConstants.Github),
                 Url,
                 new Descriptor(Title, Body ?? string.Empty),
                 new State(status, totalComments, activeComments),

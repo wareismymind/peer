@@ -15,7 +15,7 @@ namespace Peer.GitHub
     public class GitHubWebRegistrationHandler : IRegistrationHandler
     {
         private readonly IServiceCollection _services;
-        public string ProviderKey => "github";
+        public string ProviderKey => ProviderConstants.Github;
 
         public GitHubWebRegistrationHandler(IServiceCollection services)
         {

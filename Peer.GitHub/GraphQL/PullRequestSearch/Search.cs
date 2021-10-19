@@ -28,6 +28,10 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
                                     nodes {{ isResolved }}
                                     pageInfo {{ hasNextPage, endCursor }}
                                 }}
+                                baseRepository {{
+                                    name
+                                    owner {{ login }}
+                                }}
                             }}
                         }}
                         pageInfo {{ endCursor }}
