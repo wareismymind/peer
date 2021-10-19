@@ -8,7 +8,7 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
         {
             var involvesClause = $"involves:{search.Involves}";
             var orgsClauses = string.Join(' ', search.Orgs.Select(o => $"org:{o}"));
-            var excludedOrgsClauses = string.Join(' ', search.ExcludedOrgs.Select(o => $"!org:{o}"));
+            var excludedOrgsClauses = string.Join(' ', search.ExcludedOrgs.Select(o => $"-org:{o}"));
 
             var searchTerms = $"{involvesClause} {orgsClauses} {excludedOrgsClauses}";
 
