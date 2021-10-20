@@ -11,32 +11,43 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Peer.UnitTests", "Peer.Unit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Peer.GitHub", "Peer.GitHub\Peer.GitHub.csproj", "{1CF091CD-AC11-405F-92D5-CA153CAC4658}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Peer.Utils", "Peer.Utils\Peer.Utils.csproj", "{A6919FD7-65B9-48E2-BF29-C6942A0DDA3A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Peer.Utils", "Peer.Utils\Peer.Utils.csproj", "{A6919FD7-65B9-48E2-BF29-C6942A0DDA3A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Nuget|Any CPU = Nuget|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{444140F1-DDEF-46D8-895B-7C21DEC0E946}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{444140F1-DDEF-46D8-895B-7C21DEC0E946}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{444140F1-DDEF-46D8-895B-7C21DEC0E946}.Nuget|Any CPU.ActiveCfg = Nuget|Any CPU
+		{444140F1-DDEF-46D8-895B-7C21DEC0E946}.Nuget|Any CPU.Build.0 = Nuget|Any CPU
 		{444140F1-DDEF-46D8-895B-7C21DEC0E946}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{444140F1-DDEF-46D8-895B-7C21DEC0E946}.Release|Any CPU.Build.0 = Release|Any CPU
 		{ED2D02D6-541B-4D7D-863B-C9E624D9D652}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{ED2D02D6-541B-4D7D-863B-C9E624D9D652}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED2D02D6-541B-4D7D-863B-C9E624D9D652}.Nuget|Any CPU.ActiveCfg = Nuget|Any CPU
+		{ED2D02D6-541B-4D7D-863B-C9E624D9D652}.Nuget|Any CPU.Build.0 = Nuget|Any CPU
 		{ED2D02D6-541B-4D7D-863B-C9E624D9D652}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED2D02D6-541B-4D7D-863B-C9E624D9D652}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0247FB40-D417-4D35-9507-E1541D51522B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0247FB40-D417-4D35-9507-E1541D51522B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0247FB40-D417-4D35-9507-E1541D51522B}.Nuget|Any CPU.ActiveCfg = Nuget|Any CPU
+		{0247FB40-D417-4D35-9507-E1541D51522B}.Nuget|Any CPU.Build.0 = Nuget|Any CPU
 		{0247FB40-D417-4D35-9507-E1541D51522B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0247FB40-D417-4D35-9507-E1541D51522B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1CF091CD-AC11-405F-92D5-CA153CAC4658}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1CF091CD-AC11-405F-92D5-CA153CAC4658}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CF091CD-AC11-405F-92D5-CA153CAC4658}.Nuget|Any CPU.ActiveCfg = Nuget|Any CPU
+		{1CF091CD-AC11-405F-92D5-CA153CAC4658}.Nuget|Any CPU.Build.0 = Nuget|Any CPU
 		{1CF091CD-AC11-405F-92D5-CA153CAC4658}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CF091CD-AC11-405F-92D5-CA153CAC4658}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A6919FD7-65B9-48E2-BF29-C6942A0DDA3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A6919FD7-65B9-48E2-BF29-C6942A0DDA3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6919FD7-65B9-48E2-BF29-C6942A0DDA3A}.Nuget|Any CPU.ActiveCfg = Nuget|Any CPU
+		{A6919FD7-65B9-48E2-BF29-C6942A0DDA3A}.Nuget|Any CPU.Build.0 = Nuget|Any CPU
 		{A6919FD7-65B9-48E2-BF29-C6942A0DDA3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6919FD7-65B9-48E2-BF29-C6942A0DDA3A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
