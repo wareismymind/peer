@@ -8,6 +8,7 @@
     <AnalysisLevel>latest</AnalysisLevel>
     <AssemblyName>$(MSBuildProjectName.ToLower())</AssemblyName>
     <EnableTrimAnalyzer>True</EnableTrimAnalyzer>
+    <Configurations>Debug;Release;Nuget</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
@@ -18,6 +19,18 @@
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <UseAppHost>True</UseAppHost>
     <SelfContained>true</SelfContained>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Tool'">
+    <PackAsTool>true</PackAsTool>
+    <PackageId>peer</PackageId>
+    <ToolCommandName>peer</ToolCommandName>
+    <Authors>Thomas Showers, Chris Nantau, Peer Contributors</Authors>
+    <Company>wareismymind</Company>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/wareismymind/peer</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/wareismymind/peer</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
