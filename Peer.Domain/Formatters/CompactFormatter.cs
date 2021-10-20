@@ -18,8 +18,9 @@ namespace Peer.Domain.Formatters
         private readonly ISymbolProvider _symbolProvider;
         private const char _ellipsis = '\u2026';
         private const string _constructionSign = "\ud83d\udea7";
+        private const string _speechBaloon = "\ud83d\udcac";
 
-        private static readonly string _header = $"{"Id",-4} {"Title",-40} {"Comments",-9} {_constructionSign}  Url";
+        private static readonly string _header = $"{"Id",-4} {"Title",-40} {_speechBaloon,-5} {_constructionSign}  Url";
         public CompactFormatter(ISymbolProvider symbolProvider)
         {
             _symbolProvider = symbolProvider;
@@ -41,7 +42,7 @@ namespace Peer.Domain.Formatters
         {
             var id = PadOrTruncate(pr.Id, 4);
             var title = PadOrTruncate(pr.Descriptor.Title, 40);
-            var comments = PadOrTruncate($"{pr.State.ActiveComments}/{pr.State.TotalComments}", 9);
+            var comments = PadOrTruncate($"{pr.State.ActiveComments}/{pr.State.TotalComments}", 5);
             var status = _symbolProvider.GetSymbol(pr.State.Status);
 
             return $"{id} {title} {comments} {status}  {pr.Url}";
