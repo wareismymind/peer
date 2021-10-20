@@ -93,8 +93,8 @@ namespace Peer
 
         public static Task ConfigAsync(ConfigOptions _)
         {
-            Console.WriteLine("Hey lets get you set up and working with Peer!");
-            Console.WriteLine($"Toss the following into this location: {_configFile} and fill in values for your github account");
+            Console.Error.WriteLine("Hey lets get you set up and working with Peer!");
+            Console.Error.WriteLine($"Toss the following into this location: {_configFile} and fill in values for your github account");
             Console.WriteLine(_configHelp);
             return Task.CompletedTask;
         }
