@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using CommandLine;
 using Microsoft.Extensions.Configuration;
@@ -10,46 +11,95 @@ using Peer.Domain.Configuration;
 using Peer.Domain.Formatters;
 using Peer.GitHub;
 using Peer.Verbs;
+using wimm.Secundatives;
 
 namespace Peer
 {
     public static class Program
     {
+        private static readonly string _configFile = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}/peer.json";
+
+        private static readonly Dictionary<ConfigError, string> _configErrorMap = new()
+        {
+            [ConfigError.NoConfigFile] = $"No configuration file exists at {_configFile} run 'peer config' to get started",
+            [ConfigError.InvalidProviderValues] = "One or more providers have invalid configuration",
+            [ConfigError.NoProvidersConfigured] = "No providers are configured! Run 'peer config' to get started",
+            [ConfigError.ProviderNotMatched] = "Provider was not recognized, make sure you're using one of supported providers!"
+        };
+
+        private const string _configHelp = @"
+{
+  ""Providers"": {
+    //The type of the provider you're configuring (currently there's only github!)
+    ""github"": [{
+        ""Name"": ""required: a friendly name for this provider"",
+        ""Configuration"": {
+          ""AccessToken"": ""required: your API token"",
+          ""Username"": ""optional: the github username you're interested in investigating, alternatively we'll fetch yours from the api"",
+          //optional: Orgs can be either be traditional (github, wareismymind) or a username for user's repos 
+          // if left empty we'll look at all orgs available to your user
+          ""Orgs"": [""myorg"", ""wareismymind"", ""someuser""],
+          //optional: Orgs that you'd like to exclude from the output, only really makes sense if no orgs are set
+          ""ExcludedOrgs"": []
+        }
+    }]
+  }
+}
+";
+
         public static async Task Main(string[] args)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-            var res = await Parser.Default.ParseArguments<ShowOptions, OpenOptions>(args)
+            await Parser.Default.ParseArguments<ShowOptions, OpenOptions, ConfigOptions>(args)
                 .MapResult(
-                    (ShowOptions x) => ShowStubAsync(x),
+                    (ShowOptions x) => ShowAsync(x),
                     (OpenOptions x) => OpenAsync(x),
-                    (ConfigOptions _) => Task.FromResult("This is where config will happen when it's done"),
-                    err => Task.FromResult("Saaad"));
-
-            Console.WriteLine(res);
+                    (ConfigOptions x) => ConfigAsync(x),
+                    err => Task.CompletedTask);
         }
 
-        public static async Task<string> ShowStubAsync(ShowOptions opts)
+        public static async Task ShowAsync(ShowOptions _)
         {
 
-            var services = SetupServices();
-            var p = services.BuildServiceProvider();
+            var setupResult = SetupServices();
+
+            if (setupResult.IsError)
+            {
+                Console.Error.WriteLine(_configErrorMap[setupResult.Error]);
+                return;
+            }
+
+            var p = setupResult.Value.BuildServiceProvider();
             var app = p.GetRequiredService<IPeerApplication>();
             await app.ShowAsync(new Show(), default);
-
-            return string.Empty;
         }
 
-        public static async Task<string> OpenAsync(OpenOptions opts)
+        public static async Task OpenAsync(OpenOptions opts)
         {
-            var services = SetupServices();
-            var p = services.BuildServiceProvider();
-            var app = p.GetRequiredService<IPeerApplication>();
+            var setupResult = SetupServices();
+            
+            if (setupResult.IsError)
+            {
+                Console.Error.WriteLine(_configErrorMap[setupResult.Error]);
+                return;
+            }
+
+            var provider = setupResult.Value.BuildServiceProvider();
+            var app = provider.GetRequiredService<IPeerApplication>();
             await app.OpenAsync(new Open(opts.Partial ?? ""), default);
-            return string.Empty;
+
         }
 
-        private static IServiceCollection SetupServices()
+        public static Task ConfigAsync(ConfigOptions _)
+        {
+            Console.WriteLine("Hey lets get you set up and working with Peer!");
+            Console.WriteLine($"Toss the following into this location: {_configFile} and fill in values for your github account");
+            Console.WriteLine(_configHelp);
+            return Task.CompletedTask;
+        }
+
+        private static Result<IServiceCollection,ConfigError> SetupServices()
         {
             var services = new ServiceCollection();
 
@@ -59,7 +109,7 @@ namespace Peer
             });
 
             var configuration = new ConfigurationBuilder()
-                .AddJsonFile($"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}/peer.json", optional: true)
+                .AddJsonFile(_configFile, optional: true)
                 .AddEnvironmentVariables()
                 .Build();
 
@@ -67,7 +117,7 @@ namespace Peer
 
             if (configResults.IsError)
             {
-                Console.Error.WriteLine($"Error in config: {configResults.Error}");
+                return configResults.Error;
             }
 
             services.AddSingleton<IConsoleWriter, ConsoleWriter>();
@@ -78,5 +128,7 @@ namespace Peer
             services.AddSingleton(new ConsoleConfig(inline: true));
             return services;
         }
+
+        
     }
 }
