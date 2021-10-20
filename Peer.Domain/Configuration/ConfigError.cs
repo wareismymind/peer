@@ -6,6 +6,5 @@
         NoProvidersConfigured,
         ProviderNotMatched,
         InvalidProviderValues,
-        NoConfigFile,
     }
 }

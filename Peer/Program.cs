@@ -21,7 +21,6 @@ namespace Peer
 
         private static readonly Dictionary<ConfigError, string> _configErrorMap = new()
         {
-            [ConfigError.NoConfigFile] = $"No configuration file exists at {_configFile} run 'peer config' to get started",
             [ConfigError.InvalidProviderValues] = "One or more providers have invalid configuration",
             [ConfigError.NoProvidersConfigured] = "No providers are configured! Run 'peer config' to get started",
             [ConfigError.ProviderNotMatched] = "Provider was not recognized, make sure you're using one of supported providers!"
@@ -128,7 +127,5 @@ namespace Peer
             services.AddSingleton(new ConsoleConfig(inline: true));
             return services;
         }
-
-        
     }
 }
