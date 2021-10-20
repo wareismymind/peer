@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <Configurations>Debug;Release;Nuget</Configurations>
+    <Configurations>Debug;Release;Tool</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

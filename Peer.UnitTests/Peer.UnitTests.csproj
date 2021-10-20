@@ -5,7 +5,7 @@
 
     <IsPackable>false</IsPackable>
 
-    <Configurations>Debug;Release;Nuget</Configurations>
+    <Configurations>Debug;Release;Tool</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

@@ -21,7 +21,7 @@
     <SelfContained>true</SelfContained>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Nuget'">
+  <PropertyGroup Condition="'$(Configuration)'=='Tool'">
     <PackAsTool>true</PackAsTool>
     <PackageId>peer</PackageId>
     <ToolCommandName>peer</ToolCommandName>
