@@ -7,6 +7,10 @@
     <Configurations>Debug;Release;Tool</Configurations>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)'=='Tool'">
+    <Optimize>True</Optimize>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Peer.Domain\Peer.Domain.csproj" />
     <ProjectReference Include="..\Peer.Utils\Peer.Utils.csproj" />

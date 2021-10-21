@@ -32,6 +32,7 @@
     <PackageProjectUrl>https://github.com/wareismymind/peer</PackageProjectUrl>
     <RepositoryUrl>https://github.com/wareismymind/peer</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <Optimize>True</Optimize>
   </PropertyGroup>
 
   <ItemGroup>
