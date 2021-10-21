@@ -65,7 +65,7 @@ jobs:
            Select -ExpandProperty upload_url
 
           $replaced = $uploadUrl -replace "{\?name.*label}","?name=peer-${{matrix.os}}"
-          $fileName = $(ls ./output/peer* -Exclude *pdb).FullName
+          $fileName = $(gci ./output/peer* -Exclude *pdb).FullName
 
           gi ./output/peer*
           curl --data-binary "$filename" `
