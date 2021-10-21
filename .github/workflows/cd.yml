@@ -54,8 +54,25 @@ jobs:
           -r "${{ matrix.os }}"
           -c Release
           --self-contained
+          /p:AssemblyName=peer
           /p:Version=${{ needs.calculate-version.outputs.version_tag }}
           /p:AssemblyVersion=${{ needs.calculate-version.outputs.version_tag }}
+
+      - name: update release
+        shell: pwsh
+        run: |
+          $uploadUrl = curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/wareismymind/peer/releases/latest |
+           ConvertFrom-Json |
+           Select -ExpandProperty upload_url
+
+          $replaced = $uploadUrl -replace "{\?name.*label}","?name=peer-${{matrix.os}}"
+          $fileName = $(ls ./output/peer* -Exclude *pdb).FullName
+
+          gi ./output/peer*
+          curl --data-binary "$filename" `
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" `
+            -H "Content-Type: application/octet-stream" `
+            $replaced
 
   publish-nuget:
     runs-on: ubuntu-latest
