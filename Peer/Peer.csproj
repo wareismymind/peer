@@ -15,8 +15,8 @@
     <AssemblyName>$(MSBuildProjectName.ToLower())_$(RuntimeIdentifier)</AssemblyName>
     <PublishSingleFile>true</PublishSingleFile>
     <PublishTrimmed>true</PublishTrimmed>
-    <PublishReadyToRun>true</PublishReadyToRun>
-    <TrimMode>link</TrimMode>
+    <TrimMode>copyused</TrimMode>
+    <InvariantGlobalization>true</InvariantGlobalization>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <UseAppHost>True</UseAppHost>
     <SelfContained>true</SelfContained>
