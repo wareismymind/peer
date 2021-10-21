@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.1.5](https://www.github.com/wareismymind/peer/compare/v1.1.4...v1.1.5) (2021-10-21)
+
+
+### Bug Fixes
+
+* mac and linux had some troubles with localization support in com… ([#68](https://www.github.com/wareismymind/peer/issues/68)) ([747eab2](https://www.github.com/wareismymind/peer/commit/747eab29c925e670120c65ff48df44632a8832c0))
+
 ### [1.1.4](https://www.github.com/wareismymind/peer/compare/v1.1.2...v1.1.4) (2021-10-21)
 
 
