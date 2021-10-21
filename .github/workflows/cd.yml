@@ -30,7 +30,7 @@ jobs:
           VERSION_TAG: "${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}"
         run: echo "::set-output name=version_tag::${VERSION_TAG}"
 
-  publish:
+  publish-binaries:
     runs-on: ubuntu-latest
     needs: [calculate-version]
     strategy:
@@ -57,6 +57,19 @@ jobs:
           /p:Version=${{ needs.calculate-version.outputs.version_tag }}
           /p:AssemblyVersion=${{ needs.calculate-version.outputs.version_tag }}
 
+  publish-nuget:
+    runs-on: ubuntu-latest
+    needs: [calculate-version]
+      steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+          include-prerelease: true
+
       - name: publish tool package
         run: >
           dotnet pack 
@@ -64,7 +77,10 @@ jobs:
           -c Tool
           /p:Version=${{ needs.calculate-version.outputs.version_tag }}
           /p:AssemblyVersion=${{ needs.calculate-version.outputs.version_tag }}
-
+          /p:PackageVersion=${{ needs.calculate-version.outputs.version_tag }}
+          
       - name: publish nuget tool package
         run: >
-          dotnet nuget push "./output/peer.${{ needs.calculate-version.outputs.version_tag }}.nupkg" --api-key "${{ secrets.NUGET_TOKEN }}"
+          dotnet nuget push "./output/peer.${{ needs.calculate-version.outputs.version_tag }}.nupkg"
+          -s https://api.nuget.org/v3/index.json
+          --api-key ${{ secrets.NUGET_TOKEN }}
