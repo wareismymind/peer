@@ -47,9 +47,24 @@ jobs:
           dotnet-version: 6.0.x
           include-prerelease: true
 
-      - name: publish
+      - name: publish binaries
         run: >
-          dotnet publish -o ./output
+          dotnet publish 
+          -o ./output
           -r "${{ matrix.os }}"
+          -c Release
+          --self-contained
           /p:Version=${{ needs.calculate-version.outputs.version_tag }}
           /p:AssemblyVersion=${{ needs.calculate-version.outputs.version_tag }}
+
+      - name: publish tool package
+        run: >
+          dotnet pack 
+          -o ./output
+          -c Tool
+          /p:Version=${{ needs.calculate-version.outputs.version_tag }}
+          /p:AssemblyVersion=${{ needs.calculate-version.outputs.version_tag }}
+
+      - name: publish nuget tool package
+        run: >
+          dotnet nuget push "./output/peer.${{ needs.calculate-version.outputs.version_tag }}.nupkg" --api-key "${{ secrets.NUGET_TOKEN }}"

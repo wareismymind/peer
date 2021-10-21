@@ -8,10 +8,11 @@
     <AnalysisLevel>latest</AnalysisLevel>
     <AssemblyName>$(MSBuildProjectName.ToLower())</AssemblyName>
     <EnableTrimAnalyzer>True</EnableTrimAnalyzer>
-    <Configurations>Debug;Release;Nuget</Configurations>
+    <Configurations>Debug;Release;Tool</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <AssemblyName>$(MSBuildProjectName.ToLower())_$(RuntimeIdentifier)</AssemblyName>
     <PublishSingleFile>true</PublishSingleFile>
     <PublishTrimmed>true</PublishTrimmed>
     <PublishReadyToRun>true</PublishReadyToRun>
@@ -31,6 +32,7 @@
     <PackageProjectUrl>https://github.com/wareismymind/peer</PackageProjectUrl>
     <RepositoryUrl>https://github.com/wareismymind/peer</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <Optimize>True</Optimize>
   </PropertyGroup>
 
   <ItemGroup>
