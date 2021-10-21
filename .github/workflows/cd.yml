@@ -65,10 +65,10 @@ jobs:
            Select -ExpandProperty upload_url
 
           $replaced = $uploadUrl -replace "{\?name.*label}","?name=peer-${{matrix.os}}"
-          $fileName = $(gci ./output/peer* -Exclude *pdb).FullName
+          $extension = "${{ matrix.os }}" -match "win" ? ".exe" : ""
+          $filename = "./output/peer$extension"
 
-          gi ./output/peer*
-          curl --data-binary "$filename" `
+          curl --data-binary "@$filename" `
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" `
             -H "Content-Type: application/octet-stream" `
             $replaced
