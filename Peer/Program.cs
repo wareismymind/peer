@@ -17,7 +17,7 @@ namespace Peer
 {
     public static class Program
     {
-        private static readonly string _configFile = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}/peer.json";
+        private static readonly string _configFile = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\peer.json";
 
         private static readonly Dictionary<ConfigError, string> _configErrorMap = new()
         {
@@ -77,7 +77,7 @@ namespace Peer
         public static async Task OpenAsync(OpenOptions opts)
         {
             var setupResult = SetupServices();
-            
+
             if (setupResult.IsError)
             {
                 Console.Error.WriteLine(_configErrorMap[setupResult.Error]);
@@ -98,7 +98,7 @@ namespace Peer
             return Task.CompletedTask;
         }
 
-        private static Result<IServiceCollection,ConfigError> SetupServices()
+        private static Result<IServiceCollection, ConfigError> SetupServices()
         {
             var services = new ServiceCollection();
 
