@@ -54,7 +54,6 @@ jobs:
           -r "${{ matrix.os }}"
           -c Release
           --self-contained
-          /p:AssemblyName=peer
           /p:Version=${{ needs.calculate-version.outputs.version_tag }}
           /p:AssemblyVersion=${{ needs.calculate-version.outputs.version_tag }}
 

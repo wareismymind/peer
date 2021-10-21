@@ -12,7 +12,6 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <AssemblyName>$(MSBuildProjectName.ToLower())_$(RuntimeIdentifier)</AssemblyName>
     <PublishSingleFile>true</PublishSingleFile>
     <PublishTrimmed>true</PublishTrimmed>
     <TrimMode>copyused</TrimMode>
