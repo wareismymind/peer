@@ -1,5 +1,13 @@
 # Changelog
 
+### [1.1.1](https://www.github.com/wareismymind/peer/compare/v1.1.0...v1.1.1) (2021-10-21)
+
+
+### Bug Fixes
+
+* specify source in build and make nuget publish its own thing outside of matrix builds ([#61](https://www.github.com/wareismymind/peer/issues/61)) ([e0af8b5](https://www.github.com/wareismymind/peer/commit/e0af8b56d21e1b8400f462ac9c42d58349b8d93a))
+* yaml whitespace error ([#62](https://www.github.com/wareismymind/peer/issues/62)) ([42581b1](https://www.github.com/wareismymind/peer/commit/42581b1dc86b74a497b6b2653bf9a85ff30577b2))
+
 ## [1.1.0](https://www.github.com/wareismymind/peer/compare/v1.0.1...v1.1.0) (2021-10-21)
 
 
