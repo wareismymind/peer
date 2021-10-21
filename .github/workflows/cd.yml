@@ -60,6 +60,7 @@ jobs:
   publish-nuget:
     runs-on: ubuntu-latest
     needs: [calculate-version]
+    if: ${{ needs.calculate-version.outputs.should_release }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
