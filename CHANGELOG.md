@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.1.6](https://www.github.com/wareismymind/peer/compare/v1.1.5...v1.1.6) (2021-10-21)
+
+
+### Bug Fixes
+
+* upload to gh via curl probably ([#72](https://www.github.com/wareismymind/peer/issues/72)) ([4e8989e](https://www.github.com/wareismymind/peer/commit/4e8989e15e07c98c52cfa4d205c02cca7998fd15))
+
 ### [1.1.5](https://www.github.com/wareismymind/peer/compare/v1.1.4...v1.1.5) (2021-10-21)
 
 
