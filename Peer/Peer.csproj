@@ -20,7 +20,6 @@
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <UseAppHost>True</UseAppHost>
     <SelfContained>true</SelfContained>
-    <PublishReadyToRun>$('$(RuntimeIdentifier)'=='win-x64')</PublishReadyToRun>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Tool'">
