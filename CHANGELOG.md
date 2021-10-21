@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.0](https://www.github.com/wareismymind/peer/compare/v1.0.1...v1.1.0) (2021-10-21)
+
+
+### Features
+
+* add-basic-config-and-config-failure-logging ([#53](https://www.github.com/wareismymind/peer/issues/53)) ([35f4e4e](https://www.github.com/wareismymind/peer/commit/35f4e4e10851634bc20a84934528ac80140fe716))
+* Change 'comments' to the speech balloon emoji ([#57](https://www.github.com/wareismymind/peer/issues/57)) ([2042c0c](https://www.github.com/wareismymind/peer/commit/2042c0ce88ea227cddece656d057cbcae82dc4cf))
+
 ### [1.0.1](https://www.github.com/wareismymind/peer/compare/v1.0.0...v1.0.1) (2021-10-19)
 
 
