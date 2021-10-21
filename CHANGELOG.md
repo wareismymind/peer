@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.1.7](https://www.github.com/wareismymind/peer/compare/v1.1.6...v1.1.7) (2021-10-21)
+
+
+### Bug Fixes
+
+* fix assembly name ([402e249](https://www.github.com/wareismymind/peer/commit/402e24993fde518ffd62793a3c58ff7f3f926f0c))
+
 ### [1.1.6](https://www.github.com/wareismymind/peer/compare/v1.1.5...v1.1.6) (2021-10-21)
 
 
