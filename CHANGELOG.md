@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.1.9](https://www.github.com/wareismymind/peer/compare/v1.1.8...v1.1.9) (2021-10-21)
+
+
+### Bug Fixes
+
+* use @ in filename and build filename instead of gci ([a3ce160](https://www.github.com/wareismymind/peer/commit/a3ce160abceab62627b2f12c9de51a0f72a2cb5e))
+
 ### [1.1.8](https://www.github.com/wareismymind/peer/compare/v1.1.7...v1.1.8) (2021-10-21)
 
 
