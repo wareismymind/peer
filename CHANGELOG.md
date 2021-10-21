@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.1.8](https://www.github.com/wareismymind/peer/compare/v1.1.7...v1.1.8) (2021-10-21)
+
+
+### Bug Fixes
+
+* ls -> gci ([79d12ae](https://www.github.com/wareismymind/peer/commit/79d12ae1db5582177db58b6de825a9c754e1b137))
+
 ### [1.1.7](https://www.github.com/wareismymind/peer/compare/v1.1.6...v1.1.7) (2021-10-21)
 
 
