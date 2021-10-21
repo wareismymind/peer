@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.1.2](https://www.github.com/wareismymind/peer/compare/v1.1.1...v1.1.2) (2021-10-21)
+
+
+### Bug Fixes
+
+* only run nuget build/push on release ([#64](https://www.github.com/wareismymind/peer/issues/64)) ([a6e5387](https://www.github.com/wareismymind/peer/commit/a6e538747708720fa59a887df35f9a7fde81a886))
+
 ### [1.1.1](https://www.github.com/wareismymind/peer/compare/v1.1.0...v1.1.1) (2021-10-21)
 
 
