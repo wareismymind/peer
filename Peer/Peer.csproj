@@ -6,7 +6,7 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <AnalysisLevel>latest</AnalysisLevel>
-    
+    <AssemblyName>$(MSBuildProjectName.ToLower())</AssemblyName>
     <EnableTrimAnalyzer>True</EnableTrimAnalyzer>
     <Configurations>Debug;Release;Tool</Configurations>
   </PropertyGroup>
