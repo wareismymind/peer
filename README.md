@@ -6,7 +6,7 @@ Peer is meant to be easy to use, cross platform and helpful!
 
 ## Statuses
 
-Pull request statuses are all emoji to save space (and because why not?) the default format provider gives the following mapping:
+Pull request statuses are all emoji to save space (and because why not?) The default format provider gives the following mapping:
 
 <pre>
     Unknown =>          ❔
