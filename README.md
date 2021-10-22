@@ -28,7 +28,7 @@ Peer is available as a standalone windows executable on scoop, a portable exe in
 via scoop:
 
 ```
-scoop add bucket wimm https://github.com/wareismymind/wareismy-scoop
+scoop bucket add wimm https://github.com/wareismymind/wareismy-scoop
 scoop install peer
 ```
 
