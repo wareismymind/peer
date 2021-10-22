@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://www.github.com/wareismymind/peer/compare/v1.1.9...v1.2.0) (2021-10-22)
+
+
+### Features
+
+* add extension to name in release ([378886e](https://www.github.com/wareismymind/peer/commit/378886e574e34b3a73455d41e45d3e34bbbaf8a3))
+
 ### [1.1.9](https://www.github.com/wareismymind/peer/compare/v1.1.8...v1.1.9) (2021-10-21)
 
 
