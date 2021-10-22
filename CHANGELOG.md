@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.2.1](https://www.github.com/wareismymind/peer/compare/v1.2.0...v1.2.1) (2021-10-22)
+
+
+### Bug Fixes
+
+* Fix path seperator ([#76](https://www.github.com/wareismymind/peer/issues/76)) ([a26e986](https://www.github.com/wareismymind/peer/commit/a26e986fddbb0b26f098ad648c2c7c2f7b8a1e28))
+
 ## [1.2.0](https://www.github.com/wareismymind/peer/compare/v1.1.9...v1.2.0) (2021-10-22)
 
 
