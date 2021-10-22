@@ -8,18 +8,19 @@ Peer is meant to be easy to use, cross platform and helpful!
 
 Pull request statuses are all emoji to save space (and because why not?) the default format provider gives the following mapping:
 
-    Unknown => ❔
-    Conflict => &#x2694;&#xFE0F;,
-    Draft => "&#xD83DDCC3",
-    ActionsPending => &#x231B,
-    ActionsQueued => &#xD83DDCA4,
-    Stale => &#xD83CDF5E,
-    FailedChecks => &#xD83D&#xDD25",
-    AwaitingReview => &#xD83DDEA9,
-    FixesRequested => &#x274C",
-    ReadyToMerge => &#x2714FE0F,
-    Merged => &#xD83CDF8A,
-
+<pre>
+    Unknown =>          ❔
+    Conflict =>         &#x2694;&#xFE0F;,
+    Draft =>            📃,
+    ActionsPending =>   ⏳,
+    ActionsQueued =>    💤,
+    Stale =>            🍞,
+    FailedChecks =>     🔥,
+    AwaitingReview =>   🚩,
+    FixesRequested =>   ❌,
+    ReadyToMerge =>     &#x2714;&#xFE0F;,
+    Merged =>           🎊 (You shouldn't really see this one)
+</pre>
 ## Installing peer
 
 Peer is available as a standalone windows executable on scoop, a portable exe in our github releases and also as a dotnet tool (currently requires net6 rc2)
