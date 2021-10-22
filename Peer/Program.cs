@@ -17,7 +17,7 @@ namespace Peer
 {
     public static class Program
     {
-        private static readonly string _configFile = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\peer.json";
+        private static readonly string _configFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "peer.json");
 
         private static readonly Dictionary<ConfigError, string> _configErrorMap = new()
         {
