@@ -9,7 +9,7 @@ Peer is meant to be easy to use, cross platform and helpful!
 Pull request statuses are all emoji to save space (and because why not?) the default format provider gives the following mapping:
 
     Unknown => ❔
-    Conflict => &#x2694FE0F;,
+    Conflict => &#x2694;&#xFE0F;,
     Draft => "&#xD83DDCC3",
     ActionsPending => &#x231B,
     ActionsQueued => &#xD83DDCA4,
