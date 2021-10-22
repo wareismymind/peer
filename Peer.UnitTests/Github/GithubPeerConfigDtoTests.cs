@@ -34,6 +34,18 @@ namespace Peer.UnitTests.GitHub
                 Assert.Equal(GitHubConfigError.AccessTokenInvalid, res.Error);
             }
 
+            [Theory]
+            [InlineData(-1)]
+            [InlineData(101)]
+            public void PageSizeEmptyOrWhitespace_ReturnsPageSizeInvalid(int pageSize)
+            {
+                var underTest = CreateConfig(x => x.Configuration.PageSize = pageSize);
+                var res = underTest.Into();
+
+                Assert.True(res.IsError);
+                Assert.Equal(GitHubConfigError.PageSizeInvalid, res.Error);
+            }
+            
             [Fact]
             public void OrgsAndExcludedOrgsDefined_ReturnsInvalidOrgConfig()
             {
@@ -75,7 +87,8 @@ namespace Peer.UnitTests.GitHub
                     AccessToken = "waka",
                     Username = "somevalidName",
                     ExcludedOrgs = new List<string>(),
-                    Orgs = new List<string>() { "dotnet" }
+                    Orgs = new List<string>() { "dotnet" },
+                    PageSize = 10
                 }
             };
 

@@ -42,7 +42,10 @@ namespace Peer
           // if left empty we'll look at all orgs available to your user
           ""Orgs"": [""myorg"", ""wareismymind"", ""someuser""],
           //optional: Orgs that you'd like to exclude from the output, only really makes sense if no orgs are set
-          ""ExcludedOrgs"": []
+          ""ExcludedOrgs"": [],
+          //optional: indicates the number of pull requests that will be listed, should be number between 0 and 101.
+          // if not provided will default to 20.
+          ""PageSize"": 20
         }
     }]
   }
