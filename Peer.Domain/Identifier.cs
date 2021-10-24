@@ -42,7 +42,7 @@ namespace Peer.Domain
 
             return split.Reverse()
                 .Zip(EnumerateValues())
-                .All(((string segment, string local) x) 
+                .All(((string segment, string local) x)
                     => x.segment.Equals(x.local, StringComparison.OrdinalIgnoreCase));
 
         }

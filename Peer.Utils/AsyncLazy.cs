@@ -6,7 +6,7 @@ namespace Peer.Utils
 {
     public class AsyncLazy<T> : Lazy<Task<T>>
     {
-        public AsyncLazy(Func<Task<T>> fn) : base(async () =>  await fn()) { }
+        public AsyncLazy(Func<Task<T>> fn) : base(async () => await fn()) { }
 
         public TaskAwaiter<T> GetAwaiter() => Value.GetAwaiter();
     }
