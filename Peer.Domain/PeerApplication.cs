@@ -87,7 +87,7 @@ namespace Peer.Domain
 
         private async Task<IEnumerable<PullRequest>> FetchAllSources(CancellationToken token)
         {
-            var tasks = _fetchers.Select(async x => await x.GetPullRequestsAsync());
+            var tasks = _fetchers.Select(async x => await x.GetPullRequestsAsync(token));
             var prs = await Task.WhenAll(tasks);
             var combined = prs.SelectMany(x => x);
 
