@@ -36,10 +36,10 @@ namespace Peer.GitHub
             var involvesResponse =
                 await _gqlClient.SendQueryAsync<GQL.SearchResult<PRSearch.Result>>(await _involvesRequest);
 
-            var reviewRequested = await _gqlClient.SendQueryAsync<GQL.SearchResult<PRSearch.Result>>(await _reviewRequestedRequest);
+            var reviewRequestedResponse = await _gqlClient.SendQueryAsync<GQL.SearchResult<PRSearch.Result>>(await _reviewRequestedRequest);
 
             var deduplicated = involvesResponse.Data.Search.Nodes
-                .Concat(reviewRequested.Data.Search.Nodes)
+                .Concat(reviewRequestedResponse.Data.Search.Nodes)
                 .DistinctBy(x => x.Id);
 
             // todo: Handle errors.
