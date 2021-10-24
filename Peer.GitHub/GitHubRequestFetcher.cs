@@ -93,7 +93,7 @@ namespace Peer.GitHub
             return new GraphQLHttpRequest(PRSearch.Search.GenerateReviewRequested(searchParams), default);
         }
 
-        private async  Task<string> GetUsername()
+        private async Task<string> GetUsername()
         {
             return string.IsNullOrEmpty(_config.Username)
                 ? await QueryUsername()

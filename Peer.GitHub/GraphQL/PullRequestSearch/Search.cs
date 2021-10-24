@@ -10,7 +10,7 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
             var orgsClauses = string.Join(' ', search.Orgs.Select(o => $"org:{o}"));
             var excludedOrgsClauses = string.Join(' ', search.ExcludedOrgs.Select(o => $"-org:{o}"));
             var searchTerms = string.Join(' ', reviewRequestedClause, orgsClauses, excludedOrgsClauses);
-            
+
             return GenerateQuery(searchTerms, search.PageSize);
         }
 
