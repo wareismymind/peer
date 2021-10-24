@@ -71,24 +71,22 @@ namespace Peer.GitHub
 
         private async Task<GraphQLHttpRequest> GenerateInvolvesRequest()
         {
-            var username = string.IsNullOrEmpty(_config.Username)
-                ? await GetUsername()
-                : _config.Username;
-
             var searchParams = new PRSearch.SearchParams(
-                username, _config.Orgs, _config.ExcludedOrgs, PRSearchLimit);
+                await _username,
+                _config.Orgs,
+                _config.ExcludedOrgs,
+                PRSearchLimit);
 
             return new GraphQLHttpRequest(PRSearch.Search.GenerateInvolves(searchParams), default);
         }
 
         private async Task<GraphQLHttpRequest> GenerateReviewRequestedRequest()
         {
-            var username = string.IsNullOrEmpty(_config.Username)
-                ? await GetUsername()
-                : _config.Username;
-
             var searchParams = new PRSearch.SearchParams(
-                username, _config.Orgs, _config.ExcludedOrgs, PRSearchLimit);
+                await _username,
+                _config.Orgs,
+                _config.ExcludedOrgs,
+                PRSearchLimit);
 
             return new GraphQLHttpRequest(PRSearch.Search.GenerateReviewRequested(searchParams), default);
         }
