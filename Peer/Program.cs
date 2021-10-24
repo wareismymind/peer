@@ -10,6 +10,7 @@ using Peer.Domain.Commands;
 using Peer.Domain.Configuration;
 using Peer.Domain.Formatters;
 using Peer.GitHub;
+using Peer.Parsing;
 using Peer.Verbs;
 using wimm.Secundatives;
 
@@ -58,15 +59,25 @@ namespace Peer
                     err => Task.CompletedTask);
         }
 
-        public static async Task ShowAsync(ShowOptions _)
+        public static async Task ShowAsync(ShowOptions opts)
         {
-
             var setupResult = SetupServices();
 
             if (setupResult.IsError)
             {
                 Console.Error.WriteLine(_configErrorMap[setupResult.Error]);
                 return;
+            }
+
+            if (opts.Sort != null)
+            {
+                var sort = SortParser.ParseSortOption(opts.Sort);
+                if (sort.IsError)
+                {
+                    Console.Error.WriteLine($"Failed to parse sort option: {sort.Error}");
+                }
+
+                setupResult.Value.AddSingleton<ISorter<PullRequest>>(sort.Value);
             }
 
             var p = setupResult.Value.BuildServiceProvider();
