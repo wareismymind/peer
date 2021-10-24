@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using GraphQL.Client.Http;
 using Peer.Domain;
@@ -13,23 +14,26 @@ namespace Peer.GitHub
 {
     public class GitHubRequestFetcher : IPullRequestFetcher
     {
-        private const int PRSearchLimit = 20;
+        private const int _prSearchLimit = 20;
 
         private readonly GraphQLHttpClient _gqlClient;
         private readonly GitHubPeerConfig _config;
         private readonly AsyncLazy<GraphQLHttpRequest> _searchRequest;
+        private readonly CancellationTokenSource _cts = new();
 
         public GitHubRequestFetcher(GraphQLHttpClient client, GitHubPeerConfig gitHubPeerConfig)
         {
             _gqlClient = client;
             _config = gitHubPeerConfig;
-            _searchRequest = new AsyncLazy<GraphQLHttpRequest>(GenerateSearchRequest);
+            _searchRequest = new AsyncLazy<GraphQLHttpRequest>(() => GenerateSearchRequest(_cts.Token));
         }
 
-        public async Task<IEnumerable<PullRequest>> GetPullRequestsAsync()
+        public async Task<IEnumerable<PullRequest>> GetPullRequestsAsync(CancellationToken token = default)
         {
+            using var registration = token.Register(() => _cts.Cancel());
+
             var searchResponse =
-                await _gqlClient.SendQueryAsync<GQL.SearchResult<PRSearch.Result>>(await _searchRequest);
+                await _gqlClient.SendQueryAsync<GQL.SearchResult<PRSearch.Result>>(await _searchRequest, token);
 
             // todo: Handle errors.
 
@@ -42,7 +46,8 @@ namespace Peer.GitHub
             {
                 var queryResponse =
                     await _gqlClient.SendQueryAsync<Dictionary<string, PRSearch.PullRequest>>(
-                        ThreadPageQuery(prsWithMoreThreads));
+                        ThreadPageQuery(prsWithMoreThreads, token),
+                        token);
 
                 var prThreadPages = queryResponse.Data.Values;
 
@@ -58,32 +63,32 @@ namespace Peer.GitHub
             return prs.Values.Select(pr => pr.Into());
         }
 
-        private async Task<GraphQLHttpRequest> GenerateSearchRequest()
+        private async Task<GraphQLHttpRequest> GenerateSearchRequest(CancellationToken token = default)
         {
             var username = string.IsNullOrEmpty(_config.Username)
-                ? await GetUsername()
+                ? await GetUsername(token)
                 : _config.Username;
 
             var searchParams = new PRSearch.SearchParams(
-                username, _config.Orgs, _config.ExcludedOrgs, PRSearchLimit);
+                username, _config.Orgs, _config.ExcludedOrgs, _prSearchLimit);
 
-            return new GraphQLHttpRequest(PRSearch.Search.Generate(searchParams));
+            return new GraphQLHttpRequest(PRSearch.Search.Generate(searchParams), default);
         }
 
-        private async Task<string> GetUsername()
+        private async Task<string> GetUsername(CancellationToken token = default)
         {
-            var query = new GraphQLHttpRequest(ViewerQuery.Query.Generate());
-            var viewerResponse = await _gqlClient.SendQueryAsync<ViewerQuery.Result>(query);
+            var query = new GraphQLHttpRequest(ViewerQuery.Query.Generate(), token);
+            var viewerResponse = await _gqlClient.SendQueryAsync<ViewerQuery.Result>(query, token);
             return viewerResponse.Data.Viewer.Login;
         }
 
-        private GraphQLHttpRequest ThreadPageQuery(IEnumerable<PRSearch.PullRequest> prs)
+        private static GraphQLHttpRequest ThreadPageQuery(IEnumerable<PRSearch.PullRequest> prs, CancellationToken token = default)
         {
             var query = ThreadQuery.Query.Generate(
                    prs.Select(
                        pr => new ThreadQuery.QueryParams(pr.Id, pr.ReviewThreads.PageInfo.EndCursor)));
 
-            return new GraphQLHttpRequest(query);
+            return new GraphQLHttpRequest(query, token);
         }
     }
 }

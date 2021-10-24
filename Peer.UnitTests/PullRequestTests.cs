@@ -13,7 +13,7 @@ namespace Peer.UnitTests
             private readonly Descriptor _descriptor = new("title", "description");
             private readonly State _state = new(PullRequestStatus.ActionsPending, 10, 4);
             private readonly GitInfo _gitInfo = new("refs/heads/wat", "refs/head/to");
-            private readonly Identifier _identifier = new Identifier("1", "peer", "wareismymind", "github");
+            private readonly Identifier _identifier = new("1", "peer", "wareismymind", "github");
             [Fact]
             public void IdNull_Throws()
             {
