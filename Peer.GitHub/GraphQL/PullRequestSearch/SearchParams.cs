@@ -5,7 +5,7 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
 {
     public class SearchParams
     {
-        public string Involves { get; }
+        public string Subject { get; }
 
         public IEnumerable<string> Orgs { get; }
 
@@ -14,7 +14,7 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
         public int PageSize { get; }
 
         public SearchParams(
-            string involves,
+            string subject,
             IEnumerable<string> orgs,
             IEnumerable<string> excludedOrgs,
             int pageSize)
@@ -23,7 +23,7 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
             // (or that they CAN and we should quote them). I'm torn about whether that's here or
             // in the config parsing or both.
 
-            Involves = involves ?? throw new ArgumentNullException(nameof(involves));
+            Subject = subject ?? throw new ArgumentNullException(nameof(subject));
             Orgs = orgs ?? throw new ArgumentNullException(nameof(orgs));
             ExcludedOrgs = excludedOrgs ?? throw new ArgumentNullException(nameof(excludedOrgs));
 
