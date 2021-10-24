@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
 using Microsoft.Extensions.Configuration;
@@ -10,6 +12,7 @@ using Peer.Domain.Commands;
 using Peer.Domain.Configuration;
 using Peer.Domain.Formatters;
 using Peer.GitHub;
+using Peer.Parsing;
 using Peer.Verbs;
 using wimm.Secundatives;
 
@@ -46,21 +49,28 @@ namespace Peer
 }
 ";
 
+        private static readonly CancellationTokenSource _tcs = new();
+
         public static async Task Main(string[] args)
         {
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            Console.CancelKeyPress += (evt, eventArgs) =>
+            {
+                Console.WriteLine("Stopping...");
+                _tcs.Cancel();
+            };
+
+            Console.OutputEncoding = Encoding.UTF8;
 
             await Parser.Default.ParseArguments<ShowOptions, OpenOptions, ConfigOptions>(args)
                 .MapResult(
-                    (ShowOptions x) => ShowAsync(x),
-                    (OpenOptions x) => OpenAsync(x),
+                    (ShowOptions x) => ShowAsync(x, _tcs.Token),
+                    (OpenOptions x) => OpenAsync(x, _tcs.Token),
                     (ConfigOptions x) => ConfigAsync(x),
                     err => Task.CompletedTask);
         }
 
-        public static async Task ShowAsync(ShowOptions _)
+        public static async Task ShowAsync(ShowOptions opts, CancellationToken token)
         {
-
             var setupResult = SetupServices();
 
             if (setupResult.IsError)
@@ -69,12 +79,23 @@ namespace Peer
                 return;
             }
 
+            if (opts.Sort != null)
+            {
+                var sort = SortParser.ParseSortOption(opts.Sort);
+                if (sort.IsError)
+                {
+                    Console.Error.WriteLine($"Failed to parse sort option: {sort.Error}");
+                }
+
+                setupResult.Value.AddSingleton<ISorter<PullRequest>>(sort.Value);
+            }
+
             var p = setupResult.Value.BuildServiceProvider();
             var app = p.GetRequiredService<IPeerApplication>();
-            await app.ShowAsync(new Show(), default);
+            await app.ShowAsync(new Show(), token);
         }
 
-        public static async Task OpenAsync(OpenOptions opts)
+        public static async Task OpenAsync(OpenOptions opts, CancellationToken token)
         {
             var setupResult = SetupServices();
 
@@ -86,7 +107,7 @@ namespace Peer
 
             var provider = setupResult.Value.BuildServiceProvider();
             var app = provider.GetRequiredService<IPeerApplication>();
-            await app.OpenAsync(new Open(opts.Partial ?? ""), default);
+            await app.OpenAsync(new Open(opts.Partial ?? ""), token);
 
         }
 
