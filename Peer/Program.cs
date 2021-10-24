@@ -80,7 +80,6 @@ namespace Peer
                 setupResult.Value.AddSingleton<ISorter<PullRequest>>(sort.Value);
             }
 
-
             var p = setupResult.Value.BuildServiceProvider();
             var app = p.GetRequiredService<IPeerApplication>();
             await app.ShowAsync(new Show(), default);
