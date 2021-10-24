@@ -13,11 +13,16 @@ namespace Peer.Parsing
                 throw new ArgumentNullException(nameof(sortOption));
             }
 
-            var split = sortOption.ToLower().Split(":");
+            var split = sortOption.ToLower().Split(":", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
             if (split.Length > 2)
             {
                 return ParseError.TooManySections;
+            }
+
+            if (split.Length == 0)
+            {
+                return ParseError.NotEnoughSections;
             }
 
             //CN: Should see if we can do any reflecty witchcraft here to make this really generic.
@@ -48,7 +53,7 @@ namespace Peer.Parsing
                 "ascending" => SortDirection.Ascending,
                 "desc" => SortDirection.Descending,
                 "descending" => SortDirection.Descending,
-                _ => ParseError.InvalidSortDirectionSpecified
+                _ => ParseError.InvalidSortDirection
             };
         }
 
@@ -72,13 +77,5 @@ namespace Peer.Parsing
         {
             return x => selector(x);
         }
-    }
-
-    public enum ParseError
-    {
-        Fire,
-        TooManySections,
-        InvalidSortDirectionSpecified,
-        UnknownSortKey,
     }
 }
