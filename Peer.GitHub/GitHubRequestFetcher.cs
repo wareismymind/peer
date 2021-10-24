@@ -29,7 +29,6 @@ namespace Peer.GitHub
             _username = new AsyncLazy<string>(GetUsername);
             _involvesRequest = new AsyncLazy<GraphQLHttpRequest>(() => GenerateInvolvesRequest());
             _reviewRequestedRequest = new AsyncLazy<GraphQLHttpRequest>(() => GenerateReviewRequestedRequest());
-
         }
 
         public async Task<IEnumerable<PullRequest>> GetPullRequestsAsync()
