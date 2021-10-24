@@ -85,9 +85,10 @@ namespace Peer
                 if (sort.IsError)
                 {
                     Console.Error.WriteLine($"Failed to parse sort option: {sort.Error}");
+                    return;
                 }
 
-                setupResult.Value.AddSingleton<ISorter<PullRequest>>(sort.Value);
+                setupResult.Value.AddSingleton(sort.Value);
             }
 
             var p = setupResult.Value.BuildServiceProvider();
