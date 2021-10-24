@@ -17,23 +17,27 @@ namespace Peer.Domain
         private readonly IPullRequestFormatter _formatter;
         private readonly IOSInfoProvider _infoProvider;
         private readonly IConsoleWriter _writer;
+        private readonly ISorter<PullRequest>? _sorter;
 
         public PeerApplication(
             IEnumerable<IPullRequestFetcher> fetchers,
             IPullRequestFormatter formatter,
             IOSInfoProvider infoProvider,
-            IConsoleWriter writer)
+            IConsoleWriter writer,
+            ISorter<PullRequest>? sorter = null)
         {
             _fetchers = fetchers.ToList();
             _formatter = formatter;
             _infoProvider = infoProvider;
             _writer = writer;
+            _sorter = sorter;
         }
 
         public async Task<Result<None, ShowError>> ShowAsync(Show showOptions, CancellationToken token = default)
         {
             var prs = await FetchAllSources(token);
-            _writer.Display(_formatter.FormatLines(prs).ToList(), token);
+            var sorted = _sorter?.Sort(prs) ?? prs;
+            _writer.Display(_formatter.FormatLines(sorted).ToList(), token);
             return Maybe.None;
         }
 

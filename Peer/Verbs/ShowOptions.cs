@@ -5,6 +5,7 @@ namespace Peer.Verbs
     [Verb("show", isDefault: true, HelpText = "Display pull requests assigned to your account")]
     public class ShowOptions
     {
-        //CN: No filters or anything atm. 
+        [Option(shortName: 's', longName: "sort", Required = false)]
+        public string? Sort { get; set; }
     }
 }
