@@ -71,7 +71,7 @@ namespace Peer.Parsing
             };
         }
 
-        //CN: Being a bit of a bum here but just want to be able to wrap it and use the switch :|
+        //CN: Being lazy here but just want to be able to wrap it and use the switch :|
         private static Func<PullRequest, IComparable> MakeSelector<TProp>(Func<PullRequest, TProp> selector)
             where TProp : IComparable
         {
