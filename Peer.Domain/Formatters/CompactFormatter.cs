@@ -42,7 +42,7 @@ namespace Peer.Domain.Formatters
         {
             var id = PadOrTruncate(pr.Id, 4);
             var title = PadOrTruncate(pr.Descriptor.Title, 40);
-            var comments = PadOrTruncate($"{pr.State.ActiveComments}/{pr.State.TotalComments}", 5);
+            var comments = PadOrTruncate($"{pr.State.ResolvedComments}/{pr.State.TotalComments}", 5);
             var status = _symbolProvider.GetSymbol(pr.State.Status);
 
             return $"{id} {title} {comments} {status}  {pr.Url}";
