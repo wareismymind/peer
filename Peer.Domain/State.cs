@@ -8,6 +8,7 @@ namespace Peer.Domain
         public PullRequestStatus Status { get; }
         public int TotalComments { get; }
         public int ActiveComments { get; }
+        public int ResolvedComments => TotalComments - ActiveComments;
 
         public State(PullRequestStatus status, int totalComments, int activeComments)
         {
