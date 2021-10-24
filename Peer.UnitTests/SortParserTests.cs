@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Peer.Domain;
 using Peer.Parsing;
 using Peer.UnitTests.Util;
@@ -10,7 +8,7 @@ using Xunit;
 
 namespace Peer.UnitTests
 {
-    public partial class SortParserTests
+    public class SortParserTests
     {
         public class ParseSortOption
         {
