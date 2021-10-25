@@ -36,10 +36,11 @@ namespace Peer.UnitTests.GitHub
 
             [Theory]
             [InlineData(-1)]
+            [InlineData(0)]
             [InlineData(101)]
-            public void PageSizeEmptyOrWhitespace_ReturnsPageSizeInvalid(int pageSize)
+            public void PageSizeEmptyOrWhitespace_ReturnsPageSizeInvalid(int count)
             {
-                var underTest = CreateConfig(x => x.Configuration.PageSize = pageSize);
+                var underTest = CreateConfig(x => x.Configuration.Count = count);
                 var res = underTest.Into();
 
                 Assert.True(res.IsError);
@@ -88,7 +89,7 @@ namespace Peer.UnitTests.GitHub
                     Username = "somevalidName",
                     ExcludedOrgs = new List<string>(),
                     Orgs = new List<string>() { "dotnet" },
-                    PageSize = 10
+                    Count = 10
                 }
             };
 

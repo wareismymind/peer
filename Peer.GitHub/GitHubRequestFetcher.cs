@@ -15,8 +15,6 @@ namespace Peer.GitHub
 {
     public class GitHubRequestFetcher : IPullRequestFetcher
     {
-        private const int _prSearchLimit = 20;
-
         private readonly GraphQLHttpClient _gqlClient;
         private readonly GitHubPeerConfig _config;
         private readonly AsyncLazy<string> _username;
@@ -80,7 +78,7 @@ namespace Peer.GitHub
                 await _username,
                 _config.Orgs,
                 _config.ExcludedOrgs,
-                _prSearchLimit);
+                _config.Count);
 
             return new GraphQLHttpRequest(PRSearch.Search.GenerateInvolves(searchParams));
         }
@@ -91,7 +89,7 @@ namespace Peer.GitHub
                 await _username,
                 _config.Orgs,
                 _config.ExcludedOrgs,
-                _prSearchLimit);
+                _config.Count);
 
             return new GraphQLHttpRequest(PRSearch.Search.GenerateReviewRequested(searchParams));
         }
@@ -105,7 +103,7 @@ namespace Peer.GitHub
 
         private async Task<string> QueryUsername(CancellationToken token)
         {
-            var query = new GraphQLHttpRequest(ViewerQuery.Query.Generate(),token);
+            var query = new GraphQLHttpRequest(ViewerQuery.Query.Generate(), token);
             var viewerResponse = await _gqlClient.SendQueryAsync<ViewerQuery.Result>(query, token);
             return viewerResponse.Data.Viewer.Login;
         }

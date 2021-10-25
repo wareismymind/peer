@@ -33,7 +33,7 @@ namespace Peer.GitHub
                 return GitHubConfigError.InvalidOrgConfig;
             }
 
-            if (Configuration.PageSize.HasValue && (Configuration.PageSize < 1 || Configuration.PageSize > 100))
+            if (Configuration.Count < 1 || Configuration.Count > 100)
             {
                 return GitHubConfigError.PageSizeInvalid;
             }
@@ -44,7 +44,7 @@ namespace Peer.GitHub
                 Configuration.Username,
                 realizedIncluded,
                 realizedExcluded,
-                Configuration.PageSize
+                Configuration.Count
                 );
         }
     }

@@ -10,16 +10,16 @@ namespace Peer.GitHub
         public string? Username { get; }
         public IEnumerable<string> Orgs { get; }
         public IEnumerable<string> ExcludedOrgs { get; }
-        public int? PageSize { get; }
+        public int Count { get; }
 
-        public GitHubPeerConfig(string name, string accessToken, string? username, IEnumerable<string> orgs, IEnumerable<string> excludedOrgs, int? pageSize)
+        public GitHubPeerConfig(string name, string accessToken, string? username, IEnumerable<string> orgs, IEnumerable<string> excludedOrgs, int count)
         {
             Name = name ?? throw new ArgumentNullException(name);
             AccessToken = accessToken ?? throw new ArgumentNullException(nameof(accessToken));
             Username = username;
             Orgs = orgs ?? throw new ArgumentNullException(nameof(orgs));
             ExcludedOrgs = excludedOrgs ?? throw new ArgumentNullException(nameof(excludedOrgs));
-            PageSize = pageSize;
+            Count = count;
         }
     }
 }
