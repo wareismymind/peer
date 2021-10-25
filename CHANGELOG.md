@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.3.1](https://www.github.com/wareismymind/peer/compare/v1.3.0...v1.3.1) (2021-10-25)
+
+
+### Miscellaneous Chores
+
+* release 1.3.1 ([0435151](https://www.github.com/wareismymind/peer/commit/0435151b43bd5c94a10b388f9f0214af5927778b))
+
 ## [1.3.0](https://www.github.com/wareismymind/peer/compare/v1.2.0...v1.3.0) (2021-10-25)
 
 
