@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.3.0](https://www.github.com/wareismymind/peer/compare/v1.2.0...v1.3.0) (2021-10-25)
+
+
+### Features
+
+* added sorting to the show view ([#98](https://www.github.com/wareismymind/peer/issues/98)) ([a696c5a](https://www.github.com/wareismymind/peer/commit/a696c5a842584694c76f1fc5946a245314c1b1b4))
+* also query review-requested separately so we get all the prs ([#87](https://www.github.com/wareismymind/peer/issues/87)) ([065910b](https://www.github.com/wareismymind/peer/commit/065910b9593f6a3046b842467f8612eab8651bdf))
+* update methods to accept/utilize cancellationtoken in network deps ([#86](https://www.github.com/wareismymind/peer/issues/86)) ([8fa0063](https://www.github.com/wareismymind/peer/commit/8fa0063951fa3d3e19c5238fcf533bc76ace9b95))
+
+
+### Bug Fixes
+
+* Fix path seperator ([#76](https://www.github.com/wareismymind/peer/issues/76)) ([a26e986](https://www.github.com/wareismymind/peer/commit/a26e986fddbb0b26f098ad648c2c7c2f7b8a1e28))
+* Made resolved comments a calculated property ([#85](https://www.github.com/wareismymind/peer/issues/85)) ([ba4dcce](https://www.github.com/wareismymind/peer/commit/ba4dcce9419f04c645972953f4bbb14fb4da8fcc))
+
 ## [1.2.0](https://www.github.com/wareismymind/peer/compare/v1.1.9...v1.2.0) (2021-10-22)
 
 
