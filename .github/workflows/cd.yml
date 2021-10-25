@@ -53,10 +53,10 @@ jobs:
           -o ./output
           -r "${{ matrix.os }}"
           -c Release
-          --project ./Peer/
           --self-contained
           /p:Version=${{ needs.calculate-version.outputs.version_tag }}
           /p:AssemblyVersion=${{ needs.calculate-version.outputs.version_tag }}
+          ./Peer/
 
       - name: update release
         shell: pwsh
