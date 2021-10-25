@@ -20,7 +20,6 @@ namespace Peer.Domain
             Provider = provider ?? throw new ArgumentNullException(nameof(provider));
         }
 
-
         public Result<bool, MatchError> IsMatch(string partial)
         {
             if (partial == null)
