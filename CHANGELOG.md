@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.3.2](https://www.github.com/wareismymind/peer/compare/v1.3.1...v1.3.2) (2021-10-25)
+
+
+### Bug Fixes
+
+* add project to build ([4759aa1](https://www.github.com/wareismymind/peer/commit/4759aa1cd22e56c31f541756d5fde873ad6d0bec))
+
 ### [1.3.1](https://www.github.com/wareismymind/peer/compare/v1.3.0...v1.3.1) (2021-10-25)
 
 
