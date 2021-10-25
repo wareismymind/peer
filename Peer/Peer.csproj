@@ -13,12 +13,13 @@
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <PublishSingleFile>true</PublishSingleFile>
+    <RuntimeIdentifiers>win-x64;osx-x64;linux-x64</RuntimeIdentifiers>
     <PublishTrimmed>true</PublishTrimmed>
     <TrimMode>copyused</TrimMode>
     <InvariantGlobalization>true</InvariantGlobalization>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <UseAppHost>True</UseAppHost>
-    <SelfContained>true</SelfContained>
+    <SelfContained>True</SelfContained>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Tool'">
