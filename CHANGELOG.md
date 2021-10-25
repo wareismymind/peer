@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.3.3](https://www.github.com/wareismymind/peer/compare/v1.3.2...v1.3.3) (2021-10-25)
+
+
+### Bug Fixes
+
+* remove rids and self contained from project file for now ([12cb8b3](https://www.github.com/wareismymind/peer/commit/12cb8b3c47246eb5af776ebd2ad982a267fc59ca))
+
 ### [1.3.2](https://www.github.com/wareismymind/peer/compare/v1.3.1...v1.3.2) (2021-10-25)
 
 
