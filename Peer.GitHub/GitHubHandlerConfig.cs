@@ -33,12 +33,19 @@ namespace Peer.GitHub
                 return GitHubConfigError.InvalidOrgConfig;
             }
 
+            if (Configuration.Count < 1 || Configuration.Count > 100)
+            {
+                return GitHubConfigError.PageSizeInvalid;
+            }
+
             return new GitHubPeerConfig(
                 Name,
                 Configuration.AccessToken,
                 Configuration.Username,
                 realizedIncluded,
-                realizedExcluded);
+                realizedExcluded,
+                Configuration.Count
+                );
         }
     }
 }

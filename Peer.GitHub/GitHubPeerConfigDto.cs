@@ -8,5 +8,6 @@ namespace Peer.GitHub
         public string? Username { get; set; }
         public IList<string> Orgs { get; set; } = new List<string>();
         public IList<string> ExcludedOrgs { get; set; } = new List<string>();
+        public int Count { get; set; } = 20;
     }
 }

@@ -6,5 +6,6 @@
         UsernameInvalid,
         ConfigurationBlockMissing,
         InvalidOrgConfig,
+        PageSizeInvalid
     }
 }
