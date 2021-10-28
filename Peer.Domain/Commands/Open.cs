@@ -52,6 +52,11 @@ namespace Peer.Domain.Commands
                 return OpenError.AmbiguousPattern;
             }
 
+            if (matches.Count == 0)
+            {
+                return OpenError.NotFound;
+            }
+
             return OpenUrl(matches.First().PullRequest.Url)
                 .OkOr(OpenError.FailedToOpen)
                 .Map(_ => Maybe.None);
@@ -85,6 +90,7 @@ namespace Peer.Domain.Commands
         Fire,
         FormatError,
         AmbiguousPattern,
-        FailedToOpen
+        FailedToOpen,
+        NotFound
     }
 }

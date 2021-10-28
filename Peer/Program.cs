@@ -117,8 +117,12 @@ namespace Peer
             services.AddSingleton<Open>();
             var provider = services.BuildServiceProvider();
             var command = provider.GetRequiredService<Open>();
-            await command.OpenAsync(new OpenConfig(opts.Partial ?? ""), token);
-
+            var result = await command.OpenAsync(new OpenConfig(opts.Partial ?? ""), token);
+            
+            if (result.IsError)
+            {
+                Console.Error.WriteLine($"Partial identifier '{opts.Partial}' failed with error: {result.Error}");
+            }
         }
 
         public static Task ConfigAsync(ConfigOptions _)
