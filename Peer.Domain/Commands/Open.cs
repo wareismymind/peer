@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Peer.Domain.Util;
@@ -16,7 +15,7 @@ namespace Peer.Domain.Commands
         private readonly List<IPullRequestFetcher> _fetchers;
         private readonly IOSInfoProvider _infoProvider;
 
-        public Open(IEnumerable<IPullRequestFetcher> fetchers,IOSInfoProvider infoProvider)
+        public Open(IEnumerable<IPullRequestFetcher> fetchers, IOSInfoProvider infoProvider)
         {
             _fetchers = fetchers.ToList();
             _infoProvider = infoProvider;

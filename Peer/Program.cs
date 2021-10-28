@@ -15,7 +15,6 @@ using Peer.GitHub;
 using Peer.Parsing;
 using Peer.Verbs;
 using wimm.Secundatives;
-using wimm.Secundatives.Extensions;
 
 namespace Peer
 {
@@ -118,7 +117,7 @@ namespace Peer
             var provider = services.BuildServiceProvider();
             var command = provider.GetRequiredService<Open>();
             var result = await command.OpenAsync(new OpenArguments(opts.Partial ?? ""), token);
-            
+
             if (result.IsError)
             {
                 Console.Error.WriteLine($"Partial identifier '{opts.Partial}' failed with error: {result.Error}");

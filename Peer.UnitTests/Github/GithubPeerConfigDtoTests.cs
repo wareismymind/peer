@@ -46,7 +46,7 @@ namespace Peer.UnitTests.GitHub
                 Assert.True(res.IsError);
                 Assert.Equal(GitHubConfigError.PageSizeInvalid, res.Error);
             }
-            
+
             [Fact]
             public void OrgsAndExcludedOrgsDefined_ReturnsInvalidOrgConfig()
             {
