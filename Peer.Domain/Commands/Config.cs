@@ -13,10 +13,13 @@ namespace Peer.Domain.Commands
   ""Providers"": {
     //The type of the provider you're configuring (currently there's only github!)
     ""github"": [{
+        //required: a friendly name for this provider
         ""Name"": ""required: a friendly name for this provider"",
         ""Configuration"": {
-          ""AccessToken"": ""required: your API token"",
-          ""Username"": ""optional: the github username you're interested in investigating, alternatively we'll fetch yours from the api"",
+          //required: your API token
+          ""AccessToken"": """",
+          //optional: the github username you're interested in investigating, alternatively we'll fetch yours from the api
+          ""Username"": """",
           //optional: Orgs can be either be traditional (github, wareismymind) or a username for user's repos 
           // if left empty we'll look at all orgs available to your user
           ""Orgs"": [""myorg"", ""wareismymind"", ""someuser""],
