@@ -28,10 +28,7 @@ namespace Peer.Domain.Commands
                     return res;
                 }
 
-                if (!token.IsCancellationRequested)
-                {
-                    await Task.Delay(watchConfig.IntervalSeconds, token);
-                }
+                await Task.Delay(watchConfig.IntervalSeconds, token);
             }
 
             return Maybe.None;
