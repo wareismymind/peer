@@ -6,5 +6,6 @@ namespace Peer.Domain
     public interface IConsoleWriter
     {
         void Display(IList<string> lines, CancellationToken token);
+        void Clear();
     }
 }

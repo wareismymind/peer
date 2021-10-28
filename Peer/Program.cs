@@ -73,11 +73,23 @@ namespace Peer
                 services.AddSingleton(sort.Value);
             }
 
-            services.AddSingleton(new ConsoleConfig(inline: true));
             services.AddSingleton<Show>();
-            var p = services.BuildServiceProvider();
-            var command = p.GetRequiredService<Show>();
-            await command.ShowAsync(new ShowArguments(), token);
+            services.AddSingleton(new ConsoleConfig(inline: opts.Watch == null));
+
+            if (opts.Watch != null)
+            {
+                services.AddSingleton<WatchShow>();
+                var provider = services.BuildServiceProvider();
+                var command = provider.GetRequiredService<WatchShow>();
+                var ts = TimeSpan.FromSeconds(opts.Watch.Value);
+                await command.WatchAsync(new WatchArguments(ts), new ShowArguments(), token);
+            }
+            else
+            {
+                var provider = services.BuildServiceProvider();
+                var command = provider.GetRequiredService<Show>();
+                await command.ShowAsync(new ShowArguments(), token);
+            }
         }
 
         public static async Task OpenAsync(OpenOptions opts, CancellationToken token)
