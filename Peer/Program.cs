@@ -15,6 +15,7 @@ using Peer.GitHub;
 using Peer.Parsing;
 using Peer.Verbs;
 using wimm.Secundatives;
+using wimm.Secundatives.Extensions;
 
 namespace Peer
 {
@@ -82,6 +83,8 @@ namespace Peer
                 return;
             }
 
+            var services = setupResult.Value;
+
             if (opts.Sort != null)
             {
                 var sort = SortParser.ParseSortOption(opts.Sort);
@@ -91,12 +94,14 @@ namespace Peer
                     return;
                 }
 
-                setupResult.Value.AddSingleton(sort.Value);
+                services.AddSingleton(sort.Value);
             }
 
-            var p = setupResult.Value.BuildServiceProvider();
-            var app = p.GetRequiredService<IPeerApplication>();
-            await app.ShowAsync(new Show(), token);
+            services.AddSingleton(new ConsoleConfig(inline: true));
+            services.AddSingleton<Show>();
+            var p = services.BuildServiceProvider();
+            var command = p.GetRequiredService<Show>();
+            await command.ShowAsync(new ShowConfig(), token);
         }
 
         public static async Task OpenAsync(OpenOptions opts, CancellationToken token)
@@ -108,10 +113,11 @@ namespace Peer
                 Console.Error.WriteLine(_configErrorMap[setupResult.Error]);
                 return;
             }
-
-            var provider = setupResult.Value.BuildServiceProvider();
-            var app = provider.GetRequiredService<IPeerApplication>();
-            await app.OpenAsync(new Open(opts.Partial ?? ""), token);
+            var services = setupResult.Value;
+            services.AddSingleton<Open>();
+            var provider = services.BuildServiceProvider();
+            var command = provider.GetRequiredService<Open>();
+            await command.OpenAsync(new OpenConfig(opts.Partial ?? ""), token);
 
         }
 
@@ -147,9 +153,7 @@ namespace Peer
             services.AddSingleton<IConsoleWriter, ConsoleWriter>();
             services.AddSingleton<IPullRequestFormatter, CompactFormatter>();
             services.AddSingleton<ISymbolProvider, DefaultEmojiProvider>();
-            services.AddSingleton<IPeerApplication, PeerApplication>();
             services.AddSingleton<IOSInfoProvider, OSInfoProvider>();
-            services.AddSingleton(new ConsoleConfig(inline: true));
             return services;
         }
     }
