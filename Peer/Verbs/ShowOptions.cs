@@ -9,6 +9,6 @@ namespace Peer.Verbs
         public string? Sort { get; set; }
 
         [Option(shortName: 'w', longName: "watch", Required = false)]
-        public int? Watch { get; set; }
+        public bool Watch { get; set; }
     }
 }

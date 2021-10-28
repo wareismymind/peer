@@ -10,6 +10,10 @@ namespace Peer.Domain.Commands
 
         private const string _configHelp = @"
 {
+  ""Peer"": {
+    //optional: The amount of time between calls to providers when using the --watch flag
+    ""WatchIntervalSeconds"": 30
+  }
   ""Providers"": {
     //The type of the provider you're configuring (currently there's only github!)
     ""github"": [{
