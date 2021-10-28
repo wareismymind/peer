@@ -22,7 +22,7 @@ namespace Peer.Domain.Commands
             _infoProvider = infoProvider;
         }
 
-        public async Task<Result<None, OpenError>> OpenAsync(OpenConfig openOptions, CancellationToken token = default)
+        public async Task<Result<None, OpenError>> OpenAsync(OpenArguments openOptions, CancellationToken token = default)
         {
             var prs = await FetchAllSources(token);
 

@@ -2,11 +2,11 @@
 
 namespace Peer.Domain.Commands
 {
-    public class OpenConfig
+    public class OpenArguments
     {
         public string Partial { get; }
 
-        public OpenConfig(string partial)
+        public OpenArguments(string partial)
         {
             Partial = partial ?? throw new ArgumentNullException(nameof(partial));
         }

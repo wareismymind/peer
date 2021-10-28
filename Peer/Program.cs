@@ -101,7 +101,7 @@ namespace Peer
             services.AddSingleton<Show>();
             var p = services.BuildServiceProvider();
             var command = p.GetRequiredService<Show>();
-            await command.ShowAsync(new ShowConfig(), token);
+            await command.ShowAsync(new ShowArguments(), token);
         }
 
         public static async Task OpenAsync(OpenOptions opts, CancellationToken token)
@@ -117,7 +117,7 @@ namespace Peer
             services.AddSingleton<Open>();
             var provider = services.BuildServiceProvider();
             var command = provider.GetRequiredService<Open>();
-            var result = await command.OpenAsync(new OpenConfig(opts.Partial ?? ""), token);
+            var result = await command.OpenAsync(new OpenArguments(opts.Partial ?? ""), token);
             
             if (result.IsError)
             {
