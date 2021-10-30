@@ -4,7 +4,7 @@ namespace Peer.Domain.Commands
 {
     public class WatchArguments
     {
-        public TimeSpan IntervalSeconds { get; } = TimeSpan.FromSeconds(30);
+        public TimeSpan IntervalSeconds { get; }
 
         public WatchArguments(TimeSpan intervalSeconds)
         {

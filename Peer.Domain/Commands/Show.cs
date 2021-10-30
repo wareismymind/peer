@@ -26,7 +26,7 @@ namespace Peer.Domain.Commands
             _sorter = sorter;
         }
 
-        public async Task<Result<None, ShowError>> ShowAsync(ShowArguments args, CancellationToken token = default)
+        public async Task<Result<None, ShowError>> ShowAsync(ShowArguments _, CancellationToken token = default)
         {
             var prs = await FetchAllSources(token);
             var sorted = _sorter?.Sort(prs) ?? prs;
