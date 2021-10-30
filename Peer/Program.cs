@@ -29,29 +29,6 @@ namespace Peer
             [ConfigError.ProviderNotMatched] = "Provider was not recognized, make sure you're using one of supported providers!"
         };
 
-        private const string _configHelp = @"
-{
-  ""Providers"": {
-    //The type of the provider you're configuring (currently there's only github!)
-    ""github"": [{
-        ""Name"": ""required: a friendly name for this provider"",
-        ""Configuration"": {
-          ""AccessToken"": ""required: your API token"",
-          ""Username"": ""optional: the github username you're interested in investigating, alternatively we'll fetch yours from the api"",
-          //optional: Orgs can be either be traditional (github, wareismymind) or a username for user's repos 
-          // if left empty we'll look at all orgs available to your user
-          ""Orgs"": [""myorg"", ""wareismymind"", ""someuser""],
-          //optional: Orgs that you'd like to exclude from the output, only really makes sense if no orgs are set
-          ""ExcludedOrgs"": [],
-          //optional: indicates the number of pull requests that will be listed, should be number between 1 and 100.
-          // if not provided will default to 20.
-          ""Count"": 20
-        }
-    }]
-  }
-}
-";
-
         private static readonly CancellationTokenSource _tcs = new();
 
         public static async Task Main(string[] args)
@@ -82,6 +59,8 @@ namespace Peer
                 return;
             }
 
+            var services = setupResult.Value;
+
             if (opts.Sort != null)
             {
                 var sort = SortParser.ParseSortOption(opts.Sort);
@@ -91,12 +70,14 @@ namespace Peer
                     return;
                 }
 
-                setupResult.Value.AddSingleton(sort.Value);
+                services.AddSingleton(sort.Value);
             }
 
-            var p = setupResult.Value.BuildServiceProvider();
-            var app = p.GetRequiredService<IPeerApplication>();
-            await app.ShowAsync(new Show(), token);
+            services.AddSingleton(new ConsoleConfig(inline: true));
+            services.AddSingleton<Show>();
+            var p = services.BuildServiceProvider();
+            var command = p.GetRequiredService<Show>();
+            await command.ShowAsync(new ShowArguments(), token);
         }
 
         public static async Task OpenAsync(OpenOptions opts, CancellationToken token)
@@ -108,19 +89,22 @@ namespace Peer
                 Console.Error.WriteLine(_configErrorMap[setupResult.Error]);
                 return;
             }
+            var services = setupResult.Value;
+            services.AddSingleton<Open>();
+            var provider = services.BuildServiceProvider();
+            var command = provider.GetRequiredService<Open>();
+            var result = await command.OpenAsync(new OpenArguments(opts.Partial ?? ""), token);
 
-            var provider = setupResult.Value.BuildServiceProvider();
-            var app = provider.GetRequiredService<IPeerApplication>();
-            await app.OpenAsync(new Open(opts.Partial ?? ""), token);
-
+            if (result.IsError)
+            {
+                Console.Error.WriteLine($"Partial identifier '{opts.Partial}' failed with error: {result.Error}");
+            }
         }
 
-        public static Task ConfigAsync(ConfigOptions _)
+        public static async Task ConfigAsync(ConfigOptions _)
         {
-            Console.Error.WriteLine("Hey lets get you set up and working with Peer!");
-            Console.Error.WriteLine($"Toss the following into this location: {_configFile} and fill in values for your github account");
-            Console.WriteLine(_configHelp);
-            return Task.CompletedTask;
+            var config = new Config();
+            await config.ConfigAsync();
         }
 
         private static Result<IServiceCollection, ConfigError> SetupServices()
@@ -147,9 +131,7 @@ namespace Peer
             services.AddSingleton<IConsoleWriter, ConsoleWriter>();
             services.AddSingleton<IPullRequestFormatter, CompactFormatter>();
             services.AddSingleton<ISymbolProvider, DefaultEmojiProvider>();
-            services.AddSingleton<IPeerApplication, PeerApplication>();
             services.AddSingleton<IOSInfoProvider, OSInfoProvider>();
-            services.AddSingleton(new ConsoleConfig(inline: true));
             return services;
         }
     }
