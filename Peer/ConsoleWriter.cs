@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -62,6 +63,19 @@ namespace Peer
             Console.Write(sb.ToString());
 
             _previousWriteHeight = lines.Count;
+            DebugTimeStamp();
+        }
+
+        public void Clear()
+        {
+            Console.Clear();
+        }
+
+        [Conditional("DEBUG")]
+        private static void DebugTimeStamp()
+        {
+            //CN: To make it easier to see if the console is actually refreshing or not.
+            Console.WriteLine(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
         }
     }
 }

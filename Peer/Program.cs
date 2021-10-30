@@ -73,11 +73,24 @@ namespace Peer
                 services.AddSingleton(sort.Value);
             }
 
-            services.AddSingleton(new ConsoleConfig(inline: true));
             services.AddSingleton<Show>();
-            var p = services.BuildServiceProvider();
-            var command = p.GetRequiredService<Show>();
-            await command.ShowAsync(new ShowArguments(), token);
+            services.AddSingleton(new ConsoleConfig(inline: !opts.Watch));
+
+            if (opts.Watch)
+            {
+                services.AddSingleton<WatchShow>();
+                var provider = services.BuildServiceProvider();
+                var command = provider.GetRequiredService<WatchShow>();
+                var watchOpts = provider.GetRequiredService<WatchOptions>();
+                var args = watchOpts.Into();
+                await command.WatchAsync(args, new ShowArguments(), token);
+            }
+            else
+            {
+                var provider = services.BuildServiceProvider();
+                var command = provider.GetRequiredService<Show>();
+                await command.ShowAsync(new ShowArguments(), token);
+            }
         }
 
         public static async Task OpenAsync(OpenOptions opts, CancellationToken token)
@@ -126,6 +139,15 @@ namespace Peer
             if (configResults.IsError)
             {
                 return configResults.Error;
+            }
+
+            var watchOptions = configuration.GetSection("Peer")
+                .Get<WatchOptions>()
+                ?? new WatchOptions();
+
+            if (watchOptions != null)
+            {
+                services.AddSingleton(watchOptions);
             }
 
             services.AddSingleton<IConsoleWriter, ConsoleWriter>();

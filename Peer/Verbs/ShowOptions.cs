@@ -7,5 +7,8 @@ namespace Peer.Verbs
     {
         [Option(shortName: 's', longName: "sort", Required = false)]
         public string? Sort { get; set; }
+
+        [Option(shortName: 'w', longName: "watch", Required = false)]
+        public bool Watch { get; set; }
     }
 }
