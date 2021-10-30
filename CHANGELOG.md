@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.4.0](https://www.github.com/wareismymind/peer/compare/v1.3.3...v1.4.0) (2021-10-30)
+
+
+### Features
+
+* initial implementation of watch on show ([#110](https://www.github.com/wareismymind/peer/issues/110)) ([1421f11](https://www.github.com/wareismymind/peer/commit/1421f11347d42ee32328361fb2876de67a2d7b2b))
+* making page size configurable ([#83](https://www.github.com/wareismymind/peer/issues/83)) ([a671f04](https://www.github.com/wareismymind/peer/commit/a671f04e406b037ecda4b730471dd574261c509b))
+
+
+### Bug Fixes
+
+* factor commands into classes ([#107](https://www.github.com/wareismymind/peer/issues/107)) ([a52038c](https://www.github.com/wareismymind/peer/commit/a52038cb00934465cbf36e73f8861517d7f3ae99))
+
 ### [1.3.3](https://www.github.com/wareismymind/peer/compare/v1.3.2...v1.3.3) (2021-10-25)
 
 
