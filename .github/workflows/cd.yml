@@ -35,7 +35,7 @@ jobs:
     needs: [calculate-version]
     strategy:
       matrix:
-        os: [win-x64, linux-x64, osx-x64]
+        os: [win-x64, linux-x64, osx-x64, win-arm64, linux-arm64, osx-arm64]
     if: ${{ needs.calculate-version.outputs.should_release }}
     steps:
       - name: Checkout Code
