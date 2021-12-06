@@ -41,5 +41,4 @@ namespace Peer.Domain.Commands
             };
         }
     }
-
 }

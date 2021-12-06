@@ -21,7 +21,7 @@ namespace Peer.Domain.Commands
 
         public async Task<Result<None, OpenError>> OpenAsync(OpenArguments openOptions, CancellationToken token = default)
         {
-            var res = await _prService.FindByPartial(openOptions.Partial)
+            var res = await _prService.FindByPartial(openOptions.Partial, token)
                 .MapError(err => err switch
                 {
                     FindError.AmbiguousMatch => OpenError.AmbiguousPattern,

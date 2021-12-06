@@ -161,8 +161,7 @@ namespace Peer
 
         public static async Task ConfigAsync(ConfigOptions _)
         {
-            var config = new Config();
-            await config.ConfigAsync();
+            await Config.ConfigAsync();
         }
 
         private static Result<IServiceCollection, ConfigError> SetupServices()

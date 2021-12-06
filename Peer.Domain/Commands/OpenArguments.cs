@@ -1,4 +1,6 @@
-﻿namespace Peer.Domain.Commands
+﻿using System;
+
+namespace Peer.Domain.Commands
 {
     public class OpenArguments
     {
@@ -6,7 +8,7 @@
 
         public OpenArguments(PartialIdentifier partial)
         {
-            Partial = partial;
+            Partial = partial ?? throw new ArgumentNullException(nameof(partial));
         }
     }
 }

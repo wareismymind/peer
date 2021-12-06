@@ -37,7 +37,7 @@ namespace Peer.Domain.Commands
   }
 }
 ";
-        public Task ConfigAsync()
+        public static Task ConfigAsync()
         {
             Console.Error.WriteLine("Hey lets get you set up and working with Peer!");
             Console.Error.WriteLine($"Toss the following into this location: {_configFile} and fill in values for your github account");
