@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Peer.GitHub.GraphQL.PullRequestSearch
+﻿namespace Peer.GitHub.GraphQL.PullRequestSearch
 {
 #nullable disable
     public class Result : NodeList<PullRequest>

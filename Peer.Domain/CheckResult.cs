@@ -8,9 +8,9 @@
         Neutral,
         Skipped,
         Cancelled,
-        Stale, 
+        Stale,
         Timeout,
         ActionRequired,
-        Fire, 
+        Fire,
     }
 }

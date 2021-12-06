@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Peer.Domain.Commands
+﻿namespace Peer.Domain.Commands
 {
     public class OpenArguments
     {

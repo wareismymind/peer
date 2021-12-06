@@ -43,7 +43,7 @@ namespace Peer
                     return;
                 }
 
-                var split = line.Split(new string[] { "\r\n", "\n"}, StringSplitOptions.None);
+                var split = line.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
 
                 //CN -- This should probably be done within the formatter but this is just here for now while I experiment
                 foreach (var subline in split)

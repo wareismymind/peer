@@ -36,7 +36,7 @@ namespace Peer.Domain.Commands
                     { Status: CheckStatus.Completed, Result: CheckResult.Failure } => "\uD83D\uDD34", //Large Red Circle
                     { Status: CheckStatus.Completed, Result: CheckResult.Timeout } => "\uD83D\uDC22", //Turtle
                     { Status: CheckStatus.Completed, Result: CheckResult.Skipped } => "\uD83E\uDEA2", //Knot (Kinda like a skipping rope? Really reaching)
-                    { Status: CheckStatus.Completed, Result: CheckResult.Neutral} => "\uD83E\uDD37", //Shrug
+                    { Status: CheckStatus.Completed, Result: CheckResult.Neutral } => "\uD83E\uDD37", //Shrug
                     _ => "\u25EF\uFE0F"
                 };
 

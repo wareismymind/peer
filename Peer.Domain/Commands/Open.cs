@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Peer.Domain.Exceptions;
-using Peer.Domain.Util;
 using wimm.Secundatives;
 
 namespace Peer.Domain.Commands
@@ -32,7 +29,7 @@ namespace Peer.Domain.Commands
                     _ => throw new UnreachableException()
                 })
                 .Map(pr => OpenUrl(pr.Url).OkOr(OpenError.FailedToOpen));
-            
+
             return res.Map(_ => Maybe.None);
         }
 

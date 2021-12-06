@@ -103,7 +103,7 @@ namespace Peer
                 Console.Error.WriteLine(_configErrorMap[setupResult.Error]);
                 return;
             }
-            
+
             var parseResult = PartialIdentifier.Parse(opts.Partial!);
 
             if (parseResult.IsError)
@@ -117,7 +117,7 @@ namespace Peer
             services.AddSingleton<Open>();
             var provider = services.BuildServiceProvider();
             var command = provider.GetRequiredService<Open>();
-            
+
             var result = await command.OpenAsync(new OpenArguments(parseResult.Value), token);
 
             if (result.IsError)

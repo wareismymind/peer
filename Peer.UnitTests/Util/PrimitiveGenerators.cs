@@ -57,7 +57,7 @@ namespace Peer.UnitTests.Util
                    new State(PrimitiveGenerators.RandomEnumValue<PullRequestStatus>(), 10, 10),
                    new GitInfo(PrimitiveGenerators.RandomBranchName(), PrimitiveGenerators.RandomBranchName()),
                    new List<Check>());
-                
+
         }
     }
 }

@@ -63,22 +63,22 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
     public enum CheckRunStatusState
     {
         Queued,
-        In_Progress, 
+        In_Progress,
         Completed,
         Waiting,
-        Pending, 
+        Pending,
         Requested
     }
 
-    
+
     public enum CheckConclusionState
     {
         Action_Required,
         Cancelled,
-        Failure, 
-        Neutral, 
-        Skipped, 
-        Stale, 
+        Failure,
+        Neutral,
+        Skipped,
+        Stale,
         Startup_Failure,
         Success,
         Timed_Out

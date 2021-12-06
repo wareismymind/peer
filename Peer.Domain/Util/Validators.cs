@@ -29,7 +29,7 @@ namespace Peer.Domain.Util
                 throw new ArgumentException(NotEmptyOrWhitespace, name);
         }
 
-        public static void ArgIsNotNull(object value, [CallerArgumentExpression("value")]string? name = null)
+        public static void ArgIsNotNull(object value, [CallerArgumentExpression("value")] string? name = null)
         {
             if (value == null)
                 throw new ArgumentNullException(name);
