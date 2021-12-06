@@ -4,11 +4,11 @@ namespace Peer.Domain.Commands
 {
     public class OpenArguments
     {
-        public string Partial { get; }
+        public PartialIdentifier Partial { get; }
 
-        public OpenArguments(string partial)
+        public OpenArguments(PartialIdentifier partial)
         {
-            Partial = partial ?? throw new ArgumentNullException(nameof(partial));
+            Partial = partial;
         }
     }
 }

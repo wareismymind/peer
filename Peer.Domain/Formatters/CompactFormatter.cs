@@ -13,7 +13,7 @@ namespace Peer.Domain.Formatters
     //    Status = ("S", 2, 1, true),
     //    Url = ("Url", 3, 35, true)
     //}; or similar sort of structure?
-    public class CompactFormatter : IPullRequestFormatter
+    public class CompactFormatter : IListFormatter
     {
         private readonly ISymbolProvider _symbolProvider;
         private const char _ellipsis = '\u2026';

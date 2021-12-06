@@ -41,11 +41,12 @@ namespace Peer
 
             Console.OutputEncoding = Encoding.UTF8;
 
-            await Parser.Default.ParseArguments<ShowOptions, OpenOptions, ConfigOptions>(args)
+            await Parser.Default.ParseArguments<ShowOptions, OpenOptions, ConfigOptions, DetailsOptions>(args)
                 .MapResult(
                     (ShowOptions x) => ShowAsync(x, _tcs.Token),
                     (OpenOptions x) => OpenAsync(x, _tcs.Token),
                     (ConfigOptions x) => ConfigAsync(x),
+                    (DetailsOptions x) => DetailsAsync(x, _tcs.Token),
                     err => Task.CompletedTask);
         }
 
@@ -102,15 +103,59 @@ namespace Peer
                 Console.Error.WriteLine(_configErrorMap[setupResult.Error]);
                 return;
             }
+            
+            var parseResult = PartialIdentifier.Parse(opts.Partial!);
+
+            if (parseResult.IsError)
+            {
+                Console.Error.WriteLine(
+                    $"Failed to parse partial identifier '{opts.Partial}' with error: {parseResult.Error}");
+                return;
+            }
+
             var services = setupResult.Value;
             services.AddSingleton<Open>();
             var provider = services.BuildServiceProvider();
             var command = provider.GetRequiredService<Open>();
-            var result = await command.OpenAsync(new OpenArguments(opts.Partial ?? ""), token);
+            
+            var result = await command.OpenAsync(new OpenArguments(parseResult.Value), token);
 
             if (result.IsError)
             {
                 Console.Error.WriteLine($"Partial identifier '{opts.Partial}' failed with error: {result.Error}");
+            }
+        }
+
+        public static async Task DetailsAsync(DetailsOptions opts, CancellationToken token)
+        {
+            var setupResult = SetupServices();
+            if (setupResult.IsError)
+            {
+                Console.Error.WriteLine(_configErrorMap[setupResult.Error]);
+                return;
+            }
+
+            var parseResult = PartialIdentifier.Parse(opts.Partial!);
+
+            if (parseResult.IsError)
+            {
+                Console.Error.WriteLine(
+                    $"Failed to parse partial identifier '{opts.Partial}' with error: {parseResult.Error}");
+                return;
+            }
+
+            var services = setupResult.Value;
+            services.AddSingleton<Details>();
+            services.AddSingleton(new ConsoleConfig(inline: true));
+
+            var provider = services.BuildServiceProvider();
+            var command = provider.GetRequiredService<Details>();
+
+            var res = await command.DetailsAsync(new DetailsArguments(parseResult.Value), token);
+
+            if (res.IsError)
+            {
+                Console.Error.WriteLine($"Partial identifier '{opts.Partial}' failed with error: {res.Error}");
             }
         }
 
@@ -151,9 +196,11 @@ namespace Peer
             }
 
             services.AddSingleton<IConsoleWriter, ConsoleWriter>();
-            services.AddSingleton<IPullRequestFormatter, CompactFormatter>();
+            services.AddSingleton<IListFormatter, CompactFormatter>();
+            services.AddSingleton<IDetailsFormatter, DetailsFormatter>();
             services.AddSingleton<ISymbolProvider, DefaultEmojiProvider>();
             services.AddSingleton<IOSInfoProvider, OSInfoProvider>();
+            services.AddSingleton<IPullRequestService, PullRequestService>();
             return services;
         }
     }

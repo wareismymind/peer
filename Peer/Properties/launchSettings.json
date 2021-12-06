@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Peer": {
+      "commandName": "Project",
+      "commandLineArgs": "details 345"
+    }
+  }
+}

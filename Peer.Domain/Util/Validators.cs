@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 namespace Peer.Domain.Util
 {
@@ -28,7 +29,7 @@ namespace Peer.Domain.Util
                 throw new ArgumentException(NotEmptyOrWhitespace, name);
         }
 
-        public static void ArgIsNotNull(object value, string name)
+        public static void ArgIsNotNull(object value, [CallerArgumentExpression("value")]string? name = null)
         {
             if (value == null)
                 throw new ArgumentNullException(name);

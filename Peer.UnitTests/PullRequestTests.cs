@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Peer.Domain;
 using Xunit;
 
@@ -17,55 +18,55 @@ namespace Peer.UnitTests
             [Fact]
             public void IdNull_Throws()
             {
-                Assert.Throws<ArgumentNullException>(() => new PullRequest(null, _identifier, _url, _descriptor, _state, _gitInfo));
+                Assert.Throws<ArgumentNullException>(() => new PullRequest(null, _identifier, _url, _descriptor, _state, _gitInfo, new List<Check>()));
             }
 
             [Fact]
             public void IdEmpty_Throws()
             {
-                Assert.Throws<ArgumentException>(() => new PullRequest(string.Empty, _identifier, _url, _descriptor, _state, _gitInfo));
+                Assert.Throws<ArgumentException>(() => new PullRequest(string.Empty, _identifier, _url, _descriptor, _state, _gitInfo, new List<Check>()));
             }
 
             [Fact]
             public void IdentifierNull_Throws()
             {
-                Assert.Throws<ArgumentNullException>(() => new PullRequest(_id, null, _url, _descriptor, _state, _gitInfo));
+                Assert.Throws<ArgumentNullException>(() => new PullRequest(_id, null, _url, _descriptor, _state, _gitInfo, new List<Check>()));
             }
 
             [Fact]
             public void IdWhitespace_Throws()
             {
-                Assert.Throws<ArgumentException>(() => new PullRequest("\t \r\n", _identifier, _url, _descriptor, _state, _gitInfo));
+                Assert.Throws<ArgumentException>(() => new PullRequest("\t \r\n", _identifier, _url, _descriptor, _state, _gitInfo, new List<Check>()));
             }
 
             [Fact]
             public void UrlNull_Throws()
             {
-                Assert.Throws<ArgumentNullException>(() => new PullRequest(_id, _identifier, null, _descriptor, _state, _gitInfo));
+                Assert.Throws<ArgumentNullException>(() => new PullRequest(_id, _identifier, null, _descriptor, _state, _gitInfo, new List<Check>()));
             }
 
             [Fact]
             public void DescriptorNull_Throws()
             {
-                Assert.Throws<ArgumentNullException>(() => new PullRequest(_id, _identifier, _url, null, _state, _gitInfo));
+                Assert.Throws<ArgumentNullException>(() => new PullRequest(_id, _identifier, _url, null, _state, _gitInfo, new List<Check>()));
             }
 
             [Fact]
             public void StateNull_Throws()
             {
-                Assert.Throws<ArgumentNullException>(() => new PullRequest(_id, _identifier, _url, _descriptor, null, _gitInfo));
+                Assert.Throws<ArgumentNullException>(() => new PullRequest(_id, _identifier, _url, _descriptor, null, _gitInfo, new List<Check>()));
             }
 
             [Fact]
             public void GitInfoNull_Throws()
             {
-                Assert.Throws<ArgumentNullException>(() => new PullRequest(_id, _identifier, _url, _descriptor, _state, null));
+                Assert.Throws<ArgumentNullException>(() => new PullRequest(_id, _identifier, _url, _descriptor, _state, null, new List<Check>()));
             }
 
             [Fact]
             public void ArgsValid_Constructs()
             {
-                _ = new PullRequest(_id, _identifier, _url, _descriptor, _state, _gitInfo);
+                _ = new PullRequest(_id, _identifier, _url, _descriptor, _state, _gitInfo, new List<Check>());
             }
         }
     }

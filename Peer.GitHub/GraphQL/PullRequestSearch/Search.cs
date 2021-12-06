@@ -47,19 +47,30 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
                                 state
                                 mergeable
                                 reviewDecision
-                                commits (last: 1) {{
-                                    nodes {{
-                                        commit {{
-                                            statusCheckRollup {{
-                                                state
-                                            }}
-                                        }}
-                                    }}
-                                }}
                                 baseRepository {{
                                     name
                                     owner {{ login }}
                                 }}
+#THIS IS THE STUFF FOR THE CHECKS AND CRAP
+                                commits(last: 1) {{
+                                  nodes {{
+                                    commit {{
+                                      checkSuites(first: 100) {{
+                                        nodes {{
+                                          checkRuns(first: 100) {{
+                                            nodes {{
+                                              name
+                                              conclusion
+                                              status
+                                              url
+                                          }}
+                                        }}
+                                      }}
+                                    }}
+                                  }}
+                                }}
+                              }}
+#THIS IS THE END OF THE STUFF FOR THE CHECKS AND CRAP
                             }}
                         }}
                         pageInfo {{ endCursor }}
