@@ -12,5 +12,4 @@
         Success,
         Timed_Out
     }
-#nullable enable
 }

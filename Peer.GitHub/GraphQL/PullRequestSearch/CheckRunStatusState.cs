@@ -9,5 +9,4 @@
         Pending,
         Requested
     }
-#nullable enable
 }

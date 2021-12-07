@@ -4,6 +4,7 @@ using Peer.Domain.Exceptions;
 
 namespace Peer.GitHub.GraphQL.PullRequestSearch
 {
+#nullable disable
     public class CheckRun
     {
         public string Name { get; set; }
