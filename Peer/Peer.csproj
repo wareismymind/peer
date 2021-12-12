@@ -27,10 +27,12 @@
     <Authors>Thomas Showers, Chris Nantau, Peer Contributors</Authors>
     <Company>wareismymind</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Description> A CLI dashboard for visualizing active pull requests from Github and more!</Description>
     <PackageProjectUrl>https://github.com/wareismymind/peer</PackageProjectUrl>
     <RepositoryUrl>https://github.com/wareismymind/peer</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <Optimize>True</Optimize>
+    <PackageTags>pull-requests cli-tools github</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

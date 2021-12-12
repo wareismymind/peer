@@ -1,11 +1,19 @@
 ﻿# Remove the line below if you want to inherit .editorconfig settings from higher directories
 root = true
 
+[*.csproj]
+# Indentation and spacing
+indent_size = 2
+indent_style = space
+insert_final_newline = true
+end_of_line = lf
+
 # C# files
 [*.cs]
 
 #### Core EditorConfig Options ####
 
+# Indentation and spacing
 # Indentation and spacing
 indent_size = 4
 indent_style = space
@@ -218,5 +226,5 @@ dotnet_naming_style.underscore_camel.capitalization = camel_case
 dotnet_analyzer_diagnostic.category-Globalization.severity = none
 
 # CA2007: Consider calling ConfigureAwait on the awaited task
-# In almost all cases in dotnet core this is unnecessary as there is syncronization context
+# In almost all cases in dotnet core this is unnecessary as there is synchronization context
 dotnet_diagnostic.CA2007.severity = none
