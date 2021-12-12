@@ -46,9 +46,4 @@
     <ProjectReference Include="..\Peer.Domain\Peer.Domain.csproj" />
     <ProjectReference Include="..\Peer.GitHub\Peer.GitHub.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <None Update="Test.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
 </Project>
