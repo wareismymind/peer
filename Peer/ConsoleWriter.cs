@@ -43,29 +43,23 @@ namespace Peer
                     return;
                 }
 
-                var split = line.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+                var padded = line.PadRight(consoleWidth);
 
-                //CN -- This should probably be done within the formatter but this is just here for now while I experiment
-                foreach (var subline in split)
+                if (padded.Length > consoleWidth)
                 {
-                    var padded = subline.PadRight(consoleWidth);
-
-                    if (padded.Length > consoleWidth)
+                    var remaining = padded.AsSpan();
+                    while (remaining.Length > consoleWidth)
                     {
-                        var remaining = padded.AsSpan();
-                        while (remaining.Length > consoleWidth)
-                        {
-                            sb.Append(remaining[..consoleWidth]);
-                            sb.AppendLine();
-                            remaining = remaining[consoleWidth..];
-                        }
-                        sb.Append(remaining);
+                        sb.Append(remaining[..consoleWidth]);
                         sb.AppendLine();
+                        remaining = remaining[consoleWidth..];
                     }
-                    else
-                    {
-                        sb.AppendLine(padded);
-                    }
+                    sb.Append(remaining);
+                    sb.AppendLine();
+                }
+                else
+                {
+                    sb.AppendLine(padded);
                 }
 
             }
