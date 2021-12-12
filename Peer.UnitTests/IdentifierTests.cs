@@ -49,23 +49,6 @@ namespace Peer.UnitTests
                 Assert.True(res);
             }
 
-            //CN: Move these to the def of paritals tests
-            //[Fact]
-            //public void PartialIsEmpty_ReturnsNoSegmentsToMatch()
-            //{
-            //    var res = _identifier.IsMatch(string.Empty);
-            //    Assert.True(res.IsError);
-            //    Assert.Equal(MatchError.NoSegmentsToMatch, res.Error);
-            //}
-
-            //[Fact]
-            //public void PartialHasTooManySections_ReturnsTooManySegments()
-            //{
-            //    var res = _identifier.IsMatch("a/b/c/d/e/f/g/h");
-
-            //    Assert.True(res.IsError);
-            //    Assert.Equal(MatchError.TooManySegments, res.Error);
-            //}
         }
     }
 }
