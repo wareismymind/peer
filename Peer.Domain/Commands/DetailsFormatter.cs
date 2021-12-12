@@ -24,7 +24,7 @@ namespace Peer.Domain.Commands
             lines.Add($"{_pad}{pullRequest.Url}");
             lines.Add(string.Empty);
             lines.Add("Checks:");
-           
+
 
             var titleWidth = pullRequest.Checks.Max(x => x.Name.Length);
 
