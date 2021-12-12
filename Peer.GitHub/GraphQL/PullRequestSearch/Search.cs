@@ -51,7 +51,7 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
                                     name
                                     owner {{ login }}
                                 }}
-#THIS IS THE STUFF FOR THE CHECKS AND CRAP
+#THIS IS THE STUFF FOR THE CHECKS
                                 commits(last: 1) {{
                                   nodes {{
                                     commit {{
@@ -70,7 +70,7 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
                                   }}
                                 }}
                               }}
-#THIS IS THE END OF THE STUFF FOR THE CHECKS AND CRAP
+#THIS IS THE END OF THE STUFF FOR THE CHECKS
                             }}
                         }}
                         pageInfo {{ endCursor }}
