@@ -14,7 +14,6 @@ end_of_line = lf
 #### Core EditorConfig Options ####
 
 # Indentation and spacing
-# Indentation and spacing
 indent_size = 4
 indent_style = space
 
