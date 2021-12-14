@@ -110,8 +110,8 @@ namespace Peer.GitHub
         private static GraphQLHttpRequest ThreadPageQuery(IEnumerable<PRSearch.PullRequest> prs)
         {
             var query = ThreadQuery.Query.Generate(
-                   prs.Select(
-                       pr => new ThreadQuery.QueryParams(pr.Id, pr.ReviewThreads.PageInfo.EndCursor)));
+                prs.Select(
+                    pr => new ThreadQuery.QueryParams(pr.Id, pr.ReviewThreads.PageInfo.EndCursor)));
 
             return new GraphQLHttpRequest(query);
         }

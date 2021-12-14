@@ -27,26 +27,23 @@
     <Authors>Thomas Showers, Chris Nantau, Peer Contributors</Authors>
     <Company>wareismymind</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Description> A CLI dashboard for active pull requests from Github and more!</Description>
     <PackageProjectUrl>https://github.com/wareismymind/peer</PackageProjectUrl>
     <RepositoryUrl>https://github.com/wareismymind/peer</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <Optimize>True</Optimize>
+    <PackageTags>pull-requests cli-tools github</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.8.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0-rc.2.21480.5" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.0-rc.2.21480.5" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0-rc.2.21480.5" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0-rc.2.21480.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Peer.Domain\Peer.Domain.csproj" />
     <ProjectReference Include="..\Peer.GitHub\Peer.GitHub.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="Test.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 </Project>
