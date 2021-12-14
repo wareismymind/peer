@@ -10,7 +10,7 @@ namespace Peer.Domain
         public CheckResult Result { get; }
         public Uri Url { get; }
 
-        public Check(string name, string description, Uri url, CheckStatus status, CheckResult result)
+        public Check(string name, string? description, Uri url, CheckStatus status, CheckResult result)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Description = description;

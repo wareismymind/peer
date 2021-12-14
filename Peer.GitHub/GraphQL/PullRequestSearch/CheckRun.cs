@@ -4,13 +4,14 @@ using Peer.Domain.Exceptions;
 
 namespace Peer.GitHub.GraphQL.PullRequestSearch
 {
-#nullable disable
     public class CheckRun
     {
+#nullable disable
         public string Name { get; set; }
         public CheckConclusionState Conclusion { get; set; }
         public Uri Url { get; set; }
         public CheckRunStatusState Status { get; set; }
+#nullable enable
 
         public Check Into()
         {
@@ -48,5 +49,5 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
             };
         }
     }
-#nullable enable
+
 }
