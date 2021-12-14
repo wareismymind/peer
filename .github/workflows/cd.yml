@@ -45,11 +45,11 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 6.0.x
-          include-prerelease: true
+          include-prerelease: false
 
       - name: publish binaries
         run: >
-          dotnet publish 
+          dotnet publish
           -o ./output
           -r "${{ matrix.os }}"
           -c Release
@@ -86,11 +86,11 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 6.0.x
-          include-prerelease: true
+          include-prerelease: false
 
       - name: publish tool package
         run: >
-          dotnet pack 
+          dotnet pack
           -o ./output
           -c Tool
           /p:Version=${{ needs.calculate-version.outputs.version_tag }}

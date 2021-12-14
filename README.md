@@ -28,14 +28,14 @@ Peer is available as a standalone windows executable on scoop, a portable exe in
 
 via scoop:
 
-```
+```ps1
 scoop bucket add wimm https://github.com/wareismymind/wareismy-scoop
 scoop install peer
 ```
 
 via dotnet:
 
-```
+```ps1
 dotnet tool install --global peer
 ```
 
