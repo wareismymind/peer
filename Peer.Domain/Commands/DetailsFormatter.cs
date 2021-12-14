@@ -42,13 +42,13 @@ namespace Peer.Domain.Commands
                     _ => "\u25EF\uFE0F" //Large white circule
                 };
 
-                lines.Add($"  {symbol,4} {check.Name.PadRight(titleWidth)} -- {check.Url}");
+                lines.Add($"{_pad}{symbol,4} {check.Name.PadRight(titleWidth)} -- {check.Url}");
             }
 
             return lines;
         }
 
-        private string[] SplitAndPad(string input)
+        private static string[] SplitAndPad(string input)
         {
             var split = input.Trim().Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
             return split.Select(x => $"{_pad}{x}").ToArray();
