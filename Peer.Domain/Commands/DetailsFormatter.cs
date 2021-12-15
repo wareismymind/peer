@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using wimm.Secundatives.Extensions;
 
 namespace Peer.Domain.Commands
 {
@@ -8,6 +9,12 @@ namespace Peer.Domain.Commands
     public class DetailsFormatter : IDetailsFormatter
     {
         private const string _pad = "  ";
+        private readonly ICheckSymbolProvider _symbolProvider;
+
+        public DetailsFormatter(ICheckSymbolProvider symbolProvider)
+        {
+            _symbolProvider = symbolProvider;
+        }
 
         public IList<string> Format(PullRequest pullRequest)
         {
@@ -31,16 +38,8 @@ namespace Peer.Domain.Commands
             //Checks here
             foreach (var check in pullRequest.Checks)
             {
-                var symbol = check switch
-                {
-                    { Status: CheckStatus.InProgress } => "\uD83D\uDD35", //Large Blue Circle
-                    { Status: CheckStatus.Completed, Result: CheckResult.Success } => "\uD83D\uDFE2", //Large Green Circle
-                    { Status: CheckStatus.Completed, Result: CheckResult.Failure } => "\uD83D\uDD34", //Large Red Circle
-                    { Status: CheckStatus.Completed, Result: CheckResult.Timeout } => "\uD83D\uDC22", //Turtle
-                    { Status: CheckStatus.Completed, Result: CheckResult.Skipped } => "\uD83E\uDEA2", //Knot (Kinda like a skipping rope? Really reaching)
-                    { Status: CheckStatus.Completed, Result: CheckResult.Neutral } => "\uD83E\uDD37", //Shrug
-                    _ => "\u25EF\uFE0F" //Large white circule
-                };
+                var symbol = _symbolProvider.GetSymbol(check.Status, check.Result)
+                    .UnwrapOr("\u25EF\uFE0F"); //Large white circle
 
                 lines.Add($"{_pad}{symbol,4} {check.Name.PadRight(titleWidth)} -- {check.Url}");
             }

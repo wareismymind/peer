@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
+using CommandLine.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Peer.Domain;
@@ -41,17 +43,6 @@ namespace Peer
 
             Console.OutputEncoding = Encoding.UTF8;
 
-            await Parser.Default.ParseArguments<ShowOptions, OpenOptions, ConfigOptions, DetailsOptions>(args)
-                .MapResult(
-                    (ShowOptions x) => ShowAsync(x, _tcs.Token),
-                    (OpenOptions x) => OpenAsync(x, _tcs.Token),
-                    (ConfigOptions x) => ConfigAsync(x),
-                    (DetailsOptions x) => DetailsAsync(x, _tcs.Token),
-                    err => Task.CompletedTask);
-        }
-
-        public static async Task ShowAsync(ShowOptions opts, CancellationToken token)
-        {
             var setupResult = SetupServices();
 
             if (setupResult.IsError)
@@ -59,9 +50,47 @@ namespace Peer
                 Console.Error.WriteLine(_configErrorMap[setupResult.Error]);
                 return;
             }
-
             var services = setupResult.Value;
+            var parser = new Parser(config =>
+            {
+                config.AutoHelp = true;
+                config.AutoVersion = true;
+                config.IgnoreUnknownArguments = false;
+            });
 
+
+            var pr = parser.ParseArguments<ShowOptions, OpenOptions, ConfigOptions, DetailsOptions>(args);
+
+            if (pr.Tag == ParserResultType.Parsed)
+            {
+                await pr.MapResult(
+                    (ShowOptions x) => ShowAsync(x, services, _tcs.Token),
+                    (OpenOptions x) => OpenAsync(x, services, _tcs.Token),
+                    (ConfigOptions x) => ConfigAsync(x),
+                    (DetailsOptions x) => DetailsAsync(x, services, _tcs.Token),
+                    err => { err.Output(); Console.WriteLine("Doot"); return Task.CompletedTask; });
+            }
+
+
+            var text = pr switch
+            {
+                var v when v.Is<ShowOptions>() => GetHelpText<ShowOptions>(pr, services.BuildServiceProvider()),
+                var v when v.Is<DetailsOptions>() => GetHelpText<DetailsOptions>(pr, services.BuildServiceProvider()),
+                _ => HelpText.AutoBuild<object>(pr)
+            };
+
+            Console.Write(text);
+        }
+
+        //todo:cn -- maybe pun + indirect here?
+        private static HelpText GetHelpText<TOptions>(ParserResult<object> parserResult, IServiceProvider serviceProvider)
+        {
+            var formatter = serviceProvider.GetRequiredService<IHelpTextFormatter<TOptions>>();
+            return formatter.GetDetailsHelpText(parserResult);
+        }
+
+        public static async Task ShowAsync(ShowOptions opts, IServiceCollection services, CancellationToken token)
+        {
             if (opts.Sort != null)
             {
                 var sort = SortParser.ParseSortOption(opts.Sort);
@@ -94,16 +123,8 @@ namespace Peer
             }
         }
 
-        public static async Task OpenAsync(OpenOptions opts, CancellationToken token)
+        public static async Task OpenAsync(OpenOptions opts, IServiceCollection services, CancellationToken token)
         {
-            var setupResult = SetupServices();
-
-            if (setupResult.IsError)
-            {
-                Console.Error.WriteLine(_configErrorMap[setupResult.Error]);
-                return;
-            }
-
             var parseResult = PartialIdentifier.Parse(opts.Partial!);
 
             if (parseResult.IsError)
@@ -113,7 +134,6 @@ namespace Peer
                 return;
             }
 
-            var services = setupResult.Value;
             services.AddSingleton<Open>();
             var provider = services.BuildServiceProvider();
             var command = provider.GetRequiredService<Open>();
@@ -126,15 +146,8 @@ namespace Peer
             }
         }
 
-        public static async Task DetailsAsync(DetailsOptions opts, CancellationToken token)
+        public static async Task DetailsAsync(DetailsOptions opts, IServiceCollection services, CancellationToken token)
         {
-            var setupResult = SetupServices();
-            if (setupResult.IsError)
-            {
-                Console.Error.WriteLine(_configErrorMap[setupResult.Error]);
-                return;
-            }
-
             var parseResult = PartialIdentifier.Parse(opts.Partial!);
 
             if (parseResult.IsError)
@@ -144,7 +157,6 @@ namespace Peer
                 return;
             }
 
-            var services = setupResult.Value;
             services.AddSingleton<Details>();
             services.AddSingleton(new ConsoleConfig(inline: true));
 
@@ -198,8 +210,12 @@ namespace Peer
             services.AddSingleton<IListFormatter, CompactFormatter>();
             services.AddSingleton<IDetailsFormatter, DetailsFormatter>();
             services.AddSingleton<ISymbolProvider, DefaultEmojiProvider>();
+            services.AddSingleton<ICheckSymbolProvider, DefaultEmojiProvider>();
             services.AddSingleton<IOSInfoProvider, OSInfoProvider>();
             services.AddSingleton<IPullRequestService, PullRequestService>();
+
+            services.AddSingleton<IHelpTextFormatter<ShowOptions>, ShowHelpTextFormatter>();
+            services.AddSingleton<IHelpTextFormatter<DetailsOptions>, DetailsHelpTextFormatter>();
             return services;
         }
     }
