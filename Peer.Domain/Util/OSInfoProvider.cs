@@ -16,6 +16,7 @@ namespace Peer.Domain
             {
                 return OSPlatform.Linux;
             }
+
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 return OSPlatform.OSX;

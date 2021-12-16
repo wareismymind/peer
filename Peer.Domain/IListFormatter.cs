@@ -2,7 +2,7 @@
 
 namespace Peer.Domain
 {
-    public interface IPullRequestFormatter
+    public interface IListFormatter
     {
         IEnumerable<string> FormatLines(IEnumerable<PullRequest> pullRequests);
     }

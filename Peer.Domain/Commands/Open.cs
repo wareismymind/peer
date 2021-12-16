@@ -1,64 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Peer.Domain.Util;
+using Peer.Domain.Exceptions;
 using wimm.Secundatives;
 
 namespace Peer.Domain.Commands
 {
     public class Open
     {
-        private readonly List<IPullRequestFetcher> _fetchers;
+        private readonly IPullRequestService _prService;
         private readonly IOSInfoProvider _infoProvider;
 
-        public Open(IEnumerable<IPullRequestFetcher> fetchers, IOSInfoProvider infoProvider)
+        public Open(IPullRequestService prService, IOSInfoProvider infoProvider)
         {
-            _fetchers = fetchers.ToList();
+            _prService = prService;
             _infoProvider = infoProvider;
         }
 
         public async Task<Result<None, OpenError>> OpenAsync(OpenArguments openOptions, CancellationToken token = default)
         {
-            var prs = await FetchAllSources(token);
-
-            var res = prs.Select(pr =>
-            {
-                return pr.Identifier.IsMatch(openOptions.Partial)
-                    .Map(match => new { Match = match, PullRequest = pr });
-            })
-            .Collect(); //CN: Being lazy here but we should really have a fn that can handle this kinda thing
-
-            if (res.IsError)
-            {
-                return res.Error switch
+            var res = await _prService.FindByPartial(openOptions.Partial, token)
+                .MapError(err => err switch
                 {
-                    MatchError.NoSegmentsToMatch => OpenError.FormatError,
-                    MatchError.TooManySegments => OpenError.FormatError,
-                    _ => OpenError.Fire
-                };
-            }
+                    FindError.AmbiguousMatch => OpenError.AmbiguousPattern,
+                    FindError.NotFound => OpenError.NotFound,
+                    _ => throw new UnreachableException()
+                })
+                .Map(pr => OpenUrl(pr.Url).OkOr(OpenError.FailedToOpen));
 
-            var matches = res.Value
-                .Where(x => x.Match)
-                .ToList();
-
-            if (matches.Count > 1)
-            {
-                return OpenError.AmbiguousPattern;
-            }
-
-            if (matches.Count == 0)
-            {
-                return OpenError.NotFound;
-            }
-
-            return OpenUrl(matches.First().PullRequest.Url)
-                .OkOr(OpenError.FailedToOpen)
-                .Map(_ => Maybe.None);
+            return res.Map(_ => Maybe.None);
         }
 
         private Maybe<Process?> OpenUrl(Uri url)
@@ -73,21 +45,11 @@ namespace Peer.Domain.Commands
                     _ => Maybe<Process?>.None
                 });
         }
-
-        private async Task<IEnumerable<PullRequest>> FetchAllSources(CancellationToken token)
-        {
-            var tasks = _fetchers.Select(async x => await x.GetPullRequestsAsync(token));
-            var prs = await Task.WhenAll(tasks);
-            var combined = prs.SelectMany(x => x);
-
-            return combined;
-        }
     }
 
     public enum OpenError
     {
         Fire,
-        FormatError,
         AmbiguousPattern,
         FailedToOpen,
         NotFound

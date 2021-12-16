@@ -9,13 +9,13 @@ namespace Peer.Domain.Commands
     public class Show
     {
         private readonly List<IPullRequestFetcher> _fetchers;
-        private readonly IPullRequestFormatter _formatter;
+        private readonly IListFormatter _formatter;
         private readonly IConsoleWriter _writer;
         private readonly ISorter<PullRequest>? _sorter;
 
         public Show(
             IEnumerable<IPullRequestFetcher> fetchers,
-            IPullRequestFormatter formatter,
+            IListFormatter formatter,
             IConsoleWriter writer,
             ISorter<PullRequest>? sorter = null)
         {
@@ -38,7 +38,6 @@ namespace Peer.Domain.Commands
             var tasks = _fetchers.Select(async x => await x.GetPullRequestsAsync(token));
             var prs = await Task.WhenAll(tasks);
             var combined = prs.SelectMany(x => x);
-
             return combined;
         }
     }

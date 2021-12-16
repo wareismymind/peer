@@ -40,13 +40,16 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
             var status = CalculateStatus();
             var totalComments = ReviewThreads.Nodes.Count;
             var activeComments = ReviewThreads.Nodes.Count(t => !t.IsResolved);
+            var suites = Commits.Nodes.SelectMany(x => x.Commit.CheckSuites.Nodes);
+            var checks = suites.SelectMany(suite => suite.CheckRuns.Nodes.Where(run => run.Url != null).Select(z => z.Into())).ToList();
             return new Domain.PullRequest(
                 Number.ToString(),
                 new Identifier(Number.ToString(), BaseRepository.Name, BaseRepository.Owner.Login, ProviderConstants.Github),
                 Url,
                 new Descriptor(Title, Body ?? string.Empty),
                 new State(status, totalComments, activeComments),
-                new GitInfo(HeadRefName, BaseRefName));
+                new GitInfo(HeadRefName, BaseRefName),
+                checks);
         }
 
         private PullRequestStatus CalculateStatus()

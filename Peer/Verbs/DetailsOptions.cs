@@ -2,8 +2,8 @@
 
 namespace Peer.Verbs
 {
-    [Verb("open", isDefault: false, HelpText = "Use the default browser to open the pull request URL")]
-    public class OpenOptions
+    [Verb("details", isDefault: false, HelpText = "Show additional details about a PullRequest")]
+    public class DetailsOptions
     {
         [Value(0, Required = true, HelpText = HelpConstants.PartialHelp)]
         public string? Partial { get; set; }

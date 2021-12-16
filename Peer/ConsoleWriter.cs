@@ -31,7 +31,7 @@ namespace Peer
         public void Display(IList<string> lines, CancellationToken token)
         {
             var maxLength = lines.Max(x => x.Length);
-            var consoleWidth = Math.Max(maxLength, Console.WindowWidth - 1);
+            var consoleWidth = Math.Min(maxLength, Console.WindowWidth - 1);
             var writeHeight = Math.Max(lines.Count, _previousWriteHeight);
 
             var sb = new StringBuilder((consoleWidth + 1) * writeHeight);
@@ -44,7 +44,24 @@ namespace Peer
                 }
 
                 var padded = line.PadRight(consoleWidth);
-                sb.AppendLine(padded);
+
+                if (padded.Length > consoleWidth)
+                {
+                    var remaining = padded.AsSpan();
+                    while (remaining.Length > consoleWidth)
+                    {
+                        sb.Append(remaining[..consoleWidth]);
+                        sb.AppendLine();
+                        remaining = remaining[consoleWidth..];
+                    }
+                    sb.Append(remaining);
+                    sb.AppendLine();
+                }
+                else
+                {
+                    sb.AppendLine(padded);
+                }
+
             }
 
             var filler = new string(' ', consoleWidth);
