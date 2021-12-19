@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.0](https://www.github.com/wareismymind/peer/compare/v1.4.0...v1.5.0) (2021-12-19)
+
+
+### Features
+
+* better help ([#124](https://www.github.com/wareismymind/peer/issues/124)) ([721591e](https://www.github.com/wareismymind/peer/commit/721591e7698d92ce6c05e4e622f529efbfe4636d))
+* intial shot at the details command ([#119](https://www.github.com/wareismymind/peer/issues/119)) ([28087e8](https://www.github.com/wareismymind/peer/commit/28087e83c2d2f16618d9a1421dc9c4812a151a76))
+
 ## [1.4.0](https://www.github.com/wareismymind/peer/compare/v1.3.3...v1.4.0) (2021-10-30)
 
 
