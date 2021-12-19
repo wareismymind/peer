@@ -68,8 +68,9 @@ namespace Peer
                     (ConfigOptions x) => ConfigAsync(x),
                     (DetailsOptions x) => DetailsAsync(x, services, _tcs.Token),
                     err => Task.CompletedTask);
-            }
 
+                return;
+            }
 
             var text = parseResult switch
             {
