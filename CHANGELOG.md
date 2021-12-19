@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.5.1](https://www.github.com/wareismymind/peer/compare/v1.5.0...v1.5.1) (2021-12-19)
+
+
+### Bug Fixes
+
+* help text was always being run even on successful execution and caused error ([#126](https://www.github.com/wareismymind/peer/issues/126)) ([fdd5ff0](https://www.github.com/wareismymind/peer/commit/fdd5ff04c0ad4af3d06a851cbc5c476dac8e0503))
+
 ## [1.5.0](https://www.github.com/wareismymind/peer/compare/v1.4.0...v1.5.0) (2021-12-19)
 
 
