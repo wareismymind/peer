@@ -212,9 +212,9 @@ namespace Peer
             services.AddSingleton<ICheckSymbolProvider, DefaultEmojiProvider>();
             services.AddSingleton<IOSInfoProvider, OSInfoProvider>();
             services.AddSingleton<IPullRequestService, PullRequestService>();
-
             services.AddSingleton<IHelpTextFormatter<ShowOptions>, ShowHelpTextFormatter>();
             services.AddSingleton<IHelpTextFormatter<DetailsOptions>, DetailsHelpTextFormatter>();
+
             return services;
         }
     }

@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using wimm.Secundatives.Extensions;
 
+
 namespace Peer.Domain.Commands
 {
     //TODO:CN -- Ansi term code support
     public class DetailsFormatter : IDetailsFormatter
     {
         private const string _pad = "  ";
+
         private readonly ICheckSymbolProvider _symbolProvider;
 
         public DetailsFormatter(ICheckSymbolProvider symbolProvider)
@@ -39,7 +41,7 @@ namespace Peer.Domain.Commands
             {
                 var symbol = _symbolProvider.GetSymbol(check.Status, check.Result)
                     .UnwrapOr("\u25EF\uFE0F"); //Large white circle
-
+                    
                 lines.Add($"{_pad}{symbol,4} {check.Name.PadRight(titleWidth)} -- {check.Url}");
             }
 
