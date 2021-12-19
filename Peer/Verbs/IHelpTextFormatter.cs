@@ -5,6 +5,6 @@ namespace Peer.Verbs
 {
     public interface IHelpTextFormatter<TOptions>
     {
-        HelpText GetDetailsHelpText(ParserResult<object> parserResult);
+        HelpText GetHelpText(ParserResult<object> parserResult);
     }
 }

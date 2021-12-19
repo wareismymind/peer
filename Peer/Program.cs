@@ -58,24 +58,24 @@ namespace Peer
             });
 
 
-            var pr = parser.ParseArguments<ShowOptions, OpenOptions, ConfigOptions, DetailsOptions>(args);
+            var parseResult = parser.ParseArguments<ShowOptions, OpenOptions, ConfigOptions, DetailsOptions>(args);
 
-            if (pr.Tag == ParserResultType.Parsed)
+            if (parseResult.Tag == ParserResultType.Parsed)
             {
-                await pr.MapResult(
+                await parseResult.MapResult(
                     (ShowOptions x) => ShowAsync(x, services, _tcs.Token),
                     (OpenOptions x) => OpenAsync(x, services, _tcs.Token),
                     (ConfigOptions x) => ConfigAsync(x),
                     (DetailsOptions x) => DetailsAsync(x, services, _tcs.Token),
-                    err => { err.Output(); Console.WriteLine("Doot"); return Task.CompletedTask; });
+                    err => Task.CompletedTask);
             }
 
 
-            var text = pr switch
+            var text = parseResult switch
             {
-                var v when v.Is<ShowOptions>() => GetHelpText<ShowOptions>(pr, services.BuildServiceProvider()),
-                var v when v.Is<DetailsOptions>() => GetHelpText<DetailsOptions>(pr, services.BuildServiceProvider()),
-                _ => HelpText.AutoBuild<object>(pr)
+                var v when v.Is<ShowOptions>() => GetHelpText<ShowOptions>(parseResult, services.BuildServiceProvider()),
+                var v when v.Is<DetailsOptions>() => GetHelpText<DetailsOptions>(parseResult, services.BuildServiceProvider()),
+                _ => HelpText.AutoBuild<object>(parseResult)
             };
 
             Console.Write(text);
@@ -85,7 +85,7 @@ namespace Peer
         private static HelpText GetHelpText<TOptions>(ParserResult<object> parserResult, IServiceProvider serviceProvider)
         {
             var formatter = serviceProvider.GetRequiredService<IHelpTextFormatter<TOptions>>();
-            return formatter.GetDetailsHelpText(parserResult);
+            return formatter.GetHelpText(parserResult);
         }
 
         public static async Task ShowAsync(ShowOptions opts, IServiceCollection services, CancellationToken token)

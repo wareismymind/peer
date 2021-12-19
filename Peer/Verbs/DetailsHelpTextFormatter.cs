@@ -16,7 +16,7 @@ namespace Peer.Verbs
             _symbolProvider = symbolProvider;
         }
 
-        public HelpText GetDetailsHelpText(ParserResult<object> parserResult)
+        public HelpText GetHelpText(ParserResult<object> parserResult)
         {
             var help = HelpText.AutoBuild(parserResult);
             help.AddPreOptionsLine("Shows the details of a specific pull request including description and check info");
