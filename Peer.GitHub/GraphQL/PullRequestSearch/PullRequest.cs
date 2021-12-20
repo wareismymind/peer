@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Peer.Domain;
 
@@ -20,7 +19,7 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
         public string Mergeable { get; set; }
         public string ReviewDecision { get; set; }
         public bool IsDraft { get; set; }
-        public Commits Commits { get; set; }
+        public NodeList<CommitNode> Commits { get; set; }
 
         public bool ActionsPending =>
             Commits.Nodes[0].Commit.StatusCheckRollup?.State.In(new[] { "PENDING", "EXPECTED" }) ?? false;
@@ -33,6 +32,7 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
             Mergeable == "MERGEABLE"
                 && (Commits.Nodes[0].Commit.StatusCheckRollup?.State.Equals("SUCCESS") ?? true)
                 && ReviewDecision.In("APPROVED", null);
+
         public BaseRepository BaseRepository { get; set; }
 
         public Domain.PullRequest Into()
@@ -41,7 +41,10 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
             var totalComments = ReviewThreads.Nodes.Count;
             var activeComments = ReviewThreads.Nodes.Count(t => !t.IsResolved);
             var suites = Commits.Nodes.SelectMany(x => x.Commit.CheckSuites.Nodes);
-            var checks = suites.SelectMany(suite => suite.CheckRuns.Nodes.Where(run => run.Url != null).Select(z => z.Into())).ToList();
+            var checks = suites.SelectMany(suite => suite.CheckRuns.Nodes.Where(run => run.Url != null)
+                .Select(z => z.Into()))
+                .ToList();
+
             return new Domain.PullRequest(
                 Number.ToString(),
                 new Identifier(Number.ToString(), BaseRepository.Name, BaseRepository.Owner.Login, ProviderConstants.Github),
@@ -68,14 +71,6 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
                 _ => PullRequestStatus.Unknown,
             };
         }
-    }
-
-    public static class ScalarExtensions
-    {
-        public static bool In<T>(this T target, params T[] options) => target.In(options.AsEnumerable());
-
-        public static bool In<T>(this T target, IEnumerable<T> options) =>
-            options.Any(o => EqualityComparer<T>.Default.Equals(o, target));
     }
 #nullable enable
 }

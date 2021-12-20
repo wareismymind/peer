@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -215,7 +215,6 @@ namespace Peer
             services.AddSingleton<IPullRequestService, PullRequestService>();
             services.AddSingleton<IHelpTextFormatter<ShowOptions>, ShowHelpTextFormatter>();
             services.AddSingleton<IHelpTextFormatter<DetailsOptions>, DetailsHelpTextFormatter>();
-
             return services;
         }
     }

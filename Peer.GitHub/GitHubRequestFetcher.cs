@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -21,7 +22,9 @@ namespace Peer.GitHub
         private readonly AsyncLazy<string> _username;
         private readonly CancellationTokenSource _cts = new();
 
-        public GitHubRequestFetcher(GraphQLHttpClient client, GitHubPeerConfig gitHubPeerConfig)
+        public GitHubRequestFetcher(
+            GraphQLHttpClient client,
+            GitHubPeerConfig gitHubPeerConfig)
         {
             _gqlClient = client;
             _config = gitHubPeerConfig;
@@ -83,7 +86,6 @@ namespace Peer.GitHub
             {
                 yield return value;
             }
-
         }
 
         private async IAsyncEnumerable<PRSearch.PullRequest> QueryGithubPullRequests(QueryType type, [EnumeratorCancellation] CancellationToken token)
@@ -93,6 +95,11 @@ namespace Peer.GitHub
             while (!token.IsCancellationRequested)
             {
                 var response = await _gqlClient.SendQueryAsync<GQL.SearchResult<PRSearch.Result>>(await GenerateRequest(type, cursor), token);
+
+                if (response.Errors != null)
+                {
+                    Console.WriteLine($"ERROR: {string.Join('\n', response.Errors.Select(x => x.Message))}");
+                }
 
                 var pageInfo = response.Data.Search.PageInfo;
 

@@ -50,5 +50,4 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
             };
         }
     }
-
 }
