@@ -48,7 +48,7 @@ namespace Peer.Domain.Commands
             {
                 var symbol = _symbolProvider.GetSymbol(check.Status, check.Result)
                     .UnwrapOr("\u25EF\uFE0F"); //Large white circle
-                    
+
                 lines.Add($"{_pad}{symbol,4} {check.Name.PadRight(titleWidth)} -- {check.Url}");
             }
 

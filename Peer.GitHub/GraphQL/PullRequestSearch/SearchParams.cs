@@ -19,7 +19,7 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
             string subject,
             IEnumerable<string> orgs,
             IEnumerable<string> excludedOrgs,
-            int pageSize, 
+            int pageSize,
             string? endCursor = null)
         {
             // todo: Something should validate that the involves and org tokens don't contain spaces
