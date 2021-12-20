@@ -36,53 +36,54 @@ namespace Peer.GitHub
 
         private async IAsyncEnumerable<PullRequest> GetPullRequestsImpl([EnumeratorCancellation] CancellationToken token)
         {
-            while (!token.IsCancellationRequested)
-            {
-                var responses = new List<IAsyncEnumerable<PRSearch.PullRequest>>
+            if (token.IsCancellationRequested)
+                yield break;
+
+            var responses = new List<IAsyncEnumerable<PRSearch.PullRequest>>
                 {
                     QueryGithubPullRequests(QueryType.Involves, token),
                     QueryGithubPullRequests(QueryType.TeamRequested, token)
                 }.Merge();
 
-                var deduplicated = responses.Distinct(x => x.Id);
+            var deduplicated = responses.Distinct(x => x.Id);
 
-                var prs = new Dictionary<string, PRSearch.PullRequest>();
-                var prsWithMoreThreads = new List<PRSearch.PullRequest>();
+            var prs = new Dictionary<string, PRSearch.PullRequest>();
+            var prsWithMoreThreads = new List<PRSearch.PullRequest>();
 
-                await foreach (var value in deduplicated)
+            await foreach (var value in deduplicated)
+            {
+                if (value.ReviewThreads.PageInfo.HasNextPage)
                 {
-                    if (value.ReviewThreads.PageInfo.HasNextPage)
-                    {
-                        prsWithMoreThreads.Add(value);
-                        prs[value.Id] = value;
-                    }
-
-                    yield return value.Into();
+                    prsWithMoreThreads.Add(value);
+                    prs[value.Id] = value;
                 }
 
-                while (prsWithMoreThreads.Any())
-                {
-                    var queryResponse =
-                        await _gqlClient.SendQueryAsync<Dictionary<string, PRSearch.PullRequest>>(
-                            ThreadPageQuery(prsWithMoreThreads),
-                            token);
-
-                    var prThreadPages = queryResponse.Data.Values;
-
-                    foreach (var pr in prThreadPages)
-                    {
-                        prs[pr.Id].ReviewThreads.Nodes.AddRange(pr.ReviewThreads.Nodes);
-                    }
-
-                    prsWithMoreThreads =
-                        prThreadPages.Where(pr => pr.ReviewThreads.PageInfo.HasNextPage).ToList();
-                }
-
-                foreach (var value in prs.Values.Select(x => x.Into()))
-                {
-                    yield return value;
-                }
+                yield return value.Into();
             }
+
+            while (prsWithMoreThreads.Any())
+            {
+                var queryResponse =
+                    await _gqlClient.SendQueryAsync<Dictionary<string, PRSearch.PullRequest>>(
+                        ThreadPageQuery(prsWithMoreThreads),
+                        token);
+
+                var prThreadPages = queryResponse.Data.Values;
+
+                foreach (var pr in prThreadPages)
+                {
+                    prs[pr.Id].ReviewThreads.Nodes.AddRange(pr.ReviewThreads.Nodes);
+                }
+
+                prsWithMoreThreads =
+                    prThreadPages.Where(pr => pr.ReviewThreads.PageInfo.HasNextPage).ToList();
+            }
+
+            foreach (var value in prs.Values.Select(x => x.Into()))
+            {
+                yield return value;
+            }
+
         }
 
         private async IAsyncEnumerable<PRSearch.PullRequest> QueryGithubPullRequests(QueryType type, [EnumeratorCancellation] CancellationToken token)

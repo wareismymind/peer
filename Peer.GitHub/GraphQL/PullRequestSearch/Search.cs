@@ -29,7 +29,7 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
             var afterValue = endCursor == null ? string.Empty : $@"after: ""{endCursor}""";
             return $@"
                 {{
-                    search(query: ""is:pr is:open archived:false {searchTerms}"", type: ISSUE, first: 10 {afterValue}) {{
+                    search(query: ""is:pr is:open archived:false {searchTerms}"", type: ISSUE, first: 50 {afterValue}) {{
                         issueCount
                         pageInfo {{ endCursor, hasNextPage }}
                         nodes {{
