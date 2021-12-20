@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Moq;
 using Peer.Domain;
 using Peer.Domain.Commands;
@@ -15,8 +11,8 @@ namespace Peer.UnitTests.Formatters
     {
         public class Format
         {
-            private Mock<ICheckSymbolProvider> _symbolProvider = new();
-            
+            private readonly Mock<ICheckSymbolProvider> _symbolProvider = new();
+
             [Fact]
             public void PullRequestNull_Throws()
             {
@@ -33,13 +29,11 @@ namespace Peer.UnitTests.Formatters
                 var results = underTest.Format(pr);
                 Assert.DoesNotContain("Checks", results);
             }
-                
-        
+
             private DetailsFormatter Construct()
             {
                 return new DetailsFormatter(_symbolProvider.Object);
             }
         }
-
     }
 }
