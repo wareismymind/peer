@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Peer.Domain.Util;
 using wimm.Secundatives.Extensions;
 
 namespace Peer.Domain.Commands
@@ -19,6 +20,8 @@ namespace Peer.Domain.Commands
 
         public IList<string> Format(PullRequest pullRequest)
         {
+            Validators.ArgIsNotNull(pullRequest);
+
             var lines = new List<string>
             {
                 "---",
