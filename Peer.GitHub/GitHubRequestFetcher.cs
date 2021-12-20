@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using GraphQL.Client.Http;
 using Peer.Domain;
+using Peer.Domain.Exceptions;
 using Peer.Utils;
 using GQL = Peer.GitHub.GraphQL;
 using PRSearch = Peer.GitHub.GraphQL.PullRequestSearch;
@@ -35,35 +36,33 @@ namespace Peer.GitHub
 
         private async IAsyncEnumerable<PullRequest> GetPullRequestsImpl([EnumeratorCancellation] CancellationToken token)
         {
-            var involvesCursor = null as string;
-            var requestedCursor = null as string;
-
             while (!token.IsCancellationRequested)
             {
-                var involvesResponse = _gqlClient.SendQueryAsync<GQL.SearchResult<PRSearch.Result>>(await GenerateInvolvesRequest(involvesCursor), token);
-                var reviewRequestedResponse = _gqlClient.SendQueryAsync<GQL.SearchResult<PRSearch.Result>>(await GenerateReviewRequestedRequest(requestedCursor), token);
+                var responses = AsyncEnumerableEx.Merge(
+                    QueryGithubPullRequests(QueryType.Involves, token),
+                    QueryGithubPullRequests(QueryType.TeamRequested, token));
 
-                var responses = await Task.WhenAll(involvesResponse, reviewRequestedResponse);
+                var deduplicated = responses.Distinct(x => x.Id);
+                
+                var prs = new Dictionary<string, PRSearch.PullRequest>();
+                var prsWithMoreThreads = new List<PRSearch.PullRequest>();
 
-                //CN: Probably don't wanna do this here. I mean we can but it doesn't make a ton of sense to result
-                // it (even if we're sure we're done)
-                var involvesPageInfo = involvesResponse.Result.Data.Search.PageInfo;
-                var requestedPageInfo = reviewRequestedResponse.Result.Data.Search.PageInfo;
+                await foreach (var value in deduplicated)
+                {
+                    if (value.ReviewThreads.PageInfo.HasNextPage)
+                    {
+                        prsWithMoreThreads.Add(value);
+                        prs[value.Id] = value;
+                    }
 
-                involvesCursor = involvesPageInfo.EndCursor;
-                requestedCursor = requestedPageInfo.EndCursor;
-
-                var deduplicated = responses.SelectMany(x => x.Data.Search.Nodes)
-                    .DistinctBy(x => x.Id);
-
-                var prs = deduplicated.ToDictionary(pr => pr.Id);
-                var prsWithMoreThreads = prs.Values.Where(pr => pr.ReviewThreads.PageInfo.HasNextPage).ToList();
+                    yield return value.Into();
+                }
 
                 while (prsWithMoreThreads.Any())
                 {
                     var queryResponse =
                         await _gqlClient.SendQueryAsync<Dictionary<string, PRSearch.PullRequest>>(
-                            ThreadPageQuery(prsWithMoreThreads),
+                            ThreadPageQuery(prsWithMoreThreads), 
                             token);
 
                     var prThreadPages = queryResponse.Data.Values;
@@ -81,27 +80,74 @@ namespace Peer.GitHub
                 {
                     yield return value;
                 }
-
-                if (!involvesPageInfo.HasNextPage && !requestedPageInfo.HasNextPage)
-                {
-                    break;
-                }
             }
         }
 
-        private async Task<GraphQLHttpRequest> GenerateInvolvesRequest(string? endCursor = null)
+        private async IAsyncEnumerable<PRSearch.PullRequest> QueryGithubPullRequests(QueryType type,[EnumeratorCancellation] CancellationToken token)
         {
-            var searchParams = new PRSearch.SearchParams(
-                await _username,
-                _config.Orgs,
-                _config.ExcludedOrgs,
-                _config.Count,
-                endCursor);
+            var cursor = null as string;
 
-            return new GraphQLHttpRequest(PRSearch.Search.GenerateInvolves(searchParams));
+            while (!token.IsCancellationRequested)
+            {
+                var response = await _gqlClient.SendQueryAsync<GQL.SearchResult<PRSearch.Result>>(await GenerateRequest(type, cursor), token);
+
+                //CN: Probably don't wanna do this here. I mean we can but it doesn't make a ton of sense to result
+                // it (even if we're sure we're done)
+                var pageInfo = response.Data.Search.PageInfo;
+
+                cursor = pageInfo.EndCursor;
+
+                foreach (var pr in response.Data.Search.Nodes)
+                {
+                    yield return pr;
+                }
+
+                if (!pageInfo.HasNextPage)
+                {
+                    break;
+                }
+
+                //response.Data.Search.Nodes
+
+                ////var deduplicated = responses.SelectMany(x => x.Data.Search.Nodes)
+                ////    .DistinctBy(x => x.Id);
+
+                //var prs = deduplicated.ToDictionary(pr => pr.Id);
+                //var prsWithMoreThreads = prs.Values.Where(pr => pr.ReviewThreads.PageInfo.HasNextPage).ToList();
+
+                //while (prsWithMoreThreads.Any())
+                //{
+                //    var queryResponse =
+                //        await _gqlClient.SendQueryAsync<Dictionary<string, PRSearch.PullRequest>>(
+                //            ThreadPageQuery(prsWithMoreThreads),
+                //            token);
+
+                //    var prThreadPages = queryResponse.Data.Values;
+
+                //    foreach (var pr in prThreadPages)
+                //    {
+                //        prs[pr.Id].ReviewThreads.Nodes.AddRange(pr.ReviewThreads.Nodes);
+                //    }
+
+                //    prsWithMoreThreads =
+                //        prThreadPages.Where(pr => pr.ReviewThreads.PageInfo.HasNextPage).ToList();
+                //}
+
+                //foreach (var value in prs.Values.Select(x => x.Into()))
+                //{
+                //    yield return value;
+                //}
+
+            }
         }
 
-        private async Task<GraphQLHttpRequest> GenerateReviewRequestedRequest(string? endCursor = null)
+        private enum QueryType
+        {
+            Involves,
+            TeamRequested
+        }
+
+        private async Task<GraphQLHttpRequest> GenerateRequest(QueryType type, string? endCursor = null)
         {
             var searchParams = new PRSearch.SearchParams(
                 await _username,
@@ -110,7 +156,14 @@ namespace Peer.GitHub
                 _config.Count,
                 endCursor);
 
-            return new GraphQLHttpRequest(PRSearch.Search.GenerateReviewRequested(searchParams));
+            var queryString = type switch
+            {
+                QueryType.Involves => PRSearch.Search.GenerateInvolves(searchParams),
+                QueryType.TeamRequested => PRSearch.Search.GenerateReviewRequested(searchParams),
+                _ => throw new UnreachableException()
+            };
+
+            return new GraphQLHttpRequest(queryString);
         }
 
         private async Task<string> GetUsername(CancellationToken token)

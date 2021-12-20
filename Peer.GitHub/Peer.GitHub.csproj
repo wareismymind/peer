@@ -13,6 +13,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Interactive.Async" Version="5.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Peer.Domain\Peer.Domain.csproj" />
     <ProjectReference Include="..\Peer.Utils\Peer.Utils.csproj" />
   </ItemGroup>
