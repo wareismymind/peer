@@ -113,13 +113,13 @@ namespace Peer
                 var command = provider.GetRequiredService<WatchShow>();
                 var watchOpts = provider.GetRequiredService<WatchOptions>();
                 var args = watchOpts.Into();
-                await command.WatchAsync(args, new ShowArguments(), token);
+                await command.WatchAsync(args, new ShowArguments(opts.Count), token);
             }
             else
             {
                 var provider = services.BuildServiceProvider();
                 var command = provider.GetRequiredService<Show>();
-                await command.ShowAsync(new ShowArguments(), token);
+                await command.ShowAsync(new ShowArguments(opts.Count), token);
             }
         }
 

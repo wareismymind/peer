@@ -7,7 +7,7 @@ namespace Peer.Domain.Commands
 {
     public interface IPullRequestService
     {
-        Task<IEnumerable<PullRequest>> FetchAllPullRequests(CancellationToken token = default);
-        Task<Result<PullRequest, FindError>> FindByPartial(PartialIdentifier partial, CancellationToken token = default);
+        Task<IAsyncEnumerable<PullRequest>> FetchAllPullRequests(CancellationToken token = default);
+        Task<Result<PullRequest, FindError>> FindSingleByPartial(PartialIdentifier partial, CancellationToken token = default);
     }
 }

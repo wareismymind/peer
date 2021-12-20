@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using wimm.Secundatives.Extensions;
 
-
 namespace Peer.Domain.Commands
 {
     //TODO:CN -- Ansi term code support

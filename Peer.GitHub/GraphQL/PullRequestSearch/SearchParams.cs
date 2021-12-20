@@ -13,11 +13,14 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
 
         public int PageSize { get; }
 
+        public string? EndCursor { get; }
+
         public SearchParams(
             string subject,
             IEnumerable<string> orgs,
             IEnumerable<string> excludedOrgs,
-            int pageSize)
+            int pageSize, 
+            string? endCursor = null)
         {
             // todo: Something should validate that the involves and org tokens don't contain spaces
             // (or that they CAN and we should quote them). I'm torn about whether that's here or
@@ -31,6 +34,7 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
                 throw new ArgumentOutOfRangeException(nameof(pageSize), "Must be between 1 and 100");
 
             PageSize = pageSize;
+            EndCursor = endCursor;
         }
     }
 }

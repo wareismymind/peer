@@ -3,42 +3,36 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using wimm.Secundatives;
+using System.Reactive.Linq;
 
 namespace Peer.Domain.Commands
 {
     public class Show
     {
-        private readonly List<IPullRequestFetcher> _fetchers;
+        private readonly IPullRequestService _pullRequestService;
         private readonly IListFormatter _formatter;
         private readonly IConsoleWriter _writer;
         private readonly ISorter<PullRequest>? _sorter;
 
         public Show(
-            IEnumerable<IPullRequestFetcher> fetchers,
+            IPullRequestService prService,
             IListFormatter formatter,
             IConsoleWriter writer,
             ISorter<PullRequest>? sorter = null)
         {
-            _fetchers = fetchers.ToList();
+            _pullRequestService = prService;
             _formatter = formatter;
             _writer = writer;
             _sorter = sorter;
         }
 
-        public async Task<Result<None, ShowError>> ShowAsync(ShowArguments _, CancellationToken token = default)
+        public async Task<Result<None, ShowError>> ShowAsync(ShowArguments args, CancellationToken token = default)
         {
-            var prs = await FetchAllSources(token);
-            var sorted = _sorter?.Sort(prs) ?? prs;
-            _writer.Display(_formatter.FormatLines(sorted).ToList(), token);
+            var prs = await _pullRequestService.FetchAllPullRequests(token);
+            var sorted = await (_sorter?.Sort(prs) ?? prs).Take(args.Count).ToListAsync(token);
+            var lines = _formatter.FormatLines(sorted).ToList();
+            _writer.Display(lines, token);
             return Maybe.None;
-        }
-
-        private async Task<IEnumerable<PullRequest>> FetchAllSources(CancellationToken token)
-        {
-            var tasks = _fetchers.Select(async x => await x.GetPullRequestsAsync(token));
-            var prs = await Task.WhenAll(tasks);
-            var combined = prs.SelectMany(x => x);
-            return combined;
         }
     }
 

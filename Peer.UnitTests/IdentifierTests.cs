@@ -48,7 +48,6 @@ namespace Peer.UnitTests
 
                 Assert.True(res);
             }
-
         }
     }
 }

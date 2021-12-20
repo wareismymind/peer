@@ -11,7 +11,7 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
             var excludedOrgsClauses = string.Join(' ', search.ExcludedOrgs.Select(o => $"-org:{o}"));
             var searchTerms = string.Join(' ', reviewRequestedClause, orgsClauses, excludedOrgsClauses);
 
-            return GenerateQuery(searchTerms, search.PageSize);
+            return GenerateQuery(searchTerms, search.PageSize, search.EndCursor);
         }
 
         public static string GenerateInvolves(SearchParams search)
@@ -21,16 +21,26 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
             var excludedOrgsClauses = string.Join(' ', search.ExcludedOrgs.Select(o => $"-org:{o}"));
 
             var searchTerms = $"{involvesClause} {orgsClauses} {excludedOrgsClauses}";
-            return GenerateQuery(searchTerms, search.PageSize);
+            return GenerateQuery(searchTerms, search.PageSize, search.EndCursor);
         }
 
-        private static string GenerateQuery(string searchTerms, int pageSize)
+        private static string GenerateQuery(string searchTerms, int pageSize, string? endCursor = null)
         {
-            return $@"{{
-                    search(query: ""is:pr is:open archived:false {searchTerms}"", type: ISSUE, first: {pageSize}) {{
+            var afterValue = endCursor == null ? string.Empty : $@"after: ""{endCursor}""";
+            return $@"
+                {{
+                    search(query: ""is:pr is:open archived:false {searchTerms}"", type: ISSUE, first: 10 {afterValue}) {{
                         issueCount
+                        pageInfo {{ endCursor, hasNextPage }}
                         nodes {{
-                            ... on PullRequest {{
+                            {_prValueQuery}
+                        }}
+                    }}
+                }}";
+        }
+
+        private const string _prValueQuery = @"
+                            ... on PullRequest {
                                 id
                                 number
                                 url
@@ -39,43 +49,38 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
                                 body
                                 baseRefName
                                 headRefName
-                                reviewThreads(first: 100) {{
-                                    nodes {{ isResolved }}
-                                    pageInfo {{ hasNextPage, endCursor }}
-                                }}
+                                reviewThreads(first: 100) {
+                                    nodes { isResolved }
+                                    pageInfo { hasNextPage, endCursor }
+                                }
                                 isDraft
                                 state
                                 mergeable
                                 reviewDecision
-                                baseRepository {{
+                                baseRepository {
                                     name
-                                    owner {{ login }}
-                                }}
+                                    owner { login }
+                                }
 #THIS IS THE STUFF FOR THE CHECKS
-                                commits(last: 1) {{
-                                  nodes {{
-                                    commit {{
-                                      checkSuites(first: 100) {{
-                                        nodes {{
-                                          checkRuns(first: 100) {{
-                                            nodes {{
+                                commits(last: 1) {
+                                  nodes {
+                                    commit {
+                                      checkSuites(first: 20) {
+                                        nodes {
+                                          checkRuns(first: 20) {
+                                            nodes {
                                               name
                                               conclusion
                                               status
                                               url
-                                          }}
-                                        }}
-                                      }}
-                                    }}
-                                  }}
-                                }}
-                              }}
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
 #THIS IS THE END OF THE STUFF FOR THE CHECKS
-                            }}
-                        }}
-                        pageInfo {{ endCursor }}
-                    }}
-                }}";
-        }
+                            }";
     }
 }
