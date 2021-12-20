@@ -64,9 +64,12 @@ namespace Peer.Parsing
                 "repo" => MakeSelector(x => x.Identifier.Repo),
                 "id-lex" => MakeSelector(x => x.Id),
                 "id" => MakeSelector(x => int.Parse(x.Id)),
+                "provider" => MakeSelector(x => x.Identifier.Provider),
+                "author" => MakeSelector(x => x.Identifier.Author),
                 "owner" => MakeSelector(x => x.Identifier.Owner),
                 "status" => MakeSelector(x => x.State.Status),
                 "active" => MakeSelector(x => x.State.ActiveComments),
+                "title" => MakeSelector(x => x.Descriptor.Title),
                 _ => ParseError.UnknownSortKey
             };
         }

@@ -4,7 +4,13 @@ using Peer.Domain;
 
 namespace Peer.GitHub.GraphQL.PullRequestSearch
 {
+
 #nullable disable
+    public class Author
+    {
+        public string Login { get; set; }
+    }
+
     public class PullRequest
     {
         public string Id { get; set; }
@@ -19,6 +25,7 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
         public string Mergeable { get; set; }
         public string ReviewDecision { get; set; }
         public bool IsDraft { get; set; }
+        public Author Author { get; set; }
         public NodeList<CommitNode> Commits { get; set; }
 
         public bool ActionsPending =>
@@ -47,7 +54,7 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
 
             return new Domain.PullRequest(
                 Number.ToString(),
-                new Identifier(Number.ToString(), BaseRepository.Name, BaseRepository.Owner.Login, ProviderConstants.Github),
+                new Identifier(Number.ToString(), BaseRepository.Name,BaseRepository.Owner.Login, Author.Login, ProviderConstants.Github),
                 Url,
                 new Descriptor(Title, Body ?? string.Empty),
                 new State(status, totalComments, activeComments),
