@@ -59,6 +59,7 @@ namespace Peer.GitHub
                 {
                     prsWithMoreThreads.Add(value);
                     prs[value.Id] = value;
+                    continue;
                 }
 
                 yield return value.Into();
