@@ -8,7 +8,7 @@ namespace Peer.UnitTests
     {
         public class IsMatch
         {
-            private readonly Identifier _identifier = 
+            private readonly Identifier _identifier =
                 new("10", "secundatives", "wareismymind", "insomniak47", "github");
 
             [Theory]
