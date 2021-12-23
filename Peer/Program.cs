@@ -55,10 +55,13 @@ namespace Peer
 
             var parseResult = parser.ParseArguments<ShowOptions, OpenOptions, ConfigOptions, DetailsOptions>(args);
 
-            if (setupResult.IsError && !parseResult.Is<ConfigOptions>())
+            if (setupResult.IsError )
             {
-                Console.Error.WriteLine(_configErrorMap[setupResult.Error]);
-                return;
+                if (setupResult.Error == ConfigError.NoProvidersConfigured && !parseResult.Is<ConfigOptions>())
+                {
+                    Console.Error.WriteLine(_configErrorMap[setupResult.Error]);
+                    return;
+                }
             }
 
             if (parseResult.Tag == ParserResultType.Parsed)
