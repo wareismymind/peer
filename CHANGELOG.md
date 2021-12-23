@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.5.2](https://www.github.com/wareismymind/peer/compare/v1.5.1...v1.5.2) (2021-12-23)
+
+
+### Bug Fixes
+
+* config would fail because no providers were configured ([#129](https://www.github.com/wareismymind/peer/issues/129)) ([143f16e](https://www.github.com/wareismymind/peer/commit/143f16e9b49b752f425d0d1698ac0bf7fc865919))
+
 ### [1.5.1](https://www.github.com/wareismymind/peer/compare/v1.5.0...v1.5.1) (2021-12-19)
 
 
