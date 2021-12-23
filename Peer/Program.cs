@@ -16,6 +16,7 @@ using Peer.GitHub;
 using Peer.Parsing;
 using Peer.Verbs;
 using wimm.Secundatives;
+using wimm.Secundatives.Extensions;
 
 namespace Peer
 {
@@ -44,12 +45,6 @@ namespace Peer
 
             var setupResult = SetupServices();
 
-            if (setupResult.IsError)
-            {
-                Console.Error.WriteLine(_configErrorMap[setupResult.Error]);
-                return;
-            }
-            var services = setupResult.Value;
             var parser = new Parser(config =>
             {
                 config.AutoHelp = true;
@@ -60,18 +55,25 @@ namespace Peer
 
             var parseResult = parser.ParseArguments<ShowOptions, OpenOptions, ConfigOptions, DetailsOptions>(args);
 
+            if (setupResult.IsError && !parseResult.Is<ConfigOptions>())
+            {
+                Console.Error.WriteLine(_configErrorMap[setupResult.Error]);
+                return;
+            }
+
             if (parseResult.Tag == ParserResultType.Parsed)
             {
                 await parseResult.MapResult(
-                    (ShowOptions x) => ShowAsync(x, services, _tcs.Token),
-                    (OpenOptions x) => OpenAsync(x, services, _tcs.Token),
+                    (ShowOptions x) => ShowAsync(x, setupResult.Value, _tcs.Token),
+                    (OpenOptions x) => OpenAsync(x, setupResult.Value, _tcs.Token),
                     (ConfigOptions x) => ConfigAsync(x),
-                    (DetailsOptions x) => DetailsAsync(x, services, _tcs.Token),
+                    (DetailsOptions x) => DetailsAsync(x, setupResult.Value, _tcs.Token),
                     err => Task.CompletedTask);
 
                 return;
             }
 
+            var services = setupResult.Value;
             var text = parseResult switch
             {
                 var v when v.Is<ShowOptions>() => GetHelpText<ShowOptions>(parseResult, services.BuildServiceProvider()),
