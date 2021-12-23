@@ -10,5 +10,4 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
         public static bool In<T>(this T target, IEnumerable<T> options) =>
             options.Any(o => EqualityComparer<T>.Default.Equals(o, target));
     }
-#nullable enable
 }
