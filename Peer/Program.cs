@@ -16,7 +16,6 @@ using Peer.GitHub;
 using Peer.Parsing;
 using Peer.Verbs;
 using wimm.Secundatives;
-using wimm.Secundatives.Extensions;
 
 namespace Peer
 {
