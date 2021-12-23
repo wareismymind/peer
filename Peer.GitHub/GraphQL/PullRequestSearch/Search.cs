@@ -11,7 +11,7 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
             var excludedOrgsClauses = string.Join(' ', search.ExcludedOrgs.Select(o => $"-org:{o}"));
             var searchTerms = string.Join(' ', reviewRequestedClause, orgsClauses, excludedOrgsClauses);
 
-            return GenerateQuery(searchTerms, search.PageSize, search.EndCursor);
+            return GenerateQuery(searchTerms, search.PageSize, search.After);
         }
 
         public static string GenerateInvolves(SearchParams search)
@@ -21,7 +21,7 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
             var excludedOrgsClauses = string.Join(' ', search.ExcludedOrgs.Select(o => $"-org:{o}"));
 
             var searchTerms = $"{involvesClause} {orgsClauses} {excludedOrgsClauses}";
-            return GenerateQuery(searchTerms, search.PageSize, search.EndCursor);
+            return GenerateQuery(searchTerms, search.PageSize, search.After);
         }
 
         private static string GenerateQuery(string searchTerms, int pageSize, string? endCursor = null)

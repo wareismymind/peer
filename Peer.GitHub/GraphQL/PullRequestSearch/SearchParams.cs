@@ -13,7 +13,7 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
 
         public int PageSize { get; }
 
-        public string? EndCursor { get; }
+        public string? After { get; }
 
         public SearchParams(
             string subject,
@@ -34,7 +34,7 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
                 throw new ArgumentOutOfRangeException(nameof(pageSize), "Must be between 1 and 100");
 
             PageSize = pageSize;
-            EndCursor = endCursor;
+            After = endCursor;
         }
     }
 }
