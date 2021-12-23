@@ -48,17 +48,14 @@ namespace Peer.GitHub
                     QueryGithubPullRequests(QueryType.TeamRequested, token)
                 }.Merge();
 
-            var deduplicated = responses.Distinct(x => x.Id);
+            var prs = responses.Distinct(x => x.Id);
+            var prsWithMoreThreads = new Dictionary<string, PRSearch.PullRequest>();
 
-            var prs = new Dictionary<string, PRSearch.PullRequest>();
-            var prsWithMoreThreads = new List<PRSearch.PullRequest>();
-
-            await foreach (var value in deduplicated)
+            await foreach (var value in prs)
             {
                 if (value.ReviewThreads.PageInfo.HasNextPage)
                 {
-                    prsWithMoreThreads.Add(value);
-                    prs[value.Id] = value;
+                    prsWithMoreThreads[value.Id] = value;
                     continue;
                 }
 
@@ -67,25 +64,30 @@ namespace Peer.GitHub
 
             while (prsWithMoreThreads.Any())
             {
-                var queryResponse =
+                var prsWithEvenMoreThreads = new Dictionary<string, PRSearch.PullRequest>();
+
+                var prThreadPageResponse =
                     await _gqlClient.SendQueryAsync<Dictionary<string, PRSearch.PullRequest>>(
-                        ThreadPageQuery(prsWithMoreThreads),
+                        ThreadPageQuery(prsWithMoreThreads.Values),
                         token);
 
-                var prThreadPages = queryResponse.Data.Values;
+                var prThreadPages = prThreadPageResponse.Data.Values;
 
-                foreach (var pr in prThreadPages)
+                foreach (var prThreadPage in prThreadPages)
                 {
-                    prs[pr.Id].ReviewThreads.Nodes.AddRange(pr.ReviewThreads.Nodes);
+                    var pr = prsWithMoreThreads[prThreadPage.Id];
+                    pr.ReviewThreads.Nodes.AddRange(prThreadPage.ReviewThreads.Nodes);
+
+                    if (prThreadPage.ReviewThreads.PageInfo.HasNextPage)
+                    {
+                        prsWithEvenMoreThreads[pr.Id] = pr;
+                        continue;
+                    }
+
+                    yield return pr.Into();
                 }
 
-                prsWithMoreThreads =
-                    prThreadPages.Where(pr => pr.ReviewThreads.PageInfo.HasNextPage).ToList();
-            }
-
-            foreach (var value in prs.Values.Select(x => x.Into()))
-            {
-                yield return value;
+                prsWithMoreThreads = prsWithEvenMoreThreads;
             }
         }
 
