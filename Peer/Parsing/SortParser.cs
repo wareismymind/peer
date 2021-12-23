@@ -9,12 +9,12 @@ namespace Peer.Parsing
     {
         private static readonly Dictionary<string, Func<PullRequest, IComparable>> _selectorMap = new()
         {
-            ["repo"] = x => x.Identifier.Repo,
-            ["id-lex"] = x => x.Id,
-            ["id"] = x => int.Parse(x.Id),
-            ["owner"] = x => x.Identifier.Owner,
-            ["status"] = x => x.State.Status,
-            ["active"] = x => x.State.ActiveComments,
+            ["repo"] = pr => pr.Identifier.Repo,
+            ["id-lepr"] = pr => pr.Id,
+            ["id"] = pr => int.Parse(pr.Id),
+            ["owner"] = pr => pr.Identifier.Owner,
+            ["status"] = pr => pr.State.Status,
+            ["active"] = pr => pr.State.ActiveComments,
         };
 
         public static IEnumerable<string> SortKeys => _selectorMap.Keys;
