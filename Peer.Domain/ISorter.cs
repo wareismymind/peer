@@ -7,7 +7,7 @@ namespace Peer.Domain
 {
     public interface ISorter<T>
     {
-        IEnumerable<T> Sort(IEnumerable<T> input);
+        IAsyncEnumerable<T> Sort(IAsyncEnumerable<T> input);
     }
 
     public class SelectorSorter<T> : ISorter<T>
@@ -21,7 +21,7 @@ namespace Peer.Domain
             _direction = direction;
         }
 
-        public IEnumerable<T> Sort(IEnumerable<T> input)
+        public IAsyncEnumerable<T> Sort(IAsyncEnumerable<T> input)
         {
             return _direction switch
             {

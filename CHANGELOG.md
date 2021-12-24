@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.6.0](https://www.github.com/wareismymind/peer/compare/v1.5.2...v1.6.0) (2021-12-24)
+
+
+### Features
+
+* async enumerable and lazy paging ([#128](https://www.github.com/wareismymind/peer/issues/128)) ([44a0620](https://www.github.com/wareismymind/peer/commit/44a062087bf98145fcc6b2221eaa34a89a26c430))
+
+### [1.5.2](https://www.github.com/wareismymind/peer/compare/v1.5.1...v1.5.2) (2021-12-23)
+
+
+### Bug Fixes
+
+* config would fail because no providers were configured ([#129](https://www.github.com/wareismymind/peer/issues/129)) ([143f16e](https://www.github.com/wareismymind/peer/commit/143f16e9b49b752f425d0d1698ac0bf7fc865919))
+
 ### [1.5.1](https://www.github.com/wareismymind/peer/compare/v1.5.0...v1.5.1) (2021-12-19)
 
 

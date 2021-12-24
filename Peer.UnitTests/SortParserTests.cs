@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Peer.Domain;
 using Peer.Parsing;
 using Peer.UnitTests.Util;
@@ -46,7 +47,7 @@ namespace Peer.UnitTests
             }
 
             [Fact]
-            public void SortDirectionUnspecified_ReturnsAscendingSorter()
+            public async Task SortDirectionUnspecified_ReturnsAscendingSorter()
             {
                 var res = SortParser.ParseSortOption("id");
 
@@ -60,7 +61,7 @@ namespace Peer.UnitTests
                 };
 
                 var reversed = prs.OrderByDescending(p => int.Parse(p.Id)).ToList();
-                var sorted = res.Value.Sort(reversed).ToList();
+                var sorted = await res.Value.Sort(reversed.ToAsyncEnumerable()).ToListAsync();
 
                 Assert.Equal(reversed.AsEnumerable().Reverse(), sorted);
             }

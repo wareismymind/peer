@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Peer.Domain.Util;
 using wimm.Secundatives.Extensions;
-
 
 namespace Peer.Domain.Commands
 {
@@ -20,6 +20,8 @@ namespace Peer.Domain.Commands
 
         public IList<string> Format(PullRequest pullRequest)
         {
+            Validators.ArgIsNotNull(pullRequest);
+
             var lines = new List<string>
             {
                 "---",
@@ -32,8 +34,13 @@ namespace Peer.Domain.Commands
             lines.Add("Url:");
             lines.Add($"{_pad}{pullRequest.Url}");
             lines.Add(string.Empty);
-            lines.Add("Checks:");
 
+            if (!pullRequest.Checks.Any())
+            {
+                return lines;
+            }
+
+            lines.Add("Checks:");
             var titleWidth = pullRequest.Checks.Max(x => x.Name.Length);
 
             //Checks here
@@ -41,7 +48,7 @@ namespace Peer.Domain.Commands
             {
                 var symbol = _symbolProvider.GetSymbol(check.Status, check.Result)
                     .UnwrapOr("\u25EF\uFE0F"); //Large white circle
-                    
+
                 lines.Add($"{_pad}{symbol,4} {check.Name.PadRight(titleWidth)} -- {check.Url}");
             }
 

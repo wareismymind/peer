@@ -22,7 +22,7 @@ namespace Peer.Domain.Commands
 
         public async Task<Result<None, FindError>> DetailsAsync(DetailsArguments args, CancellationToken token = default)
         {
-            var findResult = await _prService.FindByPartial(args.Partial, token);
+            var findResult = await _prService.FindSingleByPartial(args.Partial, token);
             var formatted = findResult.Map(pr => _formatter.Format(pr));
 
             if (formatted.IsError)

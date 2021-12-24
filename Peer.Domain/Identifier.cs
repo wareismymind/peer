@@ -10,13 +10,14 @@ namespace Peer.Domain
         public string Repo { get; }
         public string Owner { get; }
         public string Provider { get; }
-
-        public Identifier(string id, string repo, string owner, string provider)
+        public string Author { get; }
+        public Identifier(string id, string repo, string owner, string author, string provider)
         {
             Id = id ?? throw new ArgumentNullException(nameof(id));
             Repo = repo ?? throw new ArgumentNullException(nameof(repo));
             Owner = owner ?? throw new ArgumentNullException(nameof(owner));
             Provider = provider ?? throw new ArgumentNullException(nameof(provider));
+            Author = author ?? throw new ArgumentNullException(nameof(author));
         }
 
         public bool IsMatch(PartialIdentifier partial)
