@@ -17,21 +17,19 @@ namespace Peer.Domain.Commands
         }
 
         //TODO(cn): AsyncEnumerable
-        public async Task<IEnumerable<PullRequest>> FetchAllPullRequests(CancellationToken token = default)
+        public Task<IAsyncEnumerable<PullRequest>> FetchAllPullRequests(CancellationToken token = default)
         {
-            var tasks = _fetchers.Select(async x => await x.GetPullRequestsAsync(token));
-            var prs = await Task.WhenAll(tasks);
-            var combined = prs.Aggregate((x, y) => x.Concat(y));
-            return combined;
+            var prIterator = _fetchers.ToAsyncEnumerable().SelectManyAwait(async x => await x.GetPullRequestsAsync(token));
+            return Task.FromResult(prIterator);
         }
 
-        public async Task<Result<PullRequest, FindError>> FindByPartial(PartialIdentifier partial, CancellationToken token = default)
+        public async Task<Result<PullRequest, FindError>> FindSingleByPartial(PartialIdentifier partial, CancellationToken token = default)
         {
             Validators.ArgIsNotNull(partial);
 
             var prs = await FetchAllPullRequests(token);
 
-            var matches = prs.Where(x => x.Identifier.IsMatch(partial)).ToList();
+            var matches = await prs.Where(x => x.Identifier.IsMatch(partial)).ToListAsync(token);
 
             return matches.Count switch
             {

@@ -2,7 +2,7 @@
   "profiles": {
     "Peer": {
       "commandName": "Project",
-      "commandLineArgs": "details 123"
+      "commandLineArgs": "sort -s repo"
     }
   }
 }

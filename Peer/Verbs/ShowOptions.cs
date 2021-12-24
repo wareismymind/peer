@@ -10,5 +10,8 @@ namespace Peer.Verbs
 
         [Option(shortName: 'w', longName: "watch", Required = false)]
         public bool Watch { get; set; }
+
+        [Option(shortName: 'c', longName: "count", Required = false, Default = 40)]
+        public int Count { get; set; }
     }
 }

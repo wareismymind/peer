@@ -51,7 +51,7 @@ namespace Peer.UnitTests.Util
             var id = PrimitiveGenerators.GetInt(max: 99999);
             return new PullRequest(
                 id.ToString(),
-                new Identifier(id.ToString(), "wareismymind", "doot", "github"),
+                new Identifier(id.ToString(), "wareismymind", "doot", "Insomniak47", "github"),
                 new Uri($"https://github.com/wareismymind/doot/pulls/{id}"),
                 new Descriptor(PrimitiveGenerators.GetString(20), PrimitiveGenerators.GetString(30)),
                 new State(PrimitiveGenerators.RandomEnumValue<PullRequestStatus>(), 10, 10),

@@ -8,7 +8,8 @@ namespace Peer.UnitTests
     {
         public class IsMatch
         {
-            private readonly Identifier _identifier = new("10", "secundatives", "wareismymind", "github");
+            private readonly Identifier _identifier =
+                new("10", "secundatives", "wareismymind", "insomniak47", "github");
 
             [Theory]
             [InlineData("github/wareismymind/secundatives/11")]
@@ -48,7 +49,6 @@ namespace Peer.UnitTests
 
                 Assert.True(res);
             }
-
         }
     }
 }

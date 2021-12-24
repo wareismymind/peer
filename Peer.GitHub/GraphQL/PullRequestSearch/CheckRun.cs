@@ -8,7 +8,7 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
     {
 #nullable disable
         public string Name { get; set; }
-        public CheckConclusionState Conclusion { get; set; }
+        public CheckConclusionState? Conclusion { get; set; }
         public Uri Url { get; set; }
         public CheckRunStatusState Status { get; set; }
 #nullable enable
@@ -45,9 +45,9 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
                 CheckConclusionState.Stale => CheckResult.Stale,
                 CheckConclusionState.Startup_Failure => CheckResult.Fire,
                 CheckConclusionState.Timed_Out => CheckResult.Timeout,
+                null => CheckResult.Unknown,
                 _ => throw new UnreachableException()
             };
         }
     }
-
 }
