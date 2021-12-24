@@ -57,7 +57,8 @@ namespace Peer
 
             if (setupResult.IsError )
             {
-                if (setupResult.Error == ConfigError.NoProvidersConfigured && !parseResult.Is<ConfigOptions>())
+
+                if (!parseResult.Is<ConfigOptions>() || setupResult.Error != ConfigError.NoProvidersConfigured)
                 {
                     Console.Error.WriteLine(_configErrorMap[setupResult.Error]);
                     return;
