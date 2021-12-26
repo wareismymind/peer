@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Peer.Domain;
 using wimm.Secundatives;
 
@@ -6,6 +7,18 @@ namespace Peer.Parsing
 {
     public class SortParser
     {
+        private static readonly Dictionary<string, Func<PullRequest, IComparable>> _selectorMap = new()
+        {
+            ["repo"] = pr => pr.Identifier.Repo,
+            ["id-lex"] = pr => pr.Id,
+            ["id"] = pr => int.Parse(pr.Id),
+            ["owner"] = pr => pr.Identifier.Owner,
+            ["status"] = pr => pr.State.Status,
+            ["active"] = pr => pr.State.ActiveComments,
+        };
+
+        public static IEnumerable<string> SortKeys => _selectorMap.Keys;
+
         public static Result<ISorter<PullRequest>, ParseError> ParseSortOption(string sortOption)
         {
             if (sortOption == null)
@@ -59,26 +72,12 @@ namespace Peer.Parsing
 
         private static Result<Func<PullRequest, IComparable>, ParseError> GetSelector(string name)
         {
-            return name switch
+            if(_selectorMap.TryGetValue(name, out var selector))
             {
-                "repo" => MakeSelector(x => x.Identifier.Repo),
-                "id-lex" => MakeSelector(x => x.Id),
-                "id" => MakeSelector(x => int.Parse(x.Id)),
-                "provider" => MakeSelector(x => x.Identifier.Provider),
-                "author" => MakeSelector(x => x.Identifier.Author),
-                "owner" => MakeSelector(x => x.Identifier.Owner),
-                "status" => MakeSelector(x => x.State.Status),
-                "active" => MakeSelector(x => x.State.ActiveComments),
-                "title" => MakeSelector(x => x.Descriptor.Title),
-                _ => ParseError.UnknownSortKey
-            };
-        }
+                return selector;
+            }
 
-        //CN: Being lazy here but just want to be able to wrap it and use the switch :|
-        private static Func<PullRequest, IComparable> MakeSelector<TProp>(Func<PullRequest, TProp> selector)
-            where TProp : IComparable
-        {
-            return x => selector(x);
+            return ParseError.UnknownSortKey;
         }
     }
 }
