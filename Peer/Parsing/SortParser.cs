@@ -10,7 +10,7 @@ namespace Peer.Parsing
         private static readonly Dictionary<string, Func<PullRequest, IComparable>> _selectorMap = new()
         {
             ["repo"] = pr => pr.Identifier.Repo,
-            ["id-lepr"] = pr => pr.Id,
+            ["id-lex"] = pr => pr.Id,
             ["id"] = pr => int.Parse(pr.Id),
             ["owner"] = pr => pr.Identifier.Owner,
             ["status"] = pr => pr.State.Status,
