@@ -1,4 +1,5 @@
 ﻿using Peer.Domain.Exceptions;
+using Peer.Domain.Util;
 using wimm.Secundatives;
 
 namespace Peer.Domain
@@ -26,6 +27,9 @@ namespace Peer.Domain
 
         public Maybe<string> GetSymbol(CheckStatus status, CheckResult result)
         {
+            Validators.ArgIsDefined(status);
+            Validators.ArgIsDefined(result);
+
             var check = new { Status = status, Result = result };
             return check switch
             {
