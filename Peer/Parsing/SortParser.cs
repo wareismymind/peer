@@ -20,6 +20,7 @@ namespace Peer.Parsing
             ["author"] = new PropertySelector<string>(pr => pr.Identifier.Author),
             ["status"] = new PropertySelector<PullRequestStatus>(pr => pr.State.Status),
             ["active"] = new PropertySelector<int>(pr => pr.State.ActiveComments),
+            ["title"] = new PropertySelector<string>(pr => pr.Descriptor.Title)
         };
 
         public static IEnumerable<string> Keys => _selectorMap.Keys;
@@ -66,12 +67,31 @@ namespace Peer.Parsing
                     // could do. It's a bit of a purity/code tradeoff. 
                     return selector switch
                     {
-                        PropertySelector<string> => new ActionFilter(pr => new Regex(value).IsMatch((string)selector.Selector(pr)), negated),
+                        PropertySelector<string> x => CreateRegexFilter(x, value, negated),
                         PropertySelector<int> x => CreateIntFilter(x, value, negated),
                         PropertySelector<PullRequestStatus> x => CreateEnumMatchFilter(x, value, negated),
                         _ => throw new UnreachableException()
                     };
                 }).Flatten();
+        }
+
+        private static Result<IFilter, FilterParseError> CreateRegexFilter(PropertySelector<string> selector, string value, bool negate)
+        {
+            var parsed = ParseRegex(value);
+            return parsed.OkOr(FilterParseError.UnknownMatchValue)
+                .Map(v => new RegexFilter(selector, v, negate) as IFilter);
+        }
+
+        private static Maybe<Regex> ParseRegex(string raw)
+        {
+            try
+            {
+                return new Regex(raw);
+            }
+            catch(ArgumentException)
+            {
+                return Maybe.None;
+            }
         }
 
         private static Result<IFilter, FilterParseError> CreateIntFilter(PropertySelector<int> selector, string value, bool negate)
