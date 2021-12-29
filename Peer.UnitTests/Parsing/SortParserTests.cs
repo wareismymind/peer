@@ -7,7 +7,7 @@ using Peer.Parsing;
 using Peer.UnitTests.Util;
 using Xunit;
 
-namespace Peer.UnitTests
+namespace Peer.UnitTests.Parsing
 {
     public class SortParserTests
     {
