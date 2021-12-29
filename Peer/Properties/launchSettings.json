@@ -2,7 +2,7 @@
   "profiles": {
     "Peer": {
       "commandName": "Project",
-      "commandLineArgs": "sort -s repo"
+      "commandLineArgs": "-f status:stale"
     }
   }
 }

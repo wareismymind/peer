@@ -14,13 +14,13 @@ namespace Peer.Domain.Util
         public const string NotEmpty = "Cannot be empty";
         public const string UndefinedEnum = "Enum value cannot be undefined";
 
-        public static void ArgNotLessThanOrEqualToZero(int value, string name)
+        public static void ArgNotLessThanOrEqualToZero(int value, [CallerArgumentExpression("value")] string? name = null)
         {
             if (value <= 0)
                 throw new ArgumentException(NotLessThanOrEqualToZero, name);
         }
 
-        public static void ArgIsNotNullEmptyOrWhitespace(string value, string name)
+        public static void ArgIsNotNullEmptyOrWhitespace(string value, [CallerArgumentExpression("value")] string? name = null)
         {
             if (value == null)
                 throw new ArgumentNullException(name);
@@ -35,25 +35,25 @@ namespace Peer.Domain.Util
                 throw new ArgumentNullException(name);
         }
 
-        public static void ArgIsNotEmpty(Guid value, string name)
+        public static void ArgIsNotEmpty(Guid value, [CallerArgumentExpression("value")] string? name = null)
         {
             if (value == Guid.Empty)
                 throw new ArgumentException(NotGuidEmpty, name);
         }
 
-        public static void ArgIsNotEmpty(ICollection collection, string name)
+        public static void ArgIsNotEmpty(ICollection collection, [CallerArgumentExpression("collection")] string? name = null)
         {
             if (collection?.Count == 0)
                 throw new ArgumentException(NotEmpty, name);
         }
 
-        public static void ArgIsNotNullOrEmpty(ICollection collection, string name)
+        public static void ArgIsNotNullOrEmpty(ICollection collection, [CallerArgumentExpression("collection")] string? name = null)
         {
             ArgIsNotNull(collection, name);
             ArgIsNotEmpty(collection, name);
         }
 
-        public static void ArgIsDefined<T>(T value, string name) where T : struct, Enum
+        public static void ArgIsDefined<T>(T value, [CallerArgumentExpression("value")] string? name = null) where T : struct, Enum
         {
             if (!Enum.IsDefined(value))
                 throw new ArgumentException(UndefinedEnum, name);

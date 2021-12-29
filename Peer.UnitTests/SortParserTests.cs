@@ -29,21 +29,21 @@ namespace Peer.UnitTests
             public void SortOptionEmptyOrWhitespace_ReturnsNotEnoughSections(string value)
             {
                 var res = SortParser.ParseSortOption(value);
-                ResultAsserts.IsError(res, ParseError.NotEnoughSections);
+                ResultAsserts.IsError(res, SortParseError.NotEnoughSections);
             }
 
             [Fact]
             public void SortSectionsEmpty_ReturnsNotEnoughSections()
             {
                 var res = SortParser.ParseSortOption(":");
-                ResultAsserts.IsError(res, ParseError.NotEnoughSections);
+                ResultAsserts.IsError(res, SortParseError.NotEnoughSections);
             }
 
             [Fact]
             public void SortOptionHasTooManySections_ReturnsTooManySections()
             {
                 var res = SortParser.ParseSortOption(":");
-                ResultAsserts.IsError(res, ParseError.NotEnoughSections);
+                ResultAsserts.IsError(res, SortParseError.NotEnoughSections);
             }
 
             [Fact]
@@ -70,14 +70,14 @@ namespace Peer.UnitTests
             public void PropertyNotAvailableForSorting_ReturnsUnknownSortKey()
             {
                 var res = SortParser.ParseSortOption("floop:asc");
-                ResultAsserts.IsError(res, ParseError.UnknownSortKey);
+                ResultAsserts.IsError(res, SortParseError.UnknownSortKey);
             }
 
             [Fact]
             public void DirectionInvalid_ReturnsInvalidSortDirection()
             {
                 var res = SortParser.ParseSortOption("id:floop");
-                ResultAsserts.IsError(res, ParseError.InvalidSortDirection);
+                ResultAsserts.IsError(res, SortParseError.InvalidSortDirection);
             }
 
             [Fact]

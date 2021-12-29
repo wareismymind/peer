@@ -1,4 +1,5 @@
-﻿using CommandLine;
+﻿using System.Collections.Generic;
+using CommandLine;
 
 namespace Peer.Verbs
 {
@@ -14,5 +15,8 @@ namespace Peer.Verbs
 
         [Option(shortName: 'c', longName: "count", Required = false, Default = 40)]
         public int Count { get; set; }
+
+        [Option(shortName: 'f', longName: "filter", Required = false)]
+        public IEnumerable<string>? Filter { get; set; }
     }
 }

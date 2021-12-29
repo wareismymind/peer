@@ -31,7 +31,7 @@ namespace Peer.Verbs
 
             help.AddPostOptionsLine("The sort option can use a number of different keys and default to ascending order. The avaliable keys are:");
             help.AddPostOptionsLine("");
-            help.AddPostOptionsLines(SortParser.SortKeys.Select(x => $"  {x}"));
+            help.AddPostOptionsLines(SelectorMap.Keys.Select(x => $"  {x}"));
             help.AddPostOptionsLine("");
             help.AddPostOptionsLine("");
             return help;

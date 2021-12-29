@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Peer.Domain.Filters;
 using wimm.Secundatives;
 
 namespace Peer.Domain.Commands
@@ -12,22 +14,30 @@ namespace Peer.Domain.Commands
         private readonly IListFormatter _formatter;
         private readonly IConsoleWriter _writer;
         private readonly ISorter<PullRequest>? _sorter;
+        private readonly List<IFilter> _filters;
 
         public Show(
             IPullRequestService prService,
             IListFormatter formatter,
             IConsoleWriter writer,
-            ISorter<PullRequest>? sorter = null)
+            ISorter<PullRequest>? sorter = null,
+            IEnumerable<IFilter>? filters = null)
         {
             _pullRequestService = prService;
             _formatter = formatter;
             _writer = writer;
             _sorter = sorter;
+            _filters = filters?.ToList() ?? new();
         }
 
         public async Task<Result<None, ShowError>> ShowAsync(ShowArguments args, CancellationToken token = default)
         {
             var prs = await _pullRequestService.FetchAllPullRequests(token);
+            foreach (var filter in _filters)
+            {
+                prs = filter.Filter(prs);
+            }
+
             var sorted = await (_sorter?.Sort(prs) ?? prs).Take(args.Count).ToListAsync(token);
             var lines = _formatter.FormatLines(sorted).ToList();
             _writer.Display(lines, token);

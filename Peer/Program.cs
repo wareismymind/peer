@@ -92,6 +92,7 @@ namespace Peer
 
         public static async Task ShowAsync(ShowOptions opts, IServiceCollection services, CancellationToken token)
         {
+
             if (opts.Sort != null)
             {
                 var sort = SortParser.ParseSortOption(opts.Sort);
@@ -102,6 +103,23 @@ namespace Peer
                 }
 
                 services.AddSingleton(sort.Value);
+            }
+
+            if (opts.Filter != null)
+            {
+                foreach (var filter in opts.Filter)
+                {
+                    Console.WriteLine($"Filter: {filter}");
+                    var parsedFilter = FilterParser.ParseFilterOption(filter);
+
+                    if (parsedFilter.IsError)
+                    {
+                        Console.Error.WriteLine($"Failed to parse filter option: {parsedFilter.Error}");
+                        return;
+                    }
+
+                    services.AddSingleton(parsedFilter.Value);
+                }
             }
 
             services.AddSingleton<Show>();
