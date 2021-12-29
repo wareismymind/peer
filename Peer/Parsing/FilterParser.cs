@@ -62,7 +62,7 @@ namespace Peer.Parsing
         {
             try
             {
-                return new Regex(raw);
+                return new Regex(raw, RegexOptions.IgnoreCase);
             }
             catch (ArgumentException)
             {
