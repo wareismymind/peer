@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.7.0](https://www.github.com/wareismymind/peer/compare/v1.6.0...v1.7.0) (2021-12-31)
+
+
+### Features
+
+* add initial filter impl ([#137](https://www.github.com/wareismymind/peer/issues/137)) ([9de2b55](https://www.github.com/wareismymind/peer/commit/9de2b552cde8a412963008577f836c5b6df58ada))
+* add sort keys to show help ([#132](https://www.github.com/wareismymind/peer/issues/132)) ([b9caa76](https://www.github.com/wareismymind/peer/commit/b9caa76108cf282d49ae3af7f546acd49fcc1c74))
+
 ## [1.6.0](https://www.github.com/wareismymind/peer/compare/v1.5.2...v1.6.0) (2021-12-24)
 
 
