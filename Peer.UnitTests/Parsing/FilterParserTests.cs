@@ -35,10 +35,17 @@ namespace Peer.UnitTests.Parsing
             }
 
             [Fact]
-            public void RawStringHasTooManyDividersWithContent_ReturnsTooManySections()
+            public void RawStringHasSemiColonsInContent_ReturnsRegexFilter()
             {
                 var value = FilterParser.ParseFilterOption("author:Insomnia:k");
-                ResultAsserts.IsError(value, FilterParseError.TooManySections);
+                ResultAsserts.IsValue(value);
+            }
+
+            [Fact]
+            public void KeyIsEmpty_ReturnsNoFilterKeySpecified()
+            {
+                var value = FilterParser.ParseFilterOption(":Insomniak");
+                ResultAsserts.IsError(value, FilterParseError.NoFilterKeySpecified);
             }
 
             [Fact]
@@ -46,6 +53,13 @@ namespace Peer.UnitTests.Parsing
             {
                 var value = FilterParser.ParseFilterOption("doot:Insomniak");
                 ResultAsserts.IsError(value, FilterParseError.UnknownFilterKey);
+            }
+
+            [Fact]
+            public void FilterValueEmpty_ReturnsFilterContentEmpty()
+            {
+                var value = FilterParser.ParseFilterOption("author:");
+                ResultAsserts.IsError(value, FilterParseError.FilterContentEmpty);
             }
 
             [Fact]

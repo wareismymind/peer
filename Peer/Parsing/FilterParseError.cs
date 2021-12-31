@@ -2,9 +2,10 @@
 {
     public enum FilterParseError
     {
-        TooManySections,
         NotEnoughSections,
         UnknownFilterKey,
-        UnknownMatchValue
+        UnknownMatchValue,
+        FilterContentEmpty,
+        NoFilterKeySpecified
     }
 }

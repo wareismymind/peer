@@ -17,14 +17,14 @@ namespace Peer.Parsing
                 throw new ArgumentNullException(nameof(filterRaw));
             }
 
-            var split = filterRaw.ToLower()
-                .Split(":", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+            var splitPoint = filterRaw.IndexOf(':');
 
-            return split.Length switch
+            return splitPoint switch
             {
-                0 or 1 => FilterParseError.NotEnoughSections,
-                2 => ParseSections(split),
-                _ => FilterParseError.TooManySections
+                -1 => FilterParseError.NotEnoughSections,
+                0 => FilterParseError.NoFilterKeySpecified,
+                var x when x == filterRaw.Length - 1 => FilterParseError.FilterContentEmpty,
+                _ => ParseSections(new string[] { filterRaw[0..splitPoint].Trim(), filterRaw[(splitPoint + 1)..].Trim() })
             };
         }
 
