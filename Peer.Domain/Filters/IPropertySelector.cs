@@ -6,6 +6,5 @@ namespace Peer.Domain.Filters
     {
         Func<PullRequest, IComparable> Selector { get; }
         Type ReturnType { get; }
-        bool Is<T>() => ReturnType == typeof(T);
     }
 }

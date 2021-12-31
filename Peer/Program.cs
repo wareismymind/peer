@@ -109,7 +109,6 @@ namespace Peer
             {
                 foreach (var filter in opts.Filter)
                 {
-                    Console.WriteLine($"Filter: {filter}");
                     var parsedFilter = FilterParser.ParseFilterOption(filter);
 
                     if (parsedFilter.IsError)

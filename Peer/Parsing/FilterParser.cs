@@ -39,8 +39,6 @@ namespace Peer.Parsing
             return maybeSelector.OkOr(FilterParseError.UnknownFilterKey)
                 .Map(selector =>
                 {
-                    //pr: Lazy initial impl cause otherwise we have to create a big factory that ends up basically no better than this
-                    // could do. It's a bit of a purity/code tradeoff. 
                     return selector switch
                     {
                         PropertySelector<string> x => CreateRegexFilter(x, value, negated),

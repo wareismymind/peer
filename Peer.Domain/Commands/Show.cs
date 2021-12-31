@@ -33,10 +33,7 @@ namespace Peer.Domain.Commands
         public async Task<Result<None, ShowError>> ShowAsync(ShowArguments args, CancellationToken token = default)
         {
             var prs = await _pullRequestService.FetchAllPullRequests(token);
-            foreach (var filter in _filters)
-            {
-                prs = filter.Filter(prs);
-            }
+            prs = _filters.Aggregate(prs, (prs, filter) => filter.Filter(prs));
 
             var sorted = await (_sorter?.Sort(prs) ?? prs).Take(args.Count).ToListAsync(token);
             var lines = _formatter.FormatLines(sorted).ToList();

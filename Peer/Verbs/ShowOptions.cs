@@ -16,7 +16,7 @@ namespace Peer.Verbs
         [Option(shortName: 'c', longName: "count", Required = false, Default = 40)]
         public int Count { get; set; }
 
-        [Option(shortName: 'f', longName: "filter", Required = false)]
+        [Option(shortName: 'f', longName: "filter", Required = false, Separator = ' ')]
         public IEnumerable<string>? Filter { get; set; }
     }
 }
