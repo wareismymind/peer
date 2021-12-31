@@ -35,10 +35,10 @@ namespace Peer.UnitTests.Parsing
             }
 
             [Fact]
-            public void RawStringHasTooManyDividersWithContent_ReturnsTooManySections()
+            public void RawStringHasSemiColonsInContent_ReturnsRegexFilter()
             {
                 var value = FilterParser.ParseFilterOption("author:Insomnia:k");
-                ResultAsserts.IsError(value, FilterParseError.TooManySections);
+                ResultAsserts.IsValue(value);
             }
 
             [Fact]
