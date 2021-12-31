@@ -53,7 +53,7 @@ namespace Peer.Domain.Util
             ArgIsNotEmpty(collection, name);
         }
 
-        public static void ArgIsDefined<T>(T value, string name) where T : struct, Enum
+        public static void ArgIsDefined<T>(T value, [CallerArgumentExpression("value")] string? name = null) where T : struct, Enum
         {
             if (!Enum.IsDefined(value))
                 throw new ArgumentException(UndefinedEnum, name);

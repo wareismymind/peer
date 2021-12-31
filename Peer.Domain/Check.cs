@@ -1,4 +1,5 @@
 ﻿using System;
+using Peer.Domain.Util;
 
 namespace Peer.Domain
 {
@@ -12,6 +13,9 @@ namespace Peer.Domain
 
         public Check(string name, string? description, Uri url, CheckStatus status, CheckResult result)
         {
+            Validators.ArgIsDefined(status);
+            Validators.ArgIsDefined(result);
+            
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Description = description;
             Url = url ?? throw new ArgumentNullException(nameof(url));
