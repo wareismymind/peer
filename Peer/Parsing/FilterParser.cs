@@ -22,7 +22,7 @@ namespace Peer.Parsing
             return splitPoint switch
             {
                 -1 => FilterParseError.NotEnoughSections,
-                var x when x == 0 => FilterParseError.NoFilterKeySpecified,
+                0 => FilterParseError.NoFilterKeySpecified,
                 var x when x == filterRaw.Length - 1 => FilterParseError.FilterContentEmpty,
                 _ => ParseSections(new string[] { filterRaw[0..splitPoint].Trim(), filterRaw[(splitPoint + 1)..].Trim() })
             };
