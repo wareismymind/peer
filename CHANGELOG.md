@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.7.1](https://www.github.com/wareismymind/peer/compare/v1.7.0...v1.7.1) (2021-12-31)
+
+
+### Bug Fixes
+
+* accept filter contents with embedded colons (like 'title:fix:') ([#139](https://www.github.com/wareismymind/peer/issues/139)) ([fe138dd](https://www.github.com/wareismymind/peer/commit/fe138ddd22f259d4245e792e73dd3008583be47c))
+
 ## [1.7.0](https://www.github.com/wareismymind/peer/compare/v1.6.0...v1.7.0) (2021-12-31)
 
 
