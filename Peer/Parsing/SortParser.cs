@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Peer.Domain;
 using wimm.Secundatives;
 
@@ -7,19 +6,7 @@ namespace Peer.Parsing
 {
     public class SortParser
     {
-        private static readonly Dictionary<string, Func<PullRequest, IComparable>> _selectorMap = new()
-        {
-            ["repo"] = pr => pr.Identifier.Repo,
-            ["id-lex"] = pr => pr.Id,
-            ["id"] = pr => int.Parse(pr.Id),
-            ["owner"] = pr => pr.Identifier.Owner,
-            ["status"] = pr => pr.State.Status,
-            ["active"] = pr => pr.State.ActiveComments,
-        };
-
-        public static IEnumerable<string> SortKeys => _selectorMap.Keys;
-
-        public static Result<ISorter<PullRequest>, ParseError> ParseSortOption(string sortOption)
+        public static Result<ISorter<PullRequest>, SortParseError> ParseSortOption(string sortOption)
         {
             if (sortOption == null)
             {
@@ -28,20 +15,12 @@ namespace Peer.Parsing
 
             var split = sortOption.ToLower().Split(":", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
-            if (split.Length > 2)
+            var sortDirectionResult = split.Length switch
             {
-                return ParseError.TooManySections;
-            }
-
-            if (split.Length == 0)
-            {
-                return ParseError.NotEnoughSections;
-            }
-
-            //CN: Should see if we can do any reflecty witchcraft here to make this really generic.
-            // till then maybe just have a specific set of things?
-
-            var sortDirectionResult = GetSortDirection(split);
+                0 => SortParseError.NotEnoughSections,
+                1 or 2 => GetSortDirection(split),
+                _ => SortParseError.TooManySections,
+            };
 
             if (sortDirectionResult.IsError)
             {
@@ -55,7 +34,7 @@ namespace Peer.Parsing
 
         }
 
-        private static Result<SortDirection, ParseError> GetSortDirection(string[] sections)
+        private static Result<SortDirection, SortParseError> GetSortDirection(string[] sections)
         {
             if (sections.Length == 1)
                 return SortDirection.Ascending;
@@ -66,18 +45,15 @@ namespace Peer.Parsing
                 "ascending" => SortDirection.Ascending,
                 "desc" => SortDirection.Descending,
                 "descending" => SortDirection.Descending,
-                _ => ParseError.InvalidSortDirection
+                _ => SortParseError.InvalidSortDirection
             };
         }
 
-        private static Result<Func<PullRequest, IComparable>, ParseError> GetSelector(string name)
+        private static Result<Func<PullRequest, IComparable>, SortParseError> GetSelector(string name)
         {
-            if(_selectorMap.TryGetValue(name, out var selector))
-            {
-                return selector;
-            }
-
-            return ParseError.UnknownSortKey;
+            return SelectorMap.TryGetSelector(name)
+                .OkOr(SortParseError.UnknownSortKey)
+                .Map(x => x.Selector);
         }
     }
 }

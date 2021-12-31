@@ -1,6 +1,6 @@
 ﻿namespace Peer.Parsing
 {
-    public enum ParseError
+    public enum SortParseError
     {
         Fire,
         TooManySections,
