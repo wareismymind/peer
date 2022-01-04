@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.7.2](https://www.github.com/wareismymind/peer/compare/v1.7.1...v1.7.2) (2022-01-04)
+
+
+### Bug Fixes
+
+* during the changes to status fetching the rollup got lost along the way ([#141](https://www.github.com/wareismymind/peer/issues/141)) ([187f3d9](https://www.github.com/wareismymind/peer/commit/187f3d9cf318aa49563370c65c1883cedc165975))
+
 ### [1.7.1](https://www.github.com/wareismymind/peer/compare/v1.7.0...v1.7.1) (2021-12-31)
 
 
