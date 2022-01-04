@@ -68,6 +68,7 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
                                 commits(last: 1) {
                                   nodes {
                                     commit {
+                                      statusCheckRollup { state }
                                       checkSuites(first: 20) {
                                         nodes {
                                           checkRuns(first: 20) {
