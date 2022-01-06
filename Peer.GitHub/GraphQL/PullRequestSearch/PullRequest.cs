@@ -54,7 +54,12 @@ namespace Peer.GitHub.GraphQL.PullRequestSearch
 
             return new Domain.PullRequest(
                 Number.ToString(),
-                new Identifier(Number.ToString(), BaseRepository.Name, BaseRepository.Owner.Login, Author.Login, ProviderConstants.Github),
+                new Identifier(
+                    Number.ToString(),
+                    BaseRepository.Name,
+                    BaseRepository.Owner.Login,
+                    Author?.Login ?? "octoghost",
+                    ProviderConstants.Github),
                 Url,
                 new Descriptor(Title, Body ?? string.Empty),
                 new State(status, totalComments, activeComments),
