@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.7.3](https://www.github.com/wareismymind/peer/compare/v1.7.2...v1.7.3) (2022-01-06)
+
+
+### Bug Fixes
+
+* when a user is deleted the Author field isn't returned. replacing author with 'octoghost' in those cases ([#143](https://www.github.com/wareismymind/peer/issues/143)) ([eb00ab0](https://www.github.com/wareismymind/peer/commit/eb00ab0e3ea00411e973fc324b1d49a6445facfa))
+
 ### [1.7.2](https://www.github.com/wareismymind/peer/compare/v1.7.1...v1.7.2) (2022-01-04)
 
 
