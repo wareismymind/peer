@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
@@ -32,13 +33,25 @@ namespace Peer.Domain.Commands
 
         public async Task<Result<None, ShowError>> ShowAsync(ShowArguments args, CancellationToken token = default)
         {
-            var prs = await _pullRequestService.FetchAllPullRequests(token);
-            prs = _filters.Aggregate(prs, (prs, filter) => filter.Filter(prs));
+            try
+            {
+                var prs = await _pullRequestService.FetchAllPullRequests(token);
+                prs = _filters.Aggregate(prs, (prs, filter) => filter.Filter(prs));
 
-            var sorted = await (_sorter?.Sort(prs) ?? prs).Take(args.Count).ToListAsync(token);
-            var lines = _formatter.FormatLines(sorted).ToList();
-            _writer.Display(lines, token);
-            return Maybe.None;
+                var sorted = await (_sorter?.Sort(prs) ?? prs).Take(args.Count).ToListAsync(token);
+                var lines = _formatter.FormatLines(sorted).ToList();
+                _writer.Display(lines, token);
+                return Maybe.None;
+            }
+            catch (Exception ex)
+            {
+                _writer.Clear();
+                _writer.Display(new List<string>
+                {
+                    $"error: failed to fetch pull request info: {ex.Message}",
+                }, token);
+                return ShowError.Fire;
+            }
         }
     }
 
