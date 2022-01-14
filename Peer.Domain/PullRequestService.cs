@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Peer.Domain.Exceptions;
 using Peer.Domain.Util;
 using wimm.Secundatives;
 

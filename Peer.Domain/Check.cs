@@ -15,7 +15,7 @@ namespace Peer.Domain
         {
             Validators.ArgIsDefined(status);
             Validators.ArgIsDefined(result);
-            
+
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Description = description;
             Url = url ?? throw new ArgumentNullException(nameof(url));

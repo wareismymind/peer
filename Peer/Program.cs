@@ -12,7 +12,6 @@ using Peer.ConfigSections;
 using Peer.Domain;
 using Peer.Domain.Commands;
 using Peer.Domain.Configuration;
-using Peer.Domain.Configuration.CommandConfigs;
 using Peer.Domain.Formatters;
 using Peer.GitHub;
 using Peer.Parsing;
