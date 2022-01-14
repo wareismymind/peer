@@ -8,9 +8,11 @@ using CommandLine;
 using CommandLine.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Peer.ConfigSections;
 using Peer.Domain;
 using Peer.Domain.Commands;
 using Peer.Domain.Configuration;
+using Peer.Domain.Configuration.CommandConfigs;
 using Peer.Domain.Formatters;
 using Peer.GitHub;
 using Peer.Parsing;
@@ -129,9 +131,7 @@ namespace Peer
                 services.AddSingleton<WatchShow>();
                 var provider = services.BuildServiceProvider();
                 var command = provider.GetRequiredService<WatchShow>();
-                var watchOpts = provider.GetRequiredService<WatchOptions>();
-                var args = watchOpts.Into();
-                await command.WatchAsync(args, new ShowArguments(opts.Count), token);
+                await command.WatchAsync(new ShowArguments(opts.Count), token);
             }
             else
             {
@@ -215,14 +215,11 @@ namespace Peer
                 return configResults.Error;
             }
 
-            var watchOptions = configuration.GetSection("Peer")
-                .Get<WatchOptions>()
-                ?? new WatchOptions();
+            var showConfig = configuration.GetSection("Peer:Show")
+                .Get<ShowConfigSection>()
+                ?? new ShowConfigSection();
 
-            if (watchOptions != null)
-            {
-                services.AddSingleton(watchOptions);
-            }
+            services.AddSingleton(showConfig.Into());
 
             services.AddSingleton<IConsoleWriter, ConsoleWriter>();
             services.AddSingleton<IListFormatter, CompactFormatter>();

@@ -7,8 +7,6 @@ namespace Peer.Domain.Commands
 {
     public class WatchShow
     {
-        private const int _maxConsecutiveErrors = 5;
-
         private readonly Show _show;
         private readonly IConsoleWriter _consoleWriter;
 
@@ -18,20 +16,20 @@ namespace Peer.Domain.Commands
             _consoleWriter = consoleWriter;
         }
 
-        public async Task<Result<None, ShowError>> WatchAsync(WatchArguments watchConfig, ShowArguments args, CancellationToken token)
+        public async Task<Result<None, ShowError>> WatchAsync(ShowArguments args, CancellationToken token)
         {
-            int consecutiveErrors = 0;
+            int consecutiveFailures = 0;
             _consoleWriter.Clear();
 
             while (!token.IsCancellationRequested)
             {
                 var res = await _show.ShowAsync(args, token);
 
-                consecutiveErrors = res.IsError
-                    ? consecutiveErrors + 1
+                consecutiveFailures = res.IsError
+                    ? consecutiveFailures + 1
                     : 0;
 
-                if (consecutiveErrors > _maxConsecutiveErrors)
+                if (consecutiveFailures > _show.Config.WatchMaxConsecutiveShowFailures)
                 {
                     _consoleWriter.Clear();
                     _consoleWriter.Display(new List<string>
@@ -42,7 +40,7 @@ namespace Peer.Domain.Commands
                     return ShowError.Fire;
                 }
 
-                await Task.Delay(watchConfig.IntervalSeconds, token);
+                await Task.Delay(_show.Config.WatchIntervalSeconds, token);
             }
 
             return Maybe.None;

@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using GraphQL;
 using GraphQL.Client.Http;
 using Peer.Domain;
 using Peer.Domain.Exceptions;
@@ -95,7 +97,7 @@ namespace Peer.GitHub
 
             while (!token.IsCancellationRequested)
             {
-                var response = await _gqlClient.SendQueryAsync<GQL.SearchResult<PRSearch.Result>>(await GenerateRequest(type, cursor), token);
+                var response = await NewMethod(type, cursor, token);
 
                 if (response.Errors != null)
                 {
@@ -115,6 +117,18 @@ namespace Peer.GitHub
                 {
                     break;
                 }
+            }
+        }
+
+        private async Task<GraphQLResponse<GQL.SearchResult<PRSearch.Result>>> NewMethod(QueryType type, string? cursor, CancellationToken token)
+        {
+            try
+            {
+                return await _gqlClient.SendQueryAsync<GQL.SearchResult<PRSearch.Result>>(await GenerateRequest(type, cursor), token);
+            }
+            catch (Exception ex) when (ex is GraphQLHttpRequestException || ex is HttpRequestException)
+            {
+                throw new FetchException("Failed to fetch pull requests.", ex);
             }
         }
 

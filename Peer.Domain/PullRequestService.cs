@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Peer.Domain.Exceptions;
 using Peer.Domain.Util;
 using wimm.Secundatives;
 
@@ -16,7 +17,6 @@ namespace Peer.Domain.Commands
             _fetchers = fetchers.ToList();
         }
 
-        //TODO(cn): AsyncEnumerable
         public Task<IAsyncEnumerable<PullRequest>> FetchAllPullRequests(CancellationToken token = default)
         {
             var prIterator = _fetchers.ToAsyncEnumerable().SelectManyAwait(async x => await x.GetPullRequestsAsync(token));
