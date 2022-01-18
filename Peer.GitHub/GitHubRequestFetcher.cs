@@ -41,8 +41,7 @@ namespace Peer.GitHub
 
         private async IAsyncEnumerable<PullRequest> GetPullRequestsImpl([EnumeratorCancellation] CancellationToken token)
         {
-            if (token.IsCancellationRequested)
-                yield break;
+            token.ThrowIfCancellationRequested();
 
             var responses = new List<IAsyncEnumerable<PRSearch.PullRequest>>
                 {
@@ -69,10 +68,11 @@ namespace Peer.GitHub
 
             while (prsWithMoreThreads.Any())
             {
-                var queryResponse =
-                    await _gqlClient.SendQueryAsync<Dictionary<string, PRSearch.PullRequest>>(
-                        ThreadPageQuery(prsWithMoreThreads),
-                        token);
+                var query = ThreadPageQuery(prsWithMoreThreads);
+
+                var queryResponse = await RetryUntilCancelled(
+                    async () => await _gqlClient.SendQueryAsync<Dictionary<string, PRSearch.PullRequest>>(query, token),
+                    token);
 
                 var prThreadPages = queryResponse.Data.Values;
 
@@ -95,9 +95,11 @@ namespace Peer.GitHub
         {
             var cursor = null as string;
 
-            while (!token.IsCancellationRequested)
+            while (true)
             {
-                var response = await NewMethod(type, cursor, token);
+                token.ThrowIfCancellationRequested();
+
+                var response = await GetPullRequests(type, cursor, token);
 
                 if (response.Errors != null)
                 {
@@ -120,16 +122,15 @@ namespace Peer.GitHub
             }
         }
 
-        private async Task<GraphQLResponse<GQL.SearchResult<PRSearch.Result>>> NewMethod(QueryType type, string? cursor, CancellationToken token)
+        private async Task<GraphQLResponse<GQL.SearchResult<PRSearch.Result>>> GetPullRequests(
+            QueryType type,
+            string? cursor, CancellationToken token)
         {
-            try
-            {
-                return await _gqlClient.SendQueryAsync<GQL.SearchResult<PRSearch.Result>>(await GenerateRequest(type, cursor), token);
-            }
-            catch (Exception ex) when (ex is GraphQLHttpRequestException || ex is HttpRequestException)
-            {
-                throw new FetchException("Failed to fetch pull requests.", ex);
-            }
+            var request = await GenerateRequest(type, cursor);
+
+            return await RetryUntilCancelled(
+                async () => await _gqlClient.SendQueryAsync<GQL.SearchResult<PRSearch.Result>>(request, token),
+                token);
         }
 
         private enum QueryType
@@ -167,7 +168,9 @@ namespace Peer.GitHub
         private async Task<string> QueryUsername(CancellationToken token)
         {
             var query = new GraphQLHttpRequest(ViewerQuery.Query.Generate(), token);
-            var viewerResponse = await _gqlClient.SendQueryAsync<ViewerQuery.Result>(query, token);
+            var viewerResponse = await RetryUntilCancelled(
+                async () => await _gqlClient.SendQueryAsync<ViewerQuery.Result>(query, token),
+                token);
             return viewerResponse.Data.Viewer.Login;
         }
 
@@ -178,6 +181,22 @@ namespace Peer.GitHub
                     pr => new ThreadQuery.QueryParams(pr.Id, pr.ReviewThreads.PageInfo.EndCursor)));
 
             return new GraphQLHttpRequest(query);
+        }
+
+        private async Task<T> RetryUntilCancelled<T>(Func<Task<T>> fn, CancellationToken token)
+        {
+            while (true)
+            {
+                token.ThrowIfCancellationRequested();
+
+                try
+                {
+                    return await fn();
+                }
+                // Catching these exceptions works because we're only retrying queries, but it seems like something we
+                // should specify at the callsite instead.
+                catch (Exception ex) when (ex is GraphQLHttpRequestException || ex is HttpRequestException) { }
+            }
         }
     }
 }

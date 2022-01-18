@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
@@ -39,7 +40,11 @@ namespace Peer.Domain.Commands
 
         public async Task<Result<None, ShowError>> ShowAsync(ShowArguments args, CancellationToken token = default)
         {
-            var prs = await GetPullRequests(args, token);
+            using var cts = new CancellationTokenSource();
+            token.Register(() => cts.Cancel());
+            cts.CancelAfter(Config.TimeoutSeconds * 1000);
+
+            var prs = await GetPullRequests(args, cts.Token);
             if (prs.IsError)
             {
                 _writer.Clear();
@@ -47,7 +52,7 @@ namespace Peer.Domain.Commands
                 {
                     $"error: failed to fetch pull request info",
                 }, token);
-                return ShowError.Fire;
+                return prs.Error;
             }
 
             var lines = _formatter.FormatLines(prs.Value).ToList();
@@ -57,32 +62,26 @@ namespace Peer.Domain.Commands
 
         private async Task<Result<IList<PullRequest>, ShowError>> GetPullRequests(ShowArguments args, CancellationToken token)
         {
-            var retryNumber = 0;
-            var stopWatch = Stopwatch.StartNew();
-
-            while (true)
+            try
             {
-                try
-                {
-                    var prs = await _pullRequestService.FetchAllPullRequests(token);
-                    prs = _filters.Aggregate(prs, (prs, filter) => filter.Filter(prs));
-                    return await (_sorter?.Sort(prs) ?? prs).Take(args.Count).ToListAsync(token);
-                }
-                catch (FetchException)
-                {
-                    if (retryNumber >= Config.MaxRequestRetries || stopWatch.Elapsed.TotalSeconds > Config.RetryCutoffSeconds)
-                    {
-                        return ShowError.Fire;
-                    }
-
-                    ++retryNumber;
-                }
+                var prs = await _pullRequestService.FetchAllPullRequests(token);
+                prs = _filters.Aggregate(prs, (prs, filter) => filter.Filter(prs));
+                return await (_sorter?.Sort(prs) ?? prs).Take(args.Count).ToListAsync(token);
+            }
+            catch (OperationCanceledException)
+            {
+                return ShowError.Timeout;
+            }
+            catch (FetchException)
+            {
+                return ShowError.Fire;
             }
         }
     }
 
     public enum ShowError
     {
+        Timeout,
         Fire,
     }
 }

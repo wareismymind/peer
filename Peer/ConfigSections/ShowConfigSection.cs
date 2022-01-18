@@ -4,17 +4,14 @@ namespace Peer.ConfigSections
 {
     public class ShowConfigSection
     {
-        public int RetryCutoffSeconds { get; set; }
+        public int? TimeoutSeconds { get; set; }
 
-        public int MaxRequestRetries { get; set; }
+        public int? WatchIntervalSeconds { get; set; }
 
-        public int WatchIntervalSeconds { get; set; }
-
-        public int WatchMaxConsecutiveShowFailures { get; set; }
+        public int? WatchMaxConsecutiveShowFailures { get; set; }
 
         public ShowConfig Into() => new(
-            RetryCutoffSeconds,
-            MaxRequestRetries,
+            TimeoutSeconds,
             WatchIntervalSeconds,
             WatchMaxConsecutiveShowFailures);
     }
