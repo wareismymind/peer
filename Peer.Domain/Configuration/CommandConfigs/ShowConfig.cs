@@ -6,12 +6,12 @@
         private const int _defaultWatchIntervalSeconds = 30;
         private const int _defaultWatchMaxConsecutiveShowFailures = 5;
 
-        public int TimeoutSeconds { get; private set; }
+        public int TimeoutSeconds { get; set; }
 
 
-        public int WatchIntervalSeconds { get; private set; }
+        public int WatchIntervalSeconds { get; set; }
 
-        public int WatchMaxConsecutiveShowFailures { get; private set; }
+        public int WatchMaxConsecutiveShowFailures { get; set; }
 
         public ShowConfig(
             int? timeoutSeconds,
