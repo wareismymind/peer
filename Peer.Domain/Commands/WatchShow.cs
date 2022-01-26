@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using wimm.Secundatives;
 
@@ -15,20 +16,31 @@ namespace Peer.Domain.Commands
             _consoleWriter = consoleWriter;
         }
 
-        public async Task<Result<None, ShowError>> WatchAsync(WatchArguments watchConfig, ShowArguments args, CancellationToken token)
+        public async Task<Result<None, ShowError>> WatchAsync(ShowArguments args, CancellationToken token)
         {
+            int consecutiveFailures = 0;
             _consoleWriter.Clear();
 
             while (!token.IsCancellationRequested)
             {
                 var res = await _show.ShowAsync(args, token);
 
-                if (res.IsError)
+                consecutiveFailures = res.IsError
+                    ? consecutiveFailures + 1
+                    : 0;
+
+                if (consecutiveFailures > _show.Config.WatchMaxConsecutiveShowFailures)
                 {
-                    return res;
+                    _consoleWriter.Clear();
+                    _consoleWriter.Display(new List<string>
+                    {
+                        $"error: too many consecutive errors",
+                    }, token);
+
+                    return ShowError.Fire;
                 }
 
-                await Task.Delay(watchConfig.IntervalSeconds, token);
+                await Task.Delay(_show.Config.WatchIntervalSeconds, token);
             }
 
             return Maybe.None;

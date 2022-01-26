@@ -2,7 +2,7 @@
   "profiles": {
     "Peer": {
       "commandName": "Project",
-      "commandLineArgs": "-f author:Insomniak47"
+      "commandLineArgs": "-w"
     }
   }
 }

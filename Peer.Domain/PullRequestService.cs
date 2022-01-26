@@ -16,7 +16,6 @@ namespace Peer.Domain.Commands
             _fetchers = fetchers.ToList();
         }
 
-        //TODO(cn): AsyncEnumerable
         public Task<IAsyncEnumerable<PullRequest>> FetchAllPullRequests(CancellationToken token = default)
         {
             var prIterator = _fetchers.ToAsyncEnumerable().SelectManyAwait(async x => await x.GetPullRequestsAsync(token));

@@ -8,6 +8,7 @@ using CommandLine;
 using CommandLine.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Peer.ConfigSections;
 using Peer.Domain;
 using Peer.Domain.Commands;
 using Peer.Domain.Configuration;
@@ -129,9 +130,7 @@ namespace Peer
                 services.AddSingleton<WatchShow>();
                 var provider = services.BuildServiceProvider();
                 var command = provider.GetRequiredService<WatchShow>();
-                var watchOpts = provider.GetRequiredService<WatchOptions>();
-                var args = watchOpts.Into();
-                await command.WatchAsync(args, new ShowArguments(opts.Count), token);
+                await command.WatchAsync(new ShowArguments(opts.Count), token);
             }
             else
             {
@@ -215,14 +214,20 @@ namespace Peer
                 return configResults.Error;
             }
 
+            // Parse legacy configuration setting and layer it with default values for newer settings. We'll wait to
+            // expose the new settings until we've settled on some configuration patterns.
+            // https://github.com/wareismymind/peer/issues/149
+
             var watchOptions = configuration.GetSection("Peer")
                 .Get<WatchOptions>()
                 ?? new WatchOptions();
-
-            if (watchOptions != null)
+            var showConfig = new ShowConfigSection();
+            if (watchOptions.WatchIntervalSeconds != null)
             {
-                services.AddSingleton(watchOptions);
+                showConfig.WatchIntervalSeconds = watchOptions.WatchIntervalSeconds;
             }
+
+            services.AddSingleton(showConfig.Into());
 
             services.AddSingleton<IConsoleWriter, ConsoleWriter>();
             services.AddSingleton<IListFormatter, CompactFormatter>();
