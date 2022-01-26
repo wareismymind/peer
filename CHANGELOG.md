@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.7.4](https://www.github.com/wareismymind/peer/compare/v1.7.3...v1.7.4) (2022-01-26)
+
+
+### Bug Fixes
+
+* handle errors in show/watch ([#147](https://www.github.com/wareismymind/peer/issues/147)) ([8247867](https://www.github.com/wareismymind/peer/commit/824786781edf230f7e83032f59b0fe5aafcd567a))
+
 ### [1.7.3](https://www.github.com/wareismymind/peer/compare/v1.7.2...v1.7.3) (2022-01-06)
 
 
