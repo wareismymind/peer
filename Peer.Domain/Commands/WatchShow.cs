@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using wimm.Secundatives;
@@ -18,7 +19,7 @@ namespace Peer.Domain.Commands
 
         public async Task<Result<None, ShowError>> WatchAsync(ShowArguments args, CancellationToken token)
         {
-            int consecutiveFailures = 0;
+            var consecutiveFailures = 0;
             _consoleWriter.Clear();
 
             while (!token.IsCancellationRequested)
@@ -40,7 +41,7 @@ namespace Peer.Domain.Commands
                     return ShowError.Fire;
                 }
 
-                await Task.Delay(_show.Config.WatchIntervalSeconds, token);
+                await Task.Delay(TimeSpan.FromSeconds(_show.Config.WatchIntervalSeconds), token);
             }
 
             return Maybe.None;
