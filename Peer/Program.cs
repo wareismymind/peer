@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -8,6 +9,7 @@ using CommandLine;
 using CommandLine.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Peer.ConfigSections;
 using Peer.Domain;
 using Peer.Domain.Commands;
@@ -16,6 +18,8 @@ using Peer.Domain.Formatters;
 using Peer.GitHub;
 using Peer.Parsing;
 using Peer.Verbs;
+using Serilog;
+using Serilog.Events;
 using wimm.Secundatives;
 
 namespace Peer
@@ -23,6 +27,7 @@ namespace Peer
     public static class Program
     {
         private static readonly string _configFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "peer.json");
+        private static readonly string _logFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "peer.log");
 
         private static readonly Dictionary<ConfigError, string> _configErrorMap = new()
         {
@@ -44,6 +49,7 @@ namespace Peer
             Console.OutputEncoding = Encoding.UTF8;
 
             var setupResult = SetupServices();
+            Log.Logger.Information("Setup complete with success: {Result}", setupResult.IsValue);
 
             var parser = new Parser(config =>
             {
@@ -57,18 +63,26 @@ namespace Peer
 
             if (setupResult.IsError && !parseResult.Is<ConfigOptions>())
             {
+                Log.Logger.Error("Setup failed with error: {Error}", setupResult.Error);
                 Console.Error.WriteLine(_configErrorMap[setupResult.Error]);
                 return;
             }
 
             if (parseResult.Tag == ParserResultType.Parsed)
             {
-                await parseResult.MapResult(
-                    (ShowOptions x) => ShowAsync(x, setupResult.Value, _tcs.Token),
-                    (OpenOptions x) => OpenAsync(x, setupResult.Value, _tcs.Token),
-                    (ConfigOptions x) => ConfigAsync(x),
-                    (DetailsOptions x) => DetailsAsync(x, setupResult.Value, _tcs.Token),
-                    err => Task.CompletedTask);
+                try
+                {
+                    await parseResult.MapResult(
+                        (ShowOptions x) => ShowAsync(x, setupResult.Value, _tcs.Token),
+                        (OpenOptions x) => OpenAsync(x, setupResult.Value, _tcs.Token),
+                        (ConfigOptions x) => ConfigAsync(x),
+                        (DetailsOptions x) => DetailsAsync(x, setupResult.Value, _tcs.Token),
+                        err => Task.CompletedTask);
+                }
+                catch (OperationCanceledException)
+                {
+                    Log.Logger.Information("Caught operation cancelled exception, exiting");
+                }
 
                 return;
             }
@@ -93,9 +107,9 @@ namespace Peer
 
         public static async Task ShowAsync(ShowOptions opts, IServiceCollection services, CancellationToken token)
         {
-
             if (opts.Sort != null)
             {
+                Log.Information("Sort option exists");
                 var sort = SortParser.ParseSortOption(opts.Sort);
                 if (sort.IsError)
                 {
@@ -108,6 +122,7 @@ namespace Peer
 
             if (opts.Filter != null)
             {
+                Log.Information("filter option exists");
                 foreach (var filter in opts.Filter)
                 {
                     var parsedFilter = FilterParser.ParseFilterOption(filter);
@@ -217,10 +232,10 @@ namespace Peer
             // Parse legacy configuration setting and layer it with default values for newer settings. We'll wait to
             // expose the new settings until we've settled on some configuration patterns.
             // https://github.com/wareismymind/peer/issues/149
-
             var watchOptions = configuration.GetSection("Peer")
                 .Get<WatchOptions>()
                 ?? new WatchOptions();
+
             var showConfig = new ShowConfigSection();
             if (watchOptions.WatchIntervalSeconds != null)
             {
@@ -228,6 +243,19 @@ namespace Peer
             }
 
             services.AddSingleton(showConfig.Into());
+
+            var logger = new LoggerConfiguration()
+                .MinimumLevel.Is(LogEventLevel.Information)
+                .WriteTo.File(_logFile)
+                .Enrich.FromLogContext()
+                .CreateLogger();
+
+            Log.Logger = logger;
+            services.AddLogging(builder =>
+            {
+                builder.ClearProviders();
+                builder.AddSerilog(logger);
+            });
 
             services.AddSingleton<IConsoleWriter, ConsoleWriter>();
             services.AddSingleton<IListFormatter, CompactFormatter>();
