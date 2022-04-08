@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Peer.Domain.Configuration.CommandConfigs;
 using Peer.Domain.Exceptions;
 using Peer.Domain.Filters;
@@ -18,7 +17,6 @@ namespace Peer.Domain.Commands
         private readonly IPullRequestService _pullRequestService;
         private readonly IListFormatter _formatter;
         private readonly IConsoleWriter _writer;
-        private readonly ILogger<Show> _logger;
         private readonly ISorter<PullRequest>? _sorter;
         private readonly List<IFilter> _filters;
 
@@ -29,7 +27,6 @@ namespace Peer.Domain.Commands
             IListFormatter formatter,
             IConsoleWriter writer,
             ShowConfig config,
-            ILogger<Show> logger,
             ISorter<PullRequest>? sorter = null,
             IEnumerable<IFilter>? filters = null)
         {
@@ -37,17 +34,15 @@ namespace Peer.Domain.Commands
             _formatter = formatter;
             _writer = writer;
             Config = config;
-            _logger = logger;
             _sorter = sorter;
             _filters = filters?.ToList() ?? new();
         }
 
         public async Task<Result<None, ShowError>> ShowAsync(ShowArguments args, CancellationToken token = default)
         {
-            _logger.LogInformation("Running 'Show' with timeout: {TimeOut}s", Config.TimeoutSeconds);
             using var cts = new CancellationTokenSource();
             token.Register(() => cts.Cancel());
-            cts.CancelAfter(TimeSpan.FromSeconds(Config.TimeoutSeconds));
+            cts.CancelAfter(Config.TimeoutSeconds * 1000);
 
             var prs = await GetPullRequests(args, cts.Token);
             if (prs.IsError)

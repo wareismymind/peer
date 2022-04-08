@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.Newtonsoft;
