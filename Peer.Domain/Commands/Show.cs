@@ -42,7 +42,7 @@ namespace Peer.Domain.Commands
         {
             using var cts = new CancellationTokenSource();
             token.Register(() => cts.Cancel());
-            cts.CancelAfter(Config.TimeoutSeconds * 1000);
+            cts.CancelAfter(Config.TimeoutSeconds);
 
             var prs = await GetPullRequests(args, cts.Token);
             if (prs.IsError)

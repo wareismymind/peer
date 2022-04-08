@@ -48,7 +48,7 @@ namespace Peer.Domain.Formatters
             return $"{id} {title} {comments} {status}  {pr.Url}";
         }
 
-        private string PadOrTruncate(string value, int length)
+        private static string PadOrTruncate(string value, int length)
         {
             return value.Length > length
                 ? value[0..(length - 1)] + _ellipsis

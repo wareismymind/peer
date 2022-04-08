@@ -18,7 +18,7 @@ namespace Peer.Domain.Commands
 
         public async Task<Result<None, ShowError>> WatchAsync(ShowArguments args, CancellationToken token)
         {
-            int consecutiveFailures = 0;
+            var consecutiveFailures = 0;
             _consoleWriter.Clear();
 
             while (!token.IsCancellationRequested)
