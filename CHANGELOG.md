@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.8.0](https://www.github.com/wareismymind/peer/compare/v1.7.3...v1.8.0) (2022-03-30)
+
+
+### Features
+
+* initial addition of loggers with some simple top level log statements (and one in show) until we figure out how we want to approach it ([#152](https://www.github.com/wareismymind/peer/issues/152)) ([15f65f2](https://www.github.com/wareismymind/peer/commit/15f65f231b72b06231aca7f937c0635e6ba95f91))
+
+
+### Bug Fixes
+
+* handle errors in show/watch ([#147](https://www.github.com/wareismymind/peer/issues/147)) ([8247867](https://www.github.com/wareismymind/peer/commit/824786781edf230f7e83032f59b0fe5aafcd567a))
+
 ### [1.7.3](https://www.github.com/wareismymind/peer/compare/v1.7.2...v1.7.3) (2022-01-06)
 
 
