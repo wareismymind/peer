@@ -45,10 +45,10 @@ namespace Peer.Domain.Commands
                 {
                     await Task.Delay(_show.Config.WatchIntervalSeconds, token);
                 }
-                catch (OperationCanceledException) 
+                catch (OperationCanceledException)
                 {
                     break;
-                }   
+                }
             }
 
             return Maybe.None;

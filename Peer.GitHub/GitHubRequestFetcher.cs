@@ -23,7 +23,7 @@ namespace Peer.GitHub
         private readonly GitHubPeerConfig _config;
         private readonly AsyncLazy<string> _username;
         private readonly CancellationTokenSource _cts = new();
-        private  CancellationTokenRegistration _registration;
+        private CancellationTokenRegistration _registration;
         public GitHubRequestFetcher(
             GraphQLHttpClient client,
             GitHubPeerConfig gitHubPeerConfig)
@@ -42,7 +42,7 @@ namespace Peer.GitHub
         private async IAsyncEnumerable<PullRequest> GetPullRequestsImpl([EnumeratorCancellation] CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            
+
             var responses = new List<IAsyncEnumerable<PRSearch.PullRequest>>
                 {
                     QueryGithubPullRequests(QueryType.Involves, token),
