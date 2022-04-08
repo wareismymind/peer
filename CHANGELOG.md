@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.8.1](https://www.github.com/wareismymind/peer/compare/v1.8.0...v1.8.1) (2022-04-08)
+
+
+### Bug Fixes
+
+* Revert "feat: initial addition of loggers " ([#154](https://www.github.com/wareismymind/peer/issues/154)) ([6a8ee49](https://www.github.com/wareismymind/peer/commit/6a8ee49c58b911a86a218b98e228f841359b316e))
+
 ## [1.8.0](https://www.github.com/wareismymind/peer/compare/v1.7.3...v1.8.0) (2022-03-30)
 
 
