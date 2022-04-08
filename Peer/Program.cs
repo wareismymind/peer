@@ -217,10 +217,10 @@ namespace Peer
             // Parse legacy configuration setting and layer it with default values for newer settings. We'll wait to
             // expose the new settings until we've settled on some configuration patterns.
             // https://github.com/wareismymind/peer/issues/149
-
             var watchOptions = configuration.GetSection("Peer")
                 .Get<WatchOptions>()
                 ?? new WatchOptions();
+
             var showConfig = new ShowConfigSection();
             if (watchOptions.WatchIntervalSeconds != null)
             {

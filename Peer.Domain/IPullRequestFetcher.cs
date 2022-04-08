@@ -6,6 +6,6 @@ namespace Peer.Domain
 {
     public interface IPullRequestFetcher
     {
-        Task<IAsyncEnumerable<PullRequest>> GetPullRequestsAsync(CancellationToken token = default);
+        IAsyncEnumerable<PullRequest> GetPullRequestsAsync(CancellationToken token = default);
     }
 }
