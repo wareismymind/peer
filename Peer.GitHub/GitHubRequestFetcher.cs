@@ -183,7 +183,7 @@ namespace Peer.GitHub
             return new GraphQLHttpRequest(query);
         }
 
-        private static async Task<T> RetryUntilCancelled<T>(Func<Task<T>> fn, CancellationToken token)
+        private async Task<T> RetryUntilCancelled<T>(Func<Task<T>> fn, CancellationToken token)
         {
             while (true)
             {

@@ -1,4 +1,6 @@
-﻿namespace Peer.Domain.Configuration.CommandConfigs
+﻿using System;
+
+namespace Peer.Domain.Configuration.CommandConfigs
 {
     public class ShowConfig
     {
@@ -6,10 +8,8 @@
         private const int _defaultWatchIntervalSeconds = 30;
         private const int _defaultWatchMaxConsecutiveShowFailures = 5;
 
-        public int TimeoutSeconds { get; set; }
-
-
-        public int WatchIntervalSeconds { get; set; }
+        public TimeSpan TimeoutSeconds { get; set; }
+        public TimeSpan WatchIntervalSeconds { get; set; }
 
         public int WatchMaxConsecutiveShowFailures { get; set; }
 
@@ -18,8 +18,8 @@
             int? watchIntervalSeconds,
             int? watchMaxConsecutiveShowFailures)
         {
-            TimeoutSeconds = timeoutSeconds ?? _defaultTimeoutSeconds;
-            WatchIntervalSeconds = watchIntervalSeconds ?? _defaultWatchIntervalSeconds;
+            TimeoutSeconds = TimeSpan.FromSeconds(timeoutSeconds ?? _defaultTimeoutSeconds);
+            WatchIntervalSeconds = TimeSpan.FromSeconds(watchIntervalSeconds ?? _defaultWatchIntervalSeconds);
             WatchMaxConsecutiveShowFailures =
                 watchMaxConsecutiveShowFailures ?? _defaultWatchMaxConsecutiveShowFailures;
         }
