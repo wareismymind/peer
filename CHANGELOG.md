@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.8.2](https://www.github.com/wareismymind/peer/compare/v1.8.1...v1.8.2) (2022-04-09)
+
+
+### Bug Fixes
+
+* registration was not living long enough to handle cancellation properly. Also flattened out some of the async enumerables ([#156](https://www.github.com/wareismymind/peer/issues/156)) ([60e923d](https://www.github.com/wareismymind/peer/commit/60e923d345b656f01381b9a8e288642513f4f145))
+
 ### [1.8.1](https://www.github.com/wareismymind/peer/compare/v1.8.0...v1.8.1) (2022-04-08)
 
 
