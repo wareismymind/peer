@@ -17,13 +17,13 @@ using ViewerQuery = Peer.GitHub.GraphQL.ViewerQuery;
 
 namespace Peer.GitHub
 {
-    public class GitHubRequestFetcher : IPullRequestFetcher
+    public sealed class GitHubRequestFetcher : IPullRequestFetcher, IDisposable
     {
         private readonly GraphQLHttpClient _gqlClient;
         private readonly GitHubPeerConfig _config;
         private readonly AsyncLazy<string> _username;
         private readonly CancellationTokenSource _cts = new();
-
+        private CancellationTokenRegistration _registration;
         public GitHubRequestFetcher(
             GraphQLHttpClient client,
             GitHubPeerConfig gitHubPeerConfig)
@@ -33,10 +33,10 @@ namespace Peer.GitHub
             _username = new AsyncLazy<string>(() => GetUsername(_cts.Token));
         }
 
-        public Task<IAsyncEnumerable<PullRequest>> GetPullRequestsAsync(CancellationToken token = default)
+        public IAsyncEnumerable<PullRequest> GetPullRequestsAsync(CancellationToken token = default)
         {
-            using var registration = token.Register(() => _cts.Cancel());
-            return Task.FromResult(GetPullRequestsImpl(token));
+            _registration = token.Register(() => _cts.Cancel());
+            return GetPullRequestsImpl(token);
         }
 
         private async IAsyncEnumerable<PullRequest> GetPullRequestsImpl([EnumeratorCancellation] CancellationToken token)
@@ -183,7 +183,7 @@ namespace Peer.GitHub
             return new GraphQLHttpRequest(query);
         }
 
-        private async Task<T> RetryUntilCancelled<T>(Func<Task<T>> fn, CancellationToken token)
+        private static async Task<T> RetryUntilCancelled<T>(Func<Task<T>> fn, CancellationToken token)
         {
             while (true)
             {
@@ -197,6 +197,11 @@ namespace Peer.GitHub
                 // should specify at the callsite instead.
                 catch (Exception ex) when (ex is GraphQLHttpRequestException || ex is HttpRequestException) { }
             }
+        }
+
+        public void Dispose()
+        {
+            _registration.Dispose();
         }
     }
 }

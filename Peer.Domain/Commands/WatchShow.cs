@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using wimm.Secundatives;
@@ -40,7 +41,14 @@ namespace Peer.Domain.Commands
                     return ShowError.Fire;
                 }
 
-                await Task.Delay(_show.Config.WatchIntervalSeconds, token);
+                try
+                {
+                    await Task.Delay(_show.Config.WatchIntervalSeconds, token);
+                }
+                catch (OperationCanceledException)
+                {
+                    break;
+                }
             }
 
             return Maybe.None;

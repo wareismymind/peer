@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
@@ -64,7 +63,7 @@ namespace Peer.Domain.Commands
         {
             try
             {
-                var prs = await _pullRequestService.FetchAllPullRequests(token);
+                var prs = _pullRequestService.FetchAllPullRequests(token);
                 prs = _filters.Aggregate(prs, (prs, filter) => filter.Filter(prs));
                 return await (_sorter?.Sort(prs) ?? prs).Take(args.Count).ToListAsync(token);
             }

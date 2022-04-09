@@ -1,7 +1,4 @@
-﻿using System;
-using Peer.Domain.Commands;
-
-namespace Peer.Parsing
+﻿namespace Peer.Parsing
 {
     public class WatchOptions
     {
