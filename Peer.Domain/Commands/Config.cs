@@ -11,6 +11,8 @@ namespace Peer.Domain.Commands
         private const string _configHelp = @"
 {
     ""Peer"": {
+    //optional: The amount of time to wait for the show command to fetch pull request info
+    ""ShowTimeoutSeconds"": 30
     //optional: The amount of time between calls to providers when using the --watch flag
     ""WatchIntervalSeconds"": 30
     },

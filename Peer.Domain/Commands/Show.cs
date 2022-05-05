@@ -49,7 +49,11 @@ namespace Peer.Domain.Commands
                 _writer.Clear();
                 _writer.Display(new List<string>
                 {
-                    $"error: failed to fetch pull request info",
+                    prs.Error switch
+                    {
+                        ShowError.Timeout => "error: timeout fetching pull request info",
+                        _ => "error: failed to fetch pull request info",
+                    },
                 }, token);
                 return prs.Error;
             }
