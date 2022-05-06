@@ -51,7 +51,7 @@ namespace Peer.Domain.Commands
                 {
                     prs.Error switch
                     {
-                        ShowError.Timeout => "error: timeout fetching pull request info",
+                        ShowError.Timeout => "error: timeout fetching pull request info; consider increasing the 'ShowTimeoutSeconds' in your peer config",
                         _ => "error: failed to fetch pull request info",
                     },
                 }, token);
