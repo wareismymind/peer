@@ -36,7 +36,7 @@ namespace Peer.Domain.Commands
                 // Use this option as an alternative to `Orgs`
                 ""ExcludedOrgs"": [],
                 // The number of pull requests to include in your search results (min: 1, max: 100, default: 20)
-                ""Count"": 7
+                ""Count"": 30
             }
         }]
     }
