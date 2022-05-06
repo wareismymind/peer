@@ -1,7 +1,8 @@
 ﻿namespace Peer.Parsing
 {
-    public class WatchOptions
+    public class PeerOptions
     {
+        public int? ShowTimeoutSeconds { get; set; }
         public int? WatchIntervalSeconds { get; set; }
     }
 }

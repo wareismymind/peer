@@ -218,13 +218,14 @@ namespace Peer
             // expose the new settings until we've settled on some configuration patterns.
             // https://github.com/wareismymind/peer/issues/149
             var watchOptions = configuration.GetSection("Peer")
-                .Get<WatchOptions>()
-                ?? new WatchOptions();
+                .Get<PeerOptions>()
+                ?? new PeerOptions();
 
             var showConfig = new ShowConfigSection();
             if (watchOptions.WatchIntervalSeconds != null)
             {
                 showConfig.WatchIntervalSeconds = watchOptions.WatchIntervalSeconds;
+                showConfig.TimeoutSeconds = watchOptions.ShowTimeoutSeconds;
             }
 
             services.AddSingleton(showConfig.Into());
