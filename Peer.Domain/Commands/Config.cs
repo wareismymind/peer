@@ -11,29 +11,32 @@ namespace Peer.Domain.Commands
         private const string _configHelp = @"
 {
     ""Peer"": {
-    //optional: The amount of time to wait for the show command to fetch pull request info
-    ""ShowTimeoutSeconds"": 30
-    //optional: The amount of time between calls to providers when using the --watch flag
-    ""WatchIntervalSeconds"": 30
+        // The amount of time to wait for the show command to fetch pull request info (default: 10)
+        ""ShowTimeoutSeconds"": 30
+        // The amount of time between calls to providers when using the --watch flag (default: 30)
+        ""WatchIntervalSeconds"": 15
     },
+    // Pull request provider configurations organized by type (currently there's only github!)
     ""Providers"": {
-    //The type of the provider you're configuring (currently there's only github!)
+        // A list of GitHub pull request provider configurations
         ""github"": [{
-            //required: a friendly name for this provider
-            ""Name"": ""required: a friendly name for this provider"",
+            // A friendly name for this provider (required)
+            ""Name"": ""GitHub-Work"",
             ""Configuration"": {
-                //required: your API token
+                // An API token with permission to read issues (required)
+                // You will need to configure SSO on the PAT to see pull requests from organizations that require it
                 ""AccessToken"": """",
-                //optional: the github username you're interested in investigating, alternatively we'll fetch yours from the api
+                // The GitHub username you're interested in investigating (optional)
+                // If not provided we'll fetch the username associated with the AccessToken from the API
                 ""Username"": """",
-                //optional: Orgs can be either be traditional (github, wareismymind) or a username for user's repos 
-                // if left empty we'll look at all orgs available to your user
+                // A list of organizations or other GitHub users whose repos to include pull requests from (default: [])
+                // If the list is empty then we'll include all visible requests regardless of the repo owner
                 ""Orgs"": [""myorg"", ""wareismymind"", ""someuser""],
-                //optional: Orgs that you'd like to exclude from the output, only really makes sense if no orgs are set
+                // A list of organizations or other GitHub users whose repos will be excluded when searching for pull requests (default: [])
+                // Use this option as an alternative to `Orgs`
                 ""ExcludedOrgs"": [],
-                //optional: indicates the number of pull requests that will be listed, should be number between 1 and 100.
-                // if not provided will default to 20.
-                ""Count"": 20
+                // The number of pull requests to include in your search results (min: 1, max: 100, default: 20)
+                ""Count"": 7
             }
         }]
     }
