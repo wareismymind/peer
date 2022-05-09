@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.0](https://www.github.com/wareismymind/peer/compare/v1.8.2...v1.9.0) (2022-05-06)
+
+
+### Features
+
+* configurable show timeout ([#160](https://www.github.com/wareismymind/peer/issues/160)) ([cdd9db4](https://www.github.com/wareismymind/peer/commit/cdd9db4184e9226e6638059d6cd56862eb46cf14))
+
 ### [1.8.2](https://www.github.com/wareismymind/peer/compare/v1.8.1...v1.8.2) (2022-04-09)
 
 
