@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.9.1](https://www.github.com/wareismymind/peer/compare/v1.9.0...v1.9.1) (2022-10-08)
+
+
+### Bug Fixes
+
+* add docs for filter, cleanup sorting and other text ([#164](https://www.github.com/wareismymind/peer/issues/164)) ([dd71f6f](https://www.github.com/wareismymind/peer/commit/dd71f6f8f7b7957f681131ab9f23cb70d71dc60b))
+
 ## [1.9.0](https://www.github.com/wareismymind/peer/compare/v1.8.2...v1.9.0) (2022-05-06)
 
 
