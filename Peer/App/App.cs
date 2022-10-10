@@ -24,7 +24,7 @@ public class App
 
     }
 
-    public async Task RunAsync(string[] args, CancellationToken token = default)
+    public async Task<int> RunAsync(string[] args, CancellationToken token = default)
     {
         var result = _parser.Parse(args);
 
@@ -33,15 +33,23 @@ public class App
         if (verb == null)
         {
             await WriteHelpText(null, result);
-            return;
+            return 1;
         }
         var services = new ServiceCollection();
         _setupHandler?.SetupServices(services);
 
 
-        await result.MapResult<object, Task>(
-            x => verb.Handler?.HandleAsync(x, services, token) ?? Task.CompletedTask,
-            _ => WriteHelpText(verb, result));
+        try
+        {
+            await result.MapResult<object, Task>(
+                x => verb.Handler?.HandleAsync(x, services, token) ?? Task.CompletedTask,
+                _ => WriteHelpText(verb, result));
+            return 0;
+        }
+        catch (Exception _)
+        {
+            return 1;
+        }
     }
 
     private static Task WriteHelpText(IVerb? verb, ParserResult<object> result)

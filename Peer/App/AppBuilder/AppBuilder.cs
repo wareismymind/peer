@@ -1,7 +1,8 @@
 using System;
+using System.Reflection;
+using CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using Peer.Domain.Configuration;
-using Peer.Parsing.CommandLine;
 using wimm.Secundatives;
 
 namespace Peer.App.AppBuilder;
@@ -32,7 +33,10 @@ public class AppBuilder
 
     public VerbBuilder<TVerb> WithVerb<TVerb>()
     {
-        //TODO - Check TVerb for verby-ness
+        if (typeof(TVerb).GetCustomAttribute(typeof(VerbAttribute)) == null)
+        {
+            throw new ArgumentException($"The type must have the {nameof(VerbAttribute)} Attribute");
+        }
         _services.AddSingleton<IVerb, Verb<TVerb>>();
         return new VerbBuilder<TVerb>(_services);
     }

@@ -11,7 +11,7 @@ namespace Peer.Parsing.CommandLine;
 
 public class ConfigShowHandler : IHandler<ConfigShowOptions>
 {
-    public async Task HandleAsync(
+    public async Task<int> HandleAsync(
         ConfigShowOptions opts,
         IServiceCollection collection,
         CancellationToken token = default)
@@ -19,12 +19,12 @@ public class ConfigShowHandler : IHandler<ConfigShowOptions>
         if (!File.Exists(Constants.DefaultConfigPath))
         {
 
-            Console.WriteLine($"You don't have a config! User config --init to create a default config");
-            return;
+            await Console.Error.WriteLineAsync($"You don't have a config! User config --init to create a default config");
+            return 1;
         }
 
         var text = await File.ReadAllTextAsync(Constants.DefaultConfigPath, token);
         Console.WriteLine(text);
-
+        return 0;
     }
 }

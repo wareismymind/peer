@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using CommandLine;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Peer.App.AppBuilder;
@@ -33,7 +32,7 @@ namespace Peer
         private static readonly CancellationTokenSource _tcs = new();
 
         [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
-        public static async Task Main(string[] args)
+        public static async Task<int> Main(string[] args)
         {
             Console.CancelKeyPress += (evt, eventArgs) =>
             {
@@ -64,10 +63,10 @@ namespace Peer
 
             var p = builder.Build();
 
-            await p.RunAsync(args);
+            return await p.RunAsync(args);
         }
 
-        private static async Task ShowAsync(ShowOptions opts, IServiceCollection services, CancellationToken token)
+        private static async Task<int> ShowAsync(ShowOptions opts, IServiceCollection services, CancellationToken token)
         {
 
             if (opts.Sort != null)
@@ -76,7 +75,7 @@ namespace Peer
                 if (sort.IsError)
                 {
                     await Console.Error.WriteLineAsync($"Failed to parse sort option: {sort.Error}");
-                    return;
+                    return 1;
                 }
 
                 services.AddSingleton(sort.Value);
@@ -91,7 +90,7 @@ namespace Peer
                     if (parsedFilter.IsError)
                     {
                         await Console.Error.WriteLineAsync($"Failed to parse filter option: {parsedFilter.Error}");
-                        return;
+                        return 1;
                     }
 
                     services.AddSingleton(parsedFilter.Value);
@@ -112,19 +111,25 @@ namespace Peer
             {
                 var provider = services.BuildServiceProvider();
                 var command = provider.GetRequiredService<Show>();
-                await command.ShowAsync(new ShowArguments(opts.Count), token);
+                var res = await command.ShowAsync(new ShowArguments(opts.Count), token);
+                if (res.IsError)
+                {
+                    return 1;
+                }
             }
+
+            return 0;
         }
 
-        private static async Task OpenAsync(OpenOptions opts, IServiceCollection services, CancellationToken token)
+        private static async Task<int> OpenAsync(OpenOptions opts, IServiceCollection services, CancellationToken token)
         {
             var parseResult = PartialIdentifier.Parse(opts.Partial!);
 
             if (parseResult.IsError)
             {
-                Console.Error.WriteLine(
+                await Console.Error.WriteLineAsync(
                     $"Failed to parse partial identifier '{opts.Partial}' with error: {parseResult.Error}");
-                return;
+                return 1;
             }
 
             services.AddSingleton<Open>();
@@ -135,19 +140,22 @@ namespace Peer
 
             if (result.IsError)
             {
-                Console.Error.WriteLine($"Partial identifier '{opts.Partial}' failed with error: {result.Error}");
+                await Console.Error.WriteLineAsync($"Partial identifier '{opts.Partial}' failed with error: {result.Error}");
+                return 1;
             }
+
+            return 0;
         }
 
-        private static async Task DetailsAsync(DetailsOptions opts, IServiceCollection services, CancellationToken token)
+        private static async Task<int> DetailsAsync(DetailsOptions opts, IServiceCollection services, CancellationToken token)
         {
             var parseResult = PartialIdentifier.Parse(opts.Partial!);
 
             if (parseResult.IsError)
             {
-                Console.Error.WriteLine(
+                await Console.Error.WriteLineAsync(
                     $"Failed to parse partial identifier '{opts.Partial}' with error: {parseResult.Error}");
-                return;
+                return 1;
             }
 
             services.AddSingleton<Details>();
@@ -158,10 +166,14 @@ namespace Peer
 
             var res = await command.DetailsAsync(new DetailsArguments(parseResult.Value), token);
 
-            if (res.IsError)
+            if (!res.IsError)
             {
-                Console.Error.WriteLine($"Partial identifier '{opts.Partial}' failed with error: {res.Error}");
+                return 0;
             }
+
+            await Console.Error.WriteLineAsync($"Partial identifier '{opts.Partial}' failed with error: {res.Error}");
+            return 1;
+
         }
 
         //TODO -- Move this to the Verb level types

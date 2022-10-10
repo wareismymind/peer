@@ -24,7 +24,7 @@ public class VerbBuilder<T>
         return this;
     }
 
-    public VerbBuilder<T> WithActionHandler(Func<T, IServiceCollection, CancellationToken, Task> handler)
+    public VerbBuilder<T> WithActionHandler(Func<T, IServiceCollection, CancellationToken, Task<int>> handler)
     {
         _services.AddSingleton<IHandler<T>>(new ActionHandler<T>(handler));
         _services.AddSingleton<IHandler, HandlerWrapper<T>>();

@@ -7,7 +7,7 @@ namespace Peer.App;
 
 public interface IHandler<in TVerb>
 {
-    Task HandleAsync(TVerb opts, IServiceCollection collection, CancellationToken token = default);
+    Task<int> HandleAsync(TVerb opts, IServiceCollection collection, CancellationToken token = default);
 }
 
 public interface IHandler

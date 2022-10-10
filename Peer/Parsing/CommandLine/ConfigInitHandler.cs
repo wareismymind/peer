@@ -46,17 +46,18 @@ public class ConfigInitHandler : IHandler<ConfigInitOptions>
 }
 ";
 
-    public async Task HandleAsync(ConfigInitOptions opts, IServiceCollection collection, CancellationToken token = default)
+    public async Task<int> HandleAsync(ConfigInitOptions opts, IServiceCollection collection, CancellationToken token = default)
     {
         if (File.Exists(Constants.DefaultConfigPath) && !opts.Force)
         {
             var forceName = opts.GetOptionLongName(nameof(opts.Force));
             Console.WriteLine($"You already have a config file! If you want it overwritten use the --{forceName} option");
-            return;
+            return 1;
         }
 
         await using var file = File.Create(Constants.DefaultConfigPath);
         await using var writer = new StreamWriter(file);
         await writer.WriteAsync(_defaultConfig);
+        return 0;
     }
 }
