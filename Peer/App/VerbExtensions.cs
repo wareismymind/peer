@@ -1,7 +1,7 @@
 using System.Linq;
 using CommandLine;
 
-namespace Peer.Parsing.CommandLine;
+namespace Peer.App;
 
 public static class VerbExtensions
 {

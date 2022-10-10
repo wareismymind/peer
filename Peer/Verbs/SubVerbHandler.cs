@@ -1,4 +1,5 @@
 using System;
+using Peer.App;
 using Peer.Parsing.CommandLine;
 
 namespace Peer.Verbs;

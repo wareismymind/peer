@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Peer.Parsing.CommandLine;
+namespace Peer.App.AppBuilder;
 
 public class SubVerbBuilder<TSuper, TSub> : VerbBuilder<TSub>
 {

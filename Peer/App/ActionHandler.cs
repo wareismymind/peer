@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Peer.Parsing.CommandLine;
+namespace Peer.App;
 
 public class ActionHandler<TVerb> : IHandler<TVerb>
 {

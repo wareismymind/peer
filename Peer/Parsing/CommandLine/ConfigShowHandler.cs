@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Peer.App;
 using Peer.ConfigSections;
 using Peer.Verbs;
 

@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CommandLine;
-using CommandLine.Text;
+using Peer.App.AppBuilder;
 using Peer.Verbs;
 
-namespace Peer.Parsing.CommandLine;
+namespace Peer.App;
 
 public class Verb<TVerb> : IVerb
 {

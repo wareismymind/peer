@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Peer.Parsing.CommandLine;
 using Peer.Verbs;
 
-namespace Peer.Parsing.CommandLine;
+namespace Peer.App.AppBuilder;
 
 public class VerbBuilder<T>
 {

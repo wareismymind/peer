@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CommandLine;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Peer.App.AppBuilder;
 using Peer.ConfigSections;
 using Peer.Domain;
 using Peer.Domain.Commands;
