@@ -1,14 +1,16 @@
-﻿using System;
+using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Peer.ConfigSections;
+using Peer.Verbs;
 
-namespace Peer.Domain.Commands
+namespace Peer.Parsing.CommandLine;
+
+public class ConfigInitHandler : IHandler<ConfigInitOptions>
 {
-    public class Config
-    {
-        private static readonly string _configFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "peer.json");
-
-        private const string _configHelp = @"
+    private const string _defaultConfig = @"
 {
     ""Peer"": {
         // The amount of time to wait for the show command to fetch pull request info (default: 10)
@@ -21,7 +23,7 @@ namespace Peer.Domain.Commands
         // A list of GitHub pull request provider configurations
         ""github"": [{
             // A friendly name for this provider (required)
-            ""Name"": ""GitHub-Work"",
+            ""Name"": ""Github"",
             ""Configuration"": {
                 // An API token with permission to read issues (required)
                 // You will need to configure SSO on the PAT to see pull requests from organizations that require it
@@ -42,12 +44,18 @@ namespace Peer.Domain.Commands
     }
 }
 ";
-        public static Task ConfigAsync()
+
+    public async Task HandleAsync(ConfigInitOptions opts, IServiceCollection collection, CancellationToken token = default)
+    {
+        if (File.Exists(Constants.DefaultConfigPath) && !opts.Force)
         {
-            Console.Error.WriteLine("Hey lets get you set up and working with Peer!");
-            Console.Error.WriteLine($"Toss the following into this location: {_configFile} and fill in values for your github account");
-            Console.WriteLine(_configHelp);
-            return Task.CompletedTask;
+            var forceName = opts.GetOptionLongName(nameof(opts.Force));
+            Console.WriteLine($"You already have a config file! If you want it overwritten use the --{forceName} option");
+            return;
         }
+
+        await using var file = File.Create(Constants.DefaultConfigPath);
+        await using var writer = new StreamWriter(file);
+        await writer.WriteAsync(_defaultConfig);
     }
 }

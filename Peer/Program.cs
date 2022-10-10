@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
-using CommandLine.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Peer.ConfigSections;
@@ -15,6 +14,7 @@ using Peer.Domain.Configuration;
 using Peer.Domain.Formatters;
 using Peer.GitHub;
 using Peer.Parsing;
+using Peer.Parsing.CommandLine;
 using Peer.Verbs;
 using wimm.Secundatives;
 
@@ -22,8 +22,6 @@ namespace Peer
 {
     public static class Program
     {
-        private static readonly string _configFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "peer.json");
-
         private static readonly Dictionary<ConfigError, string> _configErrorMap = new()
         {
             [ConfigError.InvalidProviderValues] = "One or more providers have invalid configuration",
@@ -33,6 +31,7 @@ namespace Peer
 
         private static readonly CancellationTokenSource _tcs = new();
 
+        [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
         public static async Task Main(string[] args)
         {
             Console.CancelKeyPress += (evt, eventArgs) =>
@@ -43,55 +42,31 @@ namespace Peer
 
             Console.OutputEncoding = Encoding.UTF8;
 
-            var setupResult = SetupServices();
+            var builder = new AppBuilder(new ServiceCollection())
+                .WithParseTimeServiceConfig(SetupParseTimeServices)
+                .WithSharedServiceConfig(SetupServices);
 
-            var parser = new Parser(config =>
-            {
-                config.AutoHelp = true;
-                config.AutoVersion = true;
-                config.IgnoreUnknownArguments = false;
-            });
+            builder.WithVerb<ConfigOptions>()
+                .WithSubVerb<ConfigInitOptions>(x => x.WithHandler<ConfigInitHandler>())
+                .WithSubVerb<ConfigShowOptions>(x => x.WithHandler<ConfigShowHandler>());
 
+            builder.WithVerb<ShowOptions>()
+                .WithCustomHelp<ShowHelpTextFormatter>()
+                .WithActionHandler(ShowAsync);
 
-            var parseResult = parser.ParseArguments<ShowOptions, OpenOptions, ConfigOptions, DetailsOptions>(args);
+            builder.WithVerb<OpenOptions>()
+                .WithActionHandler(OpenAsync);
 
-            if (setupResult.IsError && !parseResult.Is<ConfigOptions>())
-            {
-                Console.Error.WriteLine(_configErrorMap[setupResult.Error]);
-                return;
-            }
+            builder.WithVerb<DetailsOptions>()
+                .WithCustomHelp<DetailsHelpTextFormatter>()
+                .WithActionHandler(DetailsAsync);
 
-            if (parseResult.Tag == ParserResultType.Parsed)
-            {
-                await parseResult.MapResult(
-                    (ShowOptions x) => ShowAsync(x, setupResult.Value, _tcs.Token),
-                    (OpenOptions x) => OpenAsync(x, setupResult.Value, _tcs.Token),
-                    (ConfigOptions x) => ConfigAsync(x),
-                    (DetailsOptions x) => DetailsAsync(x, setupResult.Value, _tcs.Token),
-                    err => Task.CompletedTask);
+            var p = builder.Build();
 
-                return;
-            }
-
-            var services = setupResult.Value;
-            var text = parseResult switch
-            {
-                var v when v.Is<ShowOptions>() => GetHelpText<ShowOptions>(parseResult, services.BuildServiceProvider()),
-                var v when v.Is<DetailsOptions>() => GetHelpText<DetailsOptions>(parseResult, services.BuildServiceProvider()),
-                _ => HelpText.AutoBuild<object>(parseResult)
-            };
-
-            Console.Write(text);
+            await p.RunAsync(args);
         }
 
-        //todo:cn -- maybe pun + indirect here?
-        private static HelpText GetHelpText<TOptions>(ParserResult<object> parserResult, IServiceProvider serviceProvider)
-        {
-            var formatter = serviceProvider.GetRequiredService<IHelpTextFormatter<TOptions>>();
-            return formatter.GetHelpText(parserResult);
-        }
-
-        public static async Task ShowAsync(ShowOptions opts, IServiceCollection services, CancellationToken token)
+        private static async Task ShowAsync(ShowOptions opts, IServiceCollection services, CancellationToken token)
         {
 
             if (opts.Sort != null)
@@ -99,7 +74,7 @@ namespace Peer
                 var sort = SortParser.ParseSortOption(opts.Sort);
                 if (sort.IsError)
                 {
-                    Console.Error.WriteLine($"Failed to parse sort option: {sort.Error}");
+                    await Console.Error.WriteLineAsync($"Failed to parse sort option: {sort.Error}");
                     return;
                 }
 
@@ -114,7 +89,7 @@ namespace Peer
 
                     if (parsedFilter.IsError)
                     {
-                        Console.Error.WriteLine($"Failed to parse filter option: {parsedFilter.Error}");
+                        await Console.Error.WriteLineAsync($"Failed to parse filter option: {parsedFilter.Error}");
                         return;
                     }
 
@@ -140,7 +115,7 @@ namespace Peer
             }
         }
 
-        public static async Task OpenAsync(OpenOptions opts, IServiceCollection services, CancellationToken token)
+        private static async Task OpenAsync(OpenOptions opts, IServiceCollection services, CancellationToken token)
         {
             var parseResult = PartialIdentifier.Parse(opts.Partial!);
 
@@ -163,7 +138,7 @@ namespace Peer
             }
         }
 
-        public static async Task DetailsAsync(DetailsOptions opts, IServiceCollection services, CancellationToken token)
+        private static async Task DetailsAsync(DetailsOptions opts, IServiceCollection services, CancellationToken token)
         {
             var parseResult = PartialIdentifier.Parse(opts.Partial!);
 
@@ -188,22 +163,24 @@ namespace Peer
             }
         }
 
-        public static async Task ConfigAsync(ConfigOptions _)
+        //TODO -- Move this to the Verb level types
+        private static Result<IServiceCollection, ConfigError> SetupParseTimeServices(IServiceCollection services)
         {
-            await Config.ConfigAsync();
+            services.AddSingleton<ISymbolProvider, DefaultEmojiProvider>();
+            services.AddSingleton<ICheckSymbolProvider, DefaultEmojiProvider>();
+            return new Result<IServiceCollection, ConfigError>(services);
         }
 
-        private static Result<IServiceCollection, ConfigError> SetupServices()
+        [RequiresUnreferencedCode("Calls Microsoft.Extensions.Configuration.IConfiguration.Get<Peer.Parsing.PeerOptions>()")]
+        private static Result<IServiceCollection, ConfigError> SetupServices(IServiceCollection services)
         {
-            var services = new ServiceCollection();
-
             var configLoader = new ConfigurationService(new List<IRegistrationHandler>
             {
                 new GitHubWebRegistrationHandler(services)
             });
 
             var configuration = new ConfigurationBuilder()
-                .AddJsonFile(_configFile, optional: true)
+                .AddJsonFile(Constants.DefaultConfigPath, optional: true)
                 .AddEnvironmentVariables()
                 .Build();
 
@@ -237,9 +214,9 @@ namespace Peer
             services.AddSingleton<ICheckSymbolProvider, DefaultEmojiProvider>();
             services.AddSingleton<IOSInfoProvider, OSInfoProvider>();
             services.AddSingleton<IPullRequestService, PullRequestService>();
-            services.AddSingleton<IHelpTextFormatter<ShowOptions>, ShowHelpTextFormatter>();
-            services.AddSingleton<IHelpTextFormatter<DetailsOptions>, DetailsHelpTextFormatter>();
-            return services;
+            return new Result<IServiceCollection, ConfigError>(services);
         }
     }
+
+
 }

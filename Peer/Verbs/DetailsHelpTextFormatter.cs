@@ -43,7 +43,7 @@ namespace Peer.Verbs
 
             help.AddPostOptionsLines(existingPairs.Select(
                 triple => $"Status: {triple.status.ToString().PadRight(statusWidth)} " +
-                $"Result: { triple.result.ToString().PadRight(resultWidth)} => {triple.symbol}"));
+                $"Result: {triple.result.ToString().PadRight(resultWidth)} => {triple.symbol}"));
 
             help.AddPostOptionsLine("");
             help.AddPostOptionsLine("");
