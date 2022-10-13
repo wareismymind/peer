@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Peer.Verbs;
 
-namespace Peer.App;
+namespace Peer.Apps;
 
 public interface IVerb
 {

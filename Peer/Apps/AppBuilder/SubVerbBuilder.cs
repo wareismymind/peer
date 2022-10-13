@@ -1,8 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Peer.App.AppBuilder;
+namespace Peer.Apps.AppBuilder;
 
-public class SubVerbBuilder<TSuper, TSub> : VerbBuilder<TSub>
+public sealed class SubVerbBuilder<TSuper, TSub> : VerbBuilder<TSub>
 {
     public SubVerbBuilder(IServiceCollection services) : base(services)
     {

@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Peer.Domain.Configuration;
 using wimm.Secundatives;
 
-namespace Peer.App.AppBuilder;
+namespace Peer.Apps.AppBuilder;
 
 public class AppBuilder
 {
@@ -14,7 +14,7 @@ public class AppBuilder
     public AppBuilder(IServiceCollection services)
     {
         _services = services;
-        _services.AddSingleton<CommandLineParser>();
+        _services.AddSingleton<ICommandLineParser,CommandLineParser>();
         _services.AddSingleton<App>();
     }
 
@@ -31,14 +31,17 @@ public class AppBuilder
         return this;
     }
 
-    public VerbBuilder<TVerb> WithVerb<TVerb>()
+    public AppBuilder WithVerb<TVerb>(Action<VerbBuilder<TVerb>> config)
     {
         if (typeof(TVerb).GetCustomAttribute(typeof(VerbAttribute)) == null)
         {
             throw new ArgumentException($"The type must have the {nameof(VerbAttribute)} Attribute");
         }
+
+        var builder = new VerbBuilder<TVerb>(_services);
+        config.Invoke(builder);
         _services.AddSingleton<IVerb, Verb<TVerb>>();
-        return new VerbBuilder<TVerb>(_services);
+        return this;
     }
 
     public App Build()

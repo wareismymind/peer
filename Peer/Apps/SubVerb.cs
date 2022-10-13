@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Peer.Verbs;
 
-namespace Peer.App;
+namespace Peer.Apps;
 
 public class SubVerb<TVerb, TSubVerb> : Verb<TSubVerb>, ISubVerb<TVerb>
 {

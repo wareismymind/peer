@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Peer.App.AppBuilder;
+namespace Peer.Apps.AppBuilder;
 
 public class HandlerWrapper<T> : IHandler
 {

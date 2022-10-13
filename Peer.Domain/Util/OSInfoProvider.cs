@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using wimm.Secundatives;
 
-namespace Peer.Domain
+namespace Peer.Domain.Util
 {
     public class OSInfoProvider : IOSInfoProvider
     {

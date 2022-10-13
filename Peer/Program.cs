@@ -6,12 +6,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Peer.App.AppBuilder;
+using Peer.Apps.AppBuilder;
 using Peer.ConfigSections;
 using Peer.Domain;
 using Peer.Domain.Commands;
 using Peer.Domain.Configuration;
 using Peer.Domain.Formatters;
+using Peer.Domain.Util;
 using Peer.GitHub;
 using Peer.Parsing;
 using Peer.Parsing.CommandLine;
@@ -22,19 +23,12 @@ namespace Peer
 {
     public static class Program
     {
-        private static readonly Dictionary<ConfigError, string> _configErrorMap = new()
-        {
-            [ConfigError.InvalidProviderValues] = "One or more providers have invalid configuration",
-            [ConfigError.NoProvidersConfigured] = "No providers are configured! Run 'peer config' to get started",
-            [ConfigError.ProviderNotMatched] = "Provider was not recognized, make sure you're using one of supported providers!"
-        };
-
         private static readonly CancellationTokenSource _tcs = new();
 
         [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
         public static async Task<int> Main(string[] args)
         {
-            Console.CancelKeyPress += (evt, eventArgs) =>
+            Console.CancelKeyPress += (_, _) =>
             {
                 Console.WriteLine("Stopping...");
                 _tcs.Cancel();
@@ -46,21 +40,26 @@ namespace Peer
                 .WithParseTimeServiceConfig(SetupParseTimeServices)
                 .WithSharedServiceConfig(SetupServices);
 
-            builder.WithVerb<ConfigOptions>()
-                .WithSubVerb<ConfigInitOptions>(x => x.WithHandler<ConfigInitHandler>())
-                .WithSubVerb<ConfigShowOptions>(x => x.WithHandler<ConfigShowHandler>());
-
-            builder.WithVerb<ShowOptions>()
-                .WithCustomHelp<ShowHelpTextFormatter>()
-                .WithActionHandler(ShowAsync);
-
-            builder.WithVerb<OpenOptions>()
-                .WithActionHandler(OpenAsync);
-
-            builder.WithVerb<DetailsOptions>()
-                .WithCustomHelp<DetailsHelpTextFormatter>()
-                .WithActionHandler(DetailsAsync);
-
+            builder.WithVerb<ConfigOptions>(
+                    conf =>
+                    {
+                        conf.WithSubVerb<ConfigInitOptions>(x => x.WithHandler<ConfigInitHandler>())
+                            .WithSubVerb<ConfigShowOptions>(x => x.WithHandler<ConfigShowHandler>());
+                    })
+                .WithVerb<ShowOptions>(
+                    conf =>
+                    {
+                        conf.WithCustomHelp<ShowHelpTextFormatter>()
+                            .WithActionHandler(ShowAsync);
+                    })
+                .WithVerb<OpenOptions>(c => c.WithActionHandler(OpenAsync))
+                .WithVerb<DetailsOptions>(
+                    conf =>
+                    {
+                        conf.WithCustomHelp<DetailsHelpTextFormatter>()
+                            .WithActionHandler(DetailsAsync);
+                    });
+                        
             var p = builder.Build();
 
             return await p.RunAsync(args);

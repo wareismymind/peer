@@ -2,7 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Peer.Domain.Configuration;
 using wimm.Secundatives;
 
-namespace Peer.App;
+namespace Peer.Apps;
 
 public interface IServiceSetupHandler
 {

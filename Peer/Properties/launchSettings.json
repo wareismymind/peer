@@ -2,7 +2,7 @@
   "profiles": {
     "Peer": {
       "commandName": "Project",
-      "commandLineArgs": "show --help"
+      "commandLineArgs": "show"
     }
   }
 }
