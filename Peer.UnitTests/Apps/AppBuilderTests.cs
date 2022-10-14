@@ -12,7 +12,7 @@ using Xunit;
 namespace Peer.UnitTests.Apps;
 
 public class AppBuilderTests
-{        
+{
     private IServiceCollection _services;
 
     public class WithParseTimeConfig : AppBuilderTests
@@ -35,7 +35,7 @@ public class AppBuilderTests
         }
     }
 
-    public class WithSharedServiceConfig: AppBuilderTests
+    public class WithSharedServiceConfig : AppBuilderTests
     {
         [Fact]
         public void ConfigIsNotCalledWhenAppBuilt()
@@ -51,7 +51,7 @@ public class AppBuilderTests
 
             underTest.WithVerb<Doot>(x => x.WithHandler<DoNothing>());
             var _ = underTest.Build();
-            
+
             Assert.False(called);
         }
 
@@ -71,12 +71,12 @@ public class AppBuilderTests
             var built = underTest.Build();
 
             await built.RunAsync(new[] { "doot" });
-            
+
             Assert.True(called);
         }
     }
 
-    public class WithVerb: AppBuilderTests
+    public class WithVerb : AppBuilderTests
     {
         [Fact]
         public void TypeIsNotAnnotatedWithVerbAttribute_Throws()
@@ -103,7 +103,7 @@ public class AppBuilderTests
     [Verb("doot", isDefault: true, HelpText = "The joyous sound of a skeleton")]
     internal class Doot
     {
-        
+
     }
 
     internal class DoNothing : IHandler<Doot>

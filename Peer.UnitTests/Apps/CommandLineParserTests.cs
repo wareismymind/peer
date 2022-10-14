@@ -4,6 +4,6 @@ public class CommandLineParserTests
 {
     public class Parse
     {
-        
+
     }
 }

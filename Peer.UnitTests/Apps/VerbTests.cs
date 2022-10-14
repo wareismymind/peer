@@ -4,6 +4,6 @@ public class VerbTests
 {
     public class Name
     {
-        
+
     }
 }

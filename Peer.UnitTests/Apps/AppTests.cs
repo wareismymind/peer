@@ -14,14 +14,14 @@ public class AppTests
     {
         private readonly Mock<IVerb> _verb = new();
         private readonly Mock<ICommandLineParser> _parser = new();
-        
+
         [Fact]
         public void Constructs()
         {
             var verbs = new List<IVerb> { _verb.Object };
             _ = new App(_parser.Object, verbs);
         }
-        
+
         [Fact]
         public void VerbsEmpty_Throws()
         {
@@ -29,12 +29,12 @@ public class AppTests
                 () => new App(_parser.Object, new List<IVerb>()));
         }
     }
-    
+
     public class RunAsync
     {
-        public async Task ParseFails_ReturnsNonZero()
+        public static async Task ParseFails_ReturnsNonZero()
         {
-            
+
         }
     }
 }

@@ -69,15 +69,15 @@ public class CommandLineParser : ICommandLineParser
             .FirstOrDefault(x => x.Type == parseResult.TypeInfo.Current);
 
         return parseResult.MapResult(
-            opts => new Result<Command, TextResult> (new Command(verb!, opts)),
+            opts => new Result<Command, TextResult>(new Command(verb!, opts)),
             err => GetHelpText(verb, parseResult, err));
     }
 
-    private ParserResult<object> Parse(Parser parser, IEnumerable<string> args, IEnumerable<IVerb> verbs)
+    private static ParserResult<object> Parse(Parser parser, IEnumerable<string> args, IEnumerable<IVerb> verbs)
     {
         return parser.ParseArguments(args, verbs.Select(x => x.Type).ToArray());
     }
-    
+
     private static TextResult GetHelpText(IVerb? verb, ParserResult<object> result, IEnumerable<Error> errors)
     {
         var help = verb?.CustomHelp?.GetHelpText(result) ?? HelpText.AutoBuild(result);

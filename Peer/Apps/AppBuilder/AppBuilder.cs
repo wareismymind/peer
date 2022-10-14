@@ -14,7 +14,7 @@ public class AppBuilder
     public AppBuilder(IServiceCollection services)
     {
         _services = services;
-        _services.AddSingleton<ICommandLineParser,CommandLineParser>();
+        _services.AddSingleton<ICommandLineParser, CommandLineParser>();
         _services.AddSingleton<App>();
     }
 

@@ -33,7 +33,7 @@ public class App
         [ConfigError.NoProvidersConfigured] = "No providers are configured! Run 'peer config' to get started",
         [ConfigError.ProviderNotMatched] = "Provider was not recognized, make sure you're using one of supported providers!"
     };
-    
+
     public App(ICommandLineParser parser, IEnumerable<IVerb> verbs, IServiceSetupHandler? setupHandler = null)
     {
         _parser = parser;
@@ -70,12 +70,5 @@ public class App
             Console.WriteLine(result.Error.Text);
             return result.Error is UsageError ? 1 : 0;
         }
-    }
-
-    private static Task WriteHelpText(IVerb? verb, ParserResult<object> result)
-    {
-        var help = verb?.CustomHelp?.GetHelpText(result) ?? HelpText.AutoBuild(result);
-        Console.Write(help);
-        return Task.CompletedTask;
     }
 }

@@ -59,7 +59,7 @@ namespace Peer
                         conf.WithCustomHelp<DetailsHelpTextFormatter>()
                             .WithActionHandler(DetailsAsync);
                     });
-                        
+
             var p = builder.Build();
 
             return await p.RunAsync(args);
