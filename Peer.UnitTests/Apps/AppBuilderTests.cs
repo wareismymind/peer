@@ -1,7 +1,9 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
 using Microsoft.Extensions.DependencyInjection;
+using Peer.Apps;
 using Peer.Apps.AppBuilder;
 using Peer.Domain.Configuration;
 using wimm.Secundatives;
@@ -10,10 +12,10 @@ using Xunit;
 namespace Peer.UnitTests.Apps;
 
 public class AppBuilderTests
-{
-    private static IServiceCollection _services;
-    
-    public class WithParseTimeConfig
+{        
+    private IServiceCollection _services;
+
+    public class WithParseTimeConfig : AppBuilderTests
     {
         [Fact]
         public void ConfigIsCalledWithoutRunningApp()
@@ -33,7 +35,7 @@ public class AppBuilderTests
         }
     }
 
-    public class WithSharedServiceConfig
+    public class WithSharedServiceConfig: AppBuilderTests
     {
         [Fact]
         public void ConfigIsNotCalledWhenAppBuilt()
@@ -65,7 +67,7 @@ public class AppBuilderTests
                     return new Result<IServiceCollection, ConfigError>(sp);
                 });
 
-            underTest.WithVerb<Doot>(_ => { });
+            underTest.WithVerb<Doot>(x => x.WithHandler<DoNothing>());
             var built = underTest.Build();
 
             await built.RunAsync(new[] { "doot" });
@@ -74,7 +76,7 @@ public class AppBuilderTests
         }
     }
 
-    public class WithVerb
+    public class WithVerb: AppBuilderTests
     {
         [Fact]
         public void TypeIsNotAnnotatedWithVerbAttribute_Throws()
@@ -92,15 +94,23 @@ public class AppBuilderTests
     }
 
 
-    private static AppBuilder Construct()
+    private AppBuilder Construct()
     {
         _services = new ServiceCollection();
         return new AppBuilder(_services);
     }
 
     [Verb("doot", isDefault: true, HelpText = "The joyous sound of a skeleton")]
-    private class Doot
+    internal class Doot
     {
         
+    }
+
+    internal class DoNothing : IHandler<Doot>
+    {
+        public Task<int> HandleAsync(Doot opts, IServiceCollection collection, CancellationToken token = default)
+        {
+            return Task.FromResult(0);
+        }
     }
 }
