@@ -13,50 +13,6 @@ public interface ICommandLineParser
     Result<Command, TextResult> Parse(string[] args);
 }
 
-public class Command
-{
-    public IVerb Verb { get; }
-    public object Options { get; }
-
-    public Command(IVerb verb, object options)
-    {
-        Verb = verb;
-        Options = options;
-    }
-}
-
-public abstract class TextResult
-{
-    public string Text { get; }
-
-    protected TextResult(string text)
-    {
-        Text = text;
-    }
-}
-
-public class Help : TextResult
-{
-    public Help(string text) : base(text)
-    {
-    }
-}
-
-public class Version : TextResult
-{
-    public Version(string text) : base(text)
-    {
-        
-    }
-}
-
-public class UsageError : TextResult
-{
-    public UsageError(string text) : base(text)
-    {
-    }
-}
-
 public class CommandLineParser : ICommandLineParser
 {
     private readonly List<IVerb> _verbs;
@@ -92,7 +48,7 @@ public class CommandLineParser : ICommandLineParser
         //        The verb has no handler
 
         var state = new { verbCount, rootVerb, subCount = subs.Length };
-
+        // This is awful but no sleep makes for bad code
         // Now that I'm looking at this handling this in a loop might have been
         // better but I'm tired.
         var parseResult = state switch
@@ -117,7 +73,7 @@ public class CommandLineParser : ICommandLineParser
             err => GetHelpText(verb, parseResult, err));
     }
 
-    private ParserResult<object> Parse(Parser parser, string[] args, IEnumerable<IVerb> verbs)
+    private ParserResult<object> Parse(Parser parser, IEnumerable<string> args, IEnumerable<IVerb> verbs)
     {
         return parser.ParseArguments(args, verbs.Select(x => x.Type).ToArray());
     }
