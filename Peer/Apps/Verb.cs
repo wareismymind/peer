@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using CommandLine;
 using Peer.Apps.AppBuilder;
 using Peer.Verbs;
@@ -24,7 +25,12 @@ public class Verb<TVerb> : IVerb
     {
         CustomHelp = helpFormatter;
         Handler = handler != null ? new HandlerWrapper<TVerb>(handler) : null;
-        Subs = subs.ToList();
+        var subVerbs = subs.ToList();
+        Subs = subVerbs;
+        if (subVerbs.Count == 0 && handler == null)
+        {
+            throw new ArgumentException("Verbs must have a handler or sub-verbs");
+        }
     }
 
 

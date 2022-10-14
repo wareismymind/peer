@@ -29,7 +29,7 @@ public class AppBuilderTests
                         return new Result<IServiceCollection, ConfigError>(sc.AddSingleton<object>(100));
                     });
 
-            underTest.WithVerb<Doot>(_ => { });
+            underTest.WithVerb<Doot>(x => x.WithHandler<DoNothing>());
             underTest.Build();
             Assert.True(called);
         }
@@ -49,7 +49,7 @@ public class AppBuilderTests
                     return new Result<IServiceCollection, ConfigError>(sp);
                 });
 
-            underTest.WithVerb<Doot>(_ => { });
+            underTest.WithVerb<Doot>(x => x.WithHandler<DoNothing>());
             var _ = underTest.Build();
             
             Assert.False(called);
