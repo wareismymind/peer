@@ -6,5 +6,5 @@ namespace Peer.Apps;
 
 public interface IServiceSetupHandler
 {
-    public Result<IServiceCollection, ConfigError> SetupServices(IServiceCollection services);
+    Result<IServiceCollection, ConfigError> SetupServices(IServiceCollection services);
 }

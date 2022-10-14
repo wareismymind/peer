@@ -61,12 +61,18 @@ $showCommands = @(
 )
 
 $configShowCommands = @(
-    @{ Command = "config show";         Name = "Config show no args"}
+    @{ Command = "config show";             Name = "Config show no args"}
+    @{ Command = "config show --help";      Name = "Config show help flag"}
+    @{ Command = "config show --version";   Name = "Config show version flag"}
+
 )
 
 $configInitCommands = @(
     @{ Command = "config init";             Name = "Config init no args"}
     @{ Command = "config init -f";          Name = "Config init force"}
+    @{ Command = "config init --help";      Name = "Config init help flag"}
+    @{ Command = "config init --version";   Name = "Config init version flag"}
+
 )
 
 Run-TestBlock -BlockName "Details" -Tests $detailsCommands
