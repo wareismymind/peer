@@ -14,8 +14,8 @@ using Peer.Domain.Configuration;
 using Peer.Domain.Formatters;
 using Peer.Domain.Util;
 using Peer.GitHub;
+using Peer.Handlers;
 using Peer.Parsing;
-using Peer.Parsing.CommandLine;
 using Peer.Verbs;
 using wimm.Secundatives;
 

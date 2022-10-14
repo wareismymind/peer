@@ -7,7 +7,7 @@ using Peer.Apps;
 using Peer.ConfigSections;
 using Peer.Verbs;
 
-namespace Peer.Parsing.CommandLine;
+namespace Peer.Handlers;
 
 public class ConfigShowHandler : IHandler<ConfigShowOptions>
 {
