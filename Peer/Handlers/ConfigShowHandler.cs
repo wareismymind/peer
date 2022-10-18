@@ -24,6 +24,7 @@ public class ConfigShowHandler : IHandler<ConfigShowOptions>
         }
 
         var text = await File.ReadAllTextAsync(Constants.DefaultConfigPath, token);
+        Console.WriteLine($"//Path: {Constants.DefaultConfigPath}");
         Console.WriteLine(text);
         return 0;
     }
