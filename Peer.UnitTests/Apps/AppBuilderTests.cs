@@ -108,7 +108,7 @@ public class AppBuilderTests
 
     internal class DoNothing : IHandler<Doot>
     {
-        public Task<int> HandleAsync(Doot opts, IServiceCollection collection, CancellationToken token = default)
+        public Task<int> HandleAsync(Doot opts, IServiceCollection services, CancellationToken token = default)
         {
             return Task.FromResult(0);
         }

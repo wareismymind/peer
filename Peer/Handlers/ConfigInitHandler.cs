@@ -46,7 +46,7 @@ public class ConfigInitHandler : IHandler<ConfigInitOptions>
 }
 ";
 
-    public async Task<int> HandleAsync(ConfigInitOptions opts, IServiceCollection collection, CancellationToken token = default)
+    public async Task<int> HandleAsync(ConfigInitOptions opts, IServiceCollection services, CancellationToken token = default)
     {
         if (File.Exists(Constants.DefaultConfigPath) && !opts.Force)
         {
