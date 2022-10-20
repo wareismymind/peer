@@ -9,37 +9,6 @@ using wimm.Secundatives.Extensions;
 
 namespace Peer.Domain.Commands;
 
-public interface IFileOperations
-{
-    bool Exists(string path);
-    FileStream Create(string path);
-}
-
-public class FileOperations : IFileOperations
-{
-    public bool Exists(string path)
-    {
-        return File.Exists(path);
-    }
-
-    public FileStream Create(string path)
-    {
-        return File.Create(path);
-    }
-}
-
-public class ConfigEditConfig
-{
-    public string? Editor { get; }
-    public string ConfigPath { get; }
-
-    public ConfigEditConfig(string? editor, string configPath)
-    {
-        Editor = editor;
-        ConfigPath = configPath;
-    }
-}
-
 public class ConfigEdit
 {
     private readonly IOSInfoProvider _infoProvider;
@@ -104,11 +73,4 @@ public class ConfigEdit
                 })
             .Flatten();
     }
-}
-
-public enum ConfigEditError
-{
-    Fire,
-    UnsupportedOs,
-    ProcessFailedToOpen,
 }
