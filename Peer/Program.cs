@@ -82,7 +82,7 @@ namespace Peer
                     var watchOptions = config.GetSection("Peer")
                                             ?.Get<PeerOptions>()
                                             ?? new PeerOptions();
-                    
+
                     var showConfig = new ShowConfigSection();
                     if (watchOptions.WatchIntervalSeconds != null)
                     {

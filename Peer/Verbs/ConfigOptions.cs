@@ -21,6 +21,6 @@ namespace Peer.Verbs
     [Verb("edit", isDefault: false, HelpText = "Open your config in your default text editor")]
     public class ConfigEditOptions
     {
-        
+
     }
 }

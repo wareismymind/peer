@@ -17,8 +17,8 @@ public class ConfigEditHandler : IHandler<ConfigEditOptions>
         services.AddSingleton<ConfigEdit>();
         services.AddSingleton(sp =>
         {
-             var config = sp.GetRequiredService<IConfiguration>();
-             return new ConfigEditConfig(config["Editor"], Constants.DefaultConfigPath);
+            var config = sp.GetRequiredService<IConfiguration>();
+            return new ConfigEditConfig(config["Editor"], Constants.DefaultConfigPath);
         });
 
         var sp = services.BuildServiceProvider();
