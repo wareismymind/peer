@@ -1,7 +1,9 @@
 using System;
 using System.Reflection;
 using CommandLine;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Peer.Domain.Configuration;
 using wimm.Secundatives;
 
@@ -22,6 +24,15 @@ public class AppBuilder
         Func<IServiceCollection, Result<IServiceCollection, ConfigError>> config)
     {
         config.Invoke(_services);
+        return this;
+    }
+
+    public AppBuilder WithConfiguration(Action<IConfigurationBuilder> builder)
+    {
+        var cb = new ConfigurationBuilder();
+        builder(cb);
+
+        _services.AddSingleton<IConfiguration>(cb.Build());
         return this;
     }
 
@@ -46,6 +57,7 @@ public class AppBuilder
 
     public App Build()
     {
+        _services.TryAddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
         var sp = _services.BuildServiceProvider();
         return sp.GetRequiredService<App>();
     }

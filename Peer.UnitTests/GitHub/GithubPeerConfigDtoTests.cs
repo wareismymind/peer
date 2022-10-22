@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Peer.GitHub;
 using Xunit;
 
-namespace Peer.UnitTests.Github
+namespace Peer.UnitTests.GitHub
 {
     public class GitHubPeerConfigDtoTests
     {

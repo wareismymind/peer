@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
 using CommandLine.Text;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Peer.Apps.AppBuilder;
 using Peer.Domain.Configuration;
@@ -17,6 +18,7 @@ public class App
     private readonly ICommandLineParser _parser;
     private readonly List<IVerb> _verbs;
     private readonly IServiceSetupHandler? _setupHandler;
+    private readonly IConfiguration _config;
 
     //CN - This is a temp thing - Really we just should fail out if config fails probably.
     // Alternatively since there's a few different cases where it doesn't matter maybe we don't
@@ -34,11 +36,12 @@ public class App
         [ConfigError.ProviderNotMatched] = "Provider was not recognized, make sure you're using one of supported providers!"
     };
 
-    public App(ICommandLineParser parser, IEnumerable<IVerb> verbs, IServiceSetupHandler? setupHandler = null)
+    public App(ICommandLineParser parser, IEnumerable<IVerb> verbs, IConfiguration config, IServiceSetupHandler? setupHandler = null)
     {
         _parser = parser;
         _verbs = verbs.ToList();
         _setupHandler = setupHandler;
+        _config = config;
 
         if (_verbs.Count == 0)
         {
@@ -50,25 +53,38 @@ public class App
     {
         var result = _parser.Parse(args);
         var services = new ServiceCollection();
+        services.AddSingleton(_config);
         _setupHandler?.SetupServices(services);
-        if (result.IsValue)
-        {
-            try
-            {
-                var value = result.Value;
-                await value.Verb.Handler!.HandleAsync(value.Options, services, token);
-                return 0;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                return 1;
-            }
-        }
-        else
+
+        if (result.IsError)
         {
             Console.WriteLine(result.Error.Text);
             return result.Error is UsageError ? 1 : 0;
         }
+
+        try
+        {
+            var value = result.Value;
+
+            if (value.Verb.RunTimeConfigHandler != null)
+            {
+                var configResult = value.Verb.RunTimeConfigHandler.ConfigureServices(services, _config);
+
+                if (configResult.IsError)
+                {
+                    Console.WriteLine(_configErrorMap[configResult.Error]);
+                    return 1;
+                }
+            }
+
+            await value.Verb.Handler!.HandleAsync(value.Options, services, token);
+            return 0;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            return 1;
+        }
+
     }
 }

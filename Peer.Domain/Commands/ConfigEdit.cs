@@ -53,8 +53,8 @@ public class ConfigEdit
         var split = _config.Editor!.Split(' ').ToArray();
         return Process.Start(split[0], split[1..].Append(path));
     }
-    
-    
+
+
     private Result<Process, ConfigEditError> OpenWithOsDefault(string path)
     {
         //info(cn): See https://github.com/dotnet/runtime/issues/17938

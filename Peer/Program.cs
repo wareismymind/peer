@@ -41,7 +41,12 @@ namespace Peer
 
             var builder = new AppBuilder(new ServiceCollection())
                 .WithParseTimeServiceConfig(SetupParseTimeServices)
-                .WithSharedServiceConfig(SetupServices);
+                .WithSharedServiceConfig(SetupServices)
+                .WithConfiguration(configBuilder =>
+                {
+                    configBuilder.AddJsonFile(Constants.DefaultConfigPath, optional: true)
+                        .AddEnvironmentVariables();
+                });
 
             builder.WithVerb<ConfigOptions>(
                     conf =>
@@ -54,14 +59,22 @@ namespace Peer
                     conf =>
                     {
                         conf.WithCustomHelp<ShowHelpTextFormatter>()
-                            .WithActionHandler(ShowAsync);
+                            .WithActionHandler(ShowAsync)
+                            .WithRunTimeConfig<ProviderLoader>();
+
                     })
-                .WithVerb<OpenOptions>(c => c.WithActionHandler(OpenAsync))
+                .WithVerb<OpenOptions>(
+                    conf =>
+                    {
+                        conf.WithActionHandler(OpenAsync)
+                            .WithRunTimeConfig<ProviderLoader>();
+                    })
                 .WithVerb<DetailsOptions>(
                     conf =>
                     {
                         conf.WithCustomHelp<DetailsHelpTextFormatter>()
-                            .WithActionHandler(DetailsAsync);
+                            .WithActionHandler(DetailsAsync)
+                            .WithRunTimeConfig<ProviderLoader>();
                     });
 
 
@@ -203,35 +216,18 @@ namespace Peer
             return 1;
         }
 
-        //TODO -- Move this to the Verb level types
         private static Result<IServiceCollection, ConfigError> SetupParseTimeServices(IServiceCollection services)
         {
             services.AddSingleton<ISymbolProvider, DefaultEmojiProvider>();
             services.AddSingleton<ICheckSymbolProvider, DefaultEmojiProvider>();
+            services.AddSingleton<IRegistrationHandler, GitHubWebRegistrationHandler>();
+
             return new Result<IServiceCollection, ConfigError>(services);
         }
 
-        [RequiresUnreferencedCode(
-            "Calls Microsoft.Extensions.Configuration.IConfiguration.Get<Peer.Parsing.PeerOptions>()")]
+        [RequiresUnreferencedCode("Calls Microsoft.Extensions.Configuration.IConfiguration.Get<Peer.Parsing.PeerOptions>()")]
         private static Result<IServiceCollection, ConfigError> SetupServices(IServiceCollection services)
         {
-            var configLoader = new ConfigurationService(
-                new List<IRegistrationHandler> { new GitHubWebRegistrationHandler(services) });
-
-            var configuration = new ConfigurationBuilder()
-                .AddJsonFile(Constants.DefaultConfigPath, optional: true)
-                .AddEnvironmentVariables()
-                .Build();
-
-            var configResults = configLoader.RegisterProvidersForConfiguration(configuration, services);
-
-            if (configResults.IsError)
-            {
-                return configResults.Error;
-            }
-
-            services.AddSingleton<IConfiguration>(configuration);
-
             services.AddSingleton<IConsoleWriter, ConsoleWriter>();
             services.AddSingleton<IListFormatter, CompactFormatter>();
             services.AddSingleton<IDetailsFormatter, DetailsFormatter>();
