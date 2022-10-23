@@ -1,19 +1,20 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using CommandLine;
-using CommandLine.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Peer.Apps.AppBuilder;
 using Peer.ConfigSections;
 using Peer.Domain;
 using Peer.Domain.Commands;
 using Peer.Domain.Configuration;
 using Peer.Domain.Formatters;
+using Peer.Domain.Util;
 using Peer.GitHub;
+using Peer.Handlers;
 using Peer.Parsing;
 using Peer.Verbs;
 using wimm.Secundatives;
@@ -22,85 +23,96 @@ namespace Peer
 {
     public static class Program
     {
-        private static readonly string _configFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "peer.json");
-
-        private static readonly Dictionary<ConfigError, string> _configErrorMap = new()
-        {
-            [ConfigError.InvalidProviderValues] = "One or more providers have invalid configuration",
-            [ConfigError.NoProvidersConfigured] = "No providers are configured! Run 'peer config' to get started",
-            [ConfigError.ProviderNotMatched] = "Provider was not recognized, make sure you're using one of supported providers!"
-        };
-
         private static readonly CancellationTokenSource _tcs = new();
 
-        public static async Task Main(string[] args)
+        [UnconditionalSuppressMessage(
+            "Trimming",
+            "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+            Justification = "<Pending>")]
+        public static async Task<int> Main(string[] args)
         {
-            Console.CancelKeyPress += (evt, eventArgs) =>
+            Console.CancelKeyPress += (_, _) =>
             {
                 Console.WriteLine("Stopping...");
                 _tcs.Cancel();
             };
 
             Console.OutputEncoding = Encoding.UTF8;
+            
+            var builder = new AppBuilder(new ServiceCollection())
+                .WithParseTimeServiceConfig(SetupParseTimeServices)
+                .WithSharedServiceConfig(SetupServices)
+                .WithConfiguration(configBuilder =>
+                {
+                    configBuilder.AddJsonFile(Constants.DefaultConfigPath, optional: true)
+                        .AddEnvironmentVariables();
+                });
 
-            var setupResult = SetupServices();
+            builder.WithVerb<ConfigOptions>(
+                    conf =>
+                    {
+                        conf.WithSubVerb<ConfigInitOptions>(x => x.WithHandler<ConfigInitHandler>())
+                            .WithSubVerb<ConfigShowOptions>(x => x.WithHandler<ConfigShowHandler>())
+                            .WithSubVerb<ConfigEditOptions>(x => x.WithHandler<ConfigEditHandler>());
+                    })
+                .WithVerb<ShowOptions>(
+                    conf =>
+                    {
+                        conf.WithCustomHelp<ShowHelpTextFormatter>()
+                            .WithActionHandler(ShowAsync)
+                            .WithRunTimeConfig<ProviderLoader>();
 
-            var parser = new Parser(config =>
-            {
-                config.AutoHelp = true;
-                config.AutoVersion = true;
-                config.IgnoreUnknownArguments = false;
-            });
+                    })
+                .WithVerb<OpenOptions>(
+                    conf =>
+                    {
+                        conf.WithActionHandler(OpenAsync)
+                            .WithRunTimeConfig<ProviderLoader>();
+                    })
+                .WithVerb<DetailsOptions>(
+                    conf =>
+                    {
+                        conf.WithCustomHelp<DetailsHelpTextFormatter>()
+                            .WithActionHandler(DetailsAsync)
+                            .WithRunTimeConfig<ProviderLoader>();
+                    });
 
 
-            var parseResult = parser.ParseArguments<ShowOptions, OpenOptions, ConfigOptions, DetailsOptions>(args);
+            var p = builder.Build();
 
-            if (setupResult.IsError && !parseResult.Is<ConfigOptions>())
-            {
-                Console.Error.WriteLine(_configErrorMap[setupResult.Error]);
-                return;
-            }
-
-            if (parseResult.Tag == ParserResultType.Parsed)
-            {
-                await parseResult.MapResult(
-                    (ShowOptions x) => ShowAsync(x, setupResult.Value, _tcs.Token),
-                    (OpenOptions x) => OpenAsync(x, setupResult.Value, _tcs.Token),
-                    (ConfigOptions x) => ConfigAsync(x),
-                    (DetailsOptions x) => DetailsAsync(x, setupResult.Value, _tcs.Token),
-                    err => Task.CompletedTask);
-
-                return;
-            }
-
-            var services = setupResult.Value;
-            var text = parseResult switch
-            {
-                var v when v.Is<ShowOptions>() => GetHelpText<ShowOptions>(parseResult, services.BuildServiceProvider()),
-                var v when v.Is<DetailsOptions>() => GetHelpText<DetailsOptions>(parseResult, services.BuildServiceProvider()),
-                _ => HelpText.AutoBuild<object>(parseResult)
-            };
-
-            Console.Write(text);
+            return await p.RunAsync(args);
         }
 
-        //todo:cn -- maybe pun + indirect here?
-        private static HelpText GetHelpText<TOptions>(ParserResult<object> parserResult, IServiceProvider serviceProvider)
+        private static async Task<int> ShowAsync(ShowOptions opts, IServiceCollection services, CancellationToken token)
         {
-            var formatter = serviceProvider.GetRequiredService<IHelpTextFormatter<TOptions>>();
-            return formatter.GetHelpText(parserResult);
-        }
+            services.AddSingleton(
+                sp =>
+                {
+                    var config = sp.GetRequiredService<IConfiguration>();
+                    // Parse legacy configuration setting and layer it with default values for newer settings. We'll wait to
+                    // expose the new settings until we've settled on some configuration patterns.
+                    // https://github.com/wareismymind/peer/issues/149
+                    var watchOptions = config.GetSection("Peer")
+                                            ?.Get<PeerOptions>()
+                                            ?? new PeerOptions();
 
-        public static async Task ShowAsync(ShowOptions opts, IServiceCollection services, CancellationToken token)
-        {
+                    var showConfig = new ShowConfigSection();
+                    if (watchOptions.WatchIntervalSeconds != null)
+                    {
+                        showConfig.WatchIntervalSeconds = watchOptions.WatchIntervalSeconds;
+                        showConfig.TimeoutSeconds = watchOptions.ShowTimeoutSeconds;
+                    }
+
+                    return showConfig.Into();
+                });
 
             if (opts.Sort != null)
             {
                 var sort = SortParser.ParseSortOption(opts.Sort);
                 if (sort.IsError)
                 {
-                    Console.Error.WriteLine($"Failed to parse sort option: {sort.Error}");
-                    return;
+                    await Console.Error.WriteLineAsync($"Failed to parse sort option: {sort.Error}");
+                    return 1;
                 }
 
                 services.AddSingleton(sort.Value);
@@ -114,8 +126,8 @@ namespace Peer
 
                     if (parsedFilter.IsError)
                     {
-                        Console.Error.WriteLine($"Failed to parse filter option: {parsedFilter.Error}");
-                        return;
+                        await Console.Error.WriteLineAsync($"Failed to parse filter option: {parsedFilter.Error}");
+                        return 1;
                     }
 
                     services.AddSingleton(parsedFilter.Value);
@@ -136,19 +148,25 @@ namespace Peer
             {
                 var provider = services.BuildServiceProvider();
                 var command = provider.GetRequiredService<Show>();
-                await command.ShowAsync(new ShowArguments(opts.Count), token);
+                var res = await command.ShowAsync(new ShowArguments(opts.Count), token);
+                if (res.IsError)
+                {
+                    return 1;
+                }
             }
+
+            return 0;
         }
 
-        public static async Task OpenAsync(OpenOptions opts, IServiceCollection services, CancellationToken token)
+        private static async Task<int> OpenAsync(OpenOptions opts, IServiceCollection services, CancellationToken token)
         {
             var parseResult = PartialIdentifier.Parse(opts.Partial!);
 
             if (parseResult.IsError)
             {
-                Console.Error.WriteLine(
+                await Console.Error.WriteLineAsync(
                     $"Failed to parse partial identifier '{opts.Partial}' with error: {parseResult.Error}");
-                return;
+                return 1;
             }
 
             services.AddSingleton<Open>();
@@ -159,19 +177,26 @@ namespace Peer
 
             if (result.IsError)
             {
-                Console.Error.WriteLine($"Partial identifier '{opts.Partial}' failed with error: {result.Error}");
+                await Console.Error.WriteLineAsync(
+                    $"Partial identifier '{opts.Partial}' failed with error: {result.Error}");
+                return 1;
             }
+
+            return 0;
         }
 
-        public static async Task DetailsAsync(DetailsOptions opts, IServiceCollection services, CancellationToken token)
+        private static async Task<int> DetailsAsync(
+            DetailsOptions opts,
+            IServiceCollection services,
+            CancellationToken token)
         {
             var parseResult = PartialIdentifier.Parse(opts.Partial!);
 
             if (parseResult.IsError)
             {
-                Console.Error.WriteLine(
+                await Console.Error.WriteLineAsync(
                     $"Failed to parse partial identifier '{opts.Partial}' with error: {parseResult.Error}");
-                return;
+                return 1;
             }
 
             services.AddSingleton<Details>();
@@ -182,54 +207,27 @@ namespace Peer
 
             var res = await command.DetailsAsync(new DetailsArguments(parseResult.Value), token);
 
-            if (res.IsError)
+            if (!res.IsError)
             {
-                Console.Error.WriteLine($"Partial identifier '{opts.Partial}' failed with error: {res.Error}");
+                return 0;
             }
+
+            await Console.Error.WriteLineAsync($"Partial identifier '{opts.Partial}' failed with error: {res.Error}");
+            return 1;
         }
 
-        public static async Task ConfigAsync(ConfigOptions _)
+        private static Result<IServiceCollection, ConfigError> SetupParseTimeServices(IServiceCollection services)
         {
-            await Config.ConfigAsync();
+            services.AddSingleton<ISymbolProvider, DefaultEmojiProvider>();
+            services.AddSingleton<ICheckSymbolProvider, DefaultEmojiProvider>();
+            services.AddSingleton<IRegistrationHandler, GitHubWebRegistrationHandler>();
+
+            return new Result<IServiceCollection, ConfigError>(services);
         }
 
-        private static Result<IServiceCollection, ConfigError> SetupServices()
+        [RequiresUnreferencedCode("Calls Microsoft.Extensions.Configuration.IConfiguration.Get<Peer.Parsing.PeerOptions>()")]
+        private static Result<IServiceCollection, ConfigError> SetupServices(IServiceCollection services)
         {
-            var services = new ServiceCollection();
-
-            var configLoader = new ConfigurationService(new List<IRegistrationHandler>
-            {
-                new GitHubWebRegistrationHandler(services)
-            });
-
-            var configuration = new ConfigurationBuilder()
-                .AddJsonFile(_configFile, optional: true)
-                .AddEnvironmentVariables()
-                .Build();
-
-            var configResults = configLoader.RegisterProvidersForConfiguration(configuration, services);
-
-            if (configResults.IsError)
-            {
-                return configResults.Error;
-            }
-
-            // Parse legacy configuration setting and layer it with default values for newer settings. We'll wait to
-            // expose the new settings until we've settled on some configuration patterns.
-            // https://github.com/wareismymind/peer/issues/149
-            var watchOptions = configuration.GetSection("Peer")
-                .Get<PeerOptions>()
-                ?? new PeerOptions();
-
-            var showConfig = new ShowConfigSection();
-            if (watchOptions.WatchIntervalSeconds != null)
-            {
-                showConfig.WatchIntervalSeconds = watchOptions.WatchIntervalSeconds;
-                showConfig.TimeoutSeconds = watchOptions.ShowTimeoutSeconds;
-            }
-
-            services.AddSingleton(showConfig.Into());
-
             services.AddSingleton<IConsoleWriter, ConsoleWriter>();
             services.AddSingleton<IListFormatter, CompactFormatter>();
             services.AddSingleton<IDetailsFormatter, DetailsFormatter>();
@@ -237,9 +235,9 @@ namespace Peer
             services.AddSingleton<ICheckSymbolProvider, DefaultEmojiProvider>();
             services.AddSingleton<IOSInfoProvider, OSInfoProvider>();
             services.AddSingleton<IPullRequestService, PullRequestService>();
-            services.AddSingleton<IHelpTextFormatter<ShowOptions>, ShowHelpTextFormatter>();
-            services.AddSingleton<IHelpTextFormatter<DetailsOptions>, DetailsHelpTextFormatter>();
-            return services;
+            services.AddSingleton<IFileOperations, FileOperations>();
+
+            return new Result<IServiceCollection, ConfigError>(services);
         }
     }
 }

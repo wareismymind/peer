@@ -1,4 +1,5 @@
 ﻿using Peer.Domain;
+using Peer.UnitTests.Util;
 using Xunit;
 
 namespace Peer.UnitTests

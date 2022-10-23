@@ -2,10 +2,11 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Peer.Domain.Commands;
 using Peer.Domain.Util;
 using wimm.Secundatives;
 
-namespace Peer.Domain.Commands
+namespace Peer.Domain
 {
     public class PullRequestService : IPullRequestService
     {

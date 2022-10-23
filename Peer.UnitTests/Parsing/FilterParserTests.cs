@@ -2,6 +2,7 @@
 using Peer.Domain;
 using Peer.Domain.Filters;
 using Peer.Parsing;
+using Peer.UnitTests.Util;
 using Xunit;
 
 namespace Peer.UnitTests.Parsing

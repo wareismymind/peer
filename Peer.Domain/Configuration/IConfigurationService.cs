@@ -6,6 +6,6 @@ namespace Peer.Domain.Configuration
 {
     public interface IConfigurationService
     {
-        Result<None, ConfigError> RegisterProvidersForConfiguration(IConfiguration configuration, IServiceCollection services);
+        Result<None, ConfigError> RegisterProvidersForConfiguration(IServiceCollection services);
     }
 }

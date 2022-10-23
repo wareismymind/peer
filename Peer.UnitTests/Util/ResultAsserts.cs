@@ -1,7 +1,7 @@
 ﻿using wimm.Secundatives;
 using Xunit;
 
-namespace Peer.UnitTests
+namespace Peer.UnitTests.Util
 {
     public static class ResultAsserts
     {
