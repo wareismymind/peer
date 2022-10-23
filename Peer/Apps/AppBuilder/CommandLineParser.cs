@@ -33,6 +33,7 @@ public class CommandLineParser : ICommandLineParser
         var verbCount = args.Count(x => !x.StartsWith('-'));
         var rootVerb = _verbs.FirstOrDefault(x => x.Name == args.FirstOrDefault());
         var subs = rootVerb?.Subs.ToArray() ?? Array.Empty<IVerb>();
+        var subMatch = subs.Any(x => x.Name == args.Skip(1).FirstOrDefault());
         var parser = new Parser(config =>
         {
             config.AutoHelp = true;
@@ -40,29 +41,19 @@ public class CommandLineParser : ICommandLineParser
             config.IgnoreUnknownArguments = false;
         });
 
-        //Cases:
-        // We don't find a verb that matches the first arg
-        // We find a verb that matches the first arg
-        //    There is more than one verb
-        //    There is a single verb
-        //        The verb has no handler
+        var state = new { rootVerb, subCount = subs.Length, subMatch };
 
-        var state = new { verbCount, rootVerb, subCount = subs.Length };
-        // This is awful but no sleep makes for bad code
-        // Now that I'm looking at this handling this in a loop might have been
-        // better but I'm tired.
         var parseResult = state switch
         {
-            //If someone puts in "schboop" they should get the default help
-            { rootVerb: null } => Parse(parser, args, _verbs),
-            //If someone puts in a verb with children/no handler they should get the help for the children of the verb
-            { verbCount: 1, rootVerb.Handler: null } => Parse(parser, args[1..], subs),
-            //If someone puts in multiple words but the root verb has no subverbs they should get the default help
-            { verbCount: > 1, subCount: 0 } => Parse(parser, args, _verbs),
-            // If someone puts in a valid set of verbs they should have the subverbs parsed
-            { verbCount: > 1 } => Parse(parser, args[1..], subs),
-            // If there is no specific case we should just handle it by default
-            _ => Parse(parser, args, _verbs)
+            // If the first non-option token is not a recognized top-level command or the top-level command has no
+            // subcommands then parse the complete command line.
+            { rootVerb: null } or { subCount: 0 } => Parse(parser, args, _verbs),
+            // If no subcommand name was specified, or the provided subcommand name does not refer to a subcommand of
+            // the matched root verb, then skip the two verbs. This isn't perfect -- deal with it.
+            { subMatch: false } => Parse(parser, args.Skip(2), subs),
+            // Otherwise we've matched a top-level command and a subcommand so skip the top-level command token so
+            // CommandLine.Parser will match the Options type corresponding to our subcommand.
+            _ => Parse(parser, args[1..], subs),
         };
 
         var verb = _verbs.SelectMany(x => x.Subs.Append(x))

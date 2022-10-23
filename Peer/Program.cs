@@ -38,7 +38,7 @@ namespace Peer
             };
 
             Console.OutputEncoding = Encoding.UTF8;
-
+            
             var builder = new AppBuilder(new ServiceCollection())
                 .WithParseTimeServiceConfig(SetupParseTimeServices)
                 .WithSharedServiceConfig(SetupServices)

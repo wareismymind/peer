@@ -7,6 +7,7 @@ using CommandLine;
 using CommandLine.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Linq;
 using Peer.Apps.AppBuilder;
 using Peer.Domain.Configuration;
 using wimm.Secundatives;
@@ -62,21 +63,21 @@ public class App
             return result.Error is UsageError ? 1 : 0;
         }
 
+        var value = result.Value;
+
+        if (value.Verb.RunTimeConfigHandler != null)
+        {
+            var configResult = value.Verb.RunTimeConfigHandler.ConfigureServices(services, _config);
+
+            if (configResult.IsError)
+            {
+                Console.WriteLine(_configErrorMap[configResult.Error]);
+                return 1;
+            }
+        }
+
         try
         {
-            var value = result.Value;
-
-            if (value.Verb.RunTimeConfigHandler != null)
-            {
-                var configResult = value.Verb.RunTimeConfigHandler.ConfigureServices(services, _config);
-
-                if (configResult.IsError)
-                {
-                    Console.WriteLine(_configErrorMap[configResult.Error]);
-                    return 1;
-                }
-            }
-
             await value.Verb.Handler!.HandleAsync(value.Options, services, token);
             return 0;
         }
