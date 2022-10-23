@@ -1,16 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Peer.Domain.Configuration;
 using Peer.GitHub;
 using Peer.GitHub.GraphQL.PullRequestSearch;
 using Peer.Verbs;
-using wimm.Secundatives;
 
 namespace Peer.Apps.AppBuilder;
 
@@ -56,21 +52,5 @@ public class VerbBuilder<T>
         _services.TryAddSingleton<TRegHandler>();
         _services.AddSingleton<IRunTimeConfigHandler<T>, RunTimeConfigMapping<T, TRegHandler>>();
         return this;
-    }
-}
-
-public class ProviderLoader : IRunTimeConfigHandler
-{
-    private readonly List<IRegistrationHandler> _registrationHandlers;
-
-    public ProviderLoader(IEnumerable<IRegistrationHandler> registrationHandlers)
-    {
-        _registrationHandlers = registrationHandlers.ToList();
-    }
-
-    public Result<None, ConfigError> ConfigureServices(IServiceCollection services, IConfiguration config)
-    {
-        var configLoader = new ConfigurationService(_registrationHandlers, config);
-        return configLoader.RegisterProvidersForConfiguration(services);
     }
 }
