@@ -17,4 +17,10 @@ namespace Peer.Verbs
     [Verb("show", isDefault: false, HelpText = "Print the current config and it's location")]
     public class ConfigShowOptions
     { }
+
+    [Verb("edit", isDefault: false, HelpText = "Open your config in your default text editor")]
+    public class ConfigEditOptions
+    {
+
+    }
 }

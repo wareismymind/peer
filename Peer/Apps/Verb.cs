@@ -14,15 +14,21 @@ public class Verb<TVerb> : IVerb
     public IHelpTextFormatter? CustomHelp { get; }
 
     public IHandler? Handler { get; }
+    public IRunTimeConfigHandler? RunTimeConfigHandler { get; }
+
 
     public Type Type => typeof(TVerb);
     public IEnumerable<Type> SubVerbs => Subs.Select(x => x.Type);
 
+
+
     public Verb(
         IEnumerable<ISubVerb<TVerb>> subs,
+        IRunTimeConfigHandler<TVerb>? runtimeHandler = null,
         IHandler<TVerb>? handler = null, //CN - should probably have just a different name for top level verbs
         IHelpTextFormatter<TVerb>? helpFormatter = null)
     {
+        RunTimeConfigHandler = runtimeHandler;
         CustomHelp = helpFormatter;
         Handler = handler != null ? new HandlerWrapper<TVerb>(handler) : null;
         var subVerbs = subs.ToList();
@@ -38,5 +44,6 @@ public class Verb<TVerb> : IVerb
         .OfType<VerbAttribute>()
         .Select(x => x.Name)
         .First();
+
 }
 

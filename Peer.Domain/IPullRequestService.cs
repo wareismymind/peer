@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Peer.Domain.Commands;
 using wimm.Secundatives;
 
-namespace Peer.Domain.Commands
+namespace Peer.Domain
 {
     public interface IPullRequestService
     {

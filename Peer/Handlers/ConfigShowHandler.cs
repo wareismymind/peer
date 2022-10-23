@@ -13,7 +13,7 @@ public class ConfigShowHandler : IHandler<ConfigShowOptions>
 {
     public async Task<int> HandleAsync(
         ConfigShowOptions opts,
-        IServiceCollection collection,
+        IServiceCollection services,
         CancellationToken token = default)
     {
         if (!File.Exists(Constants.DefaultConfigPath))

@@ -15,8 +15,8 @@ public class ActionHandler<TVerb> : IHandler<TVerb>
     }
 
 
-    public Task<int> HandleAsync(TVerb opts, IServiceCollection collection, CancellationToken token = default)
+    public Task<int> HandleAsync(TVerb opts, IServiceCollection services, CancellationToken token = default)
     {
-        return _handler.Invoke(opts, collection, token);
+        return _handler.Invoke(opts, services, token);
     }
 }

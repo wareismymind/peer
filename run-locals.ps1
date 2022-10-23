@@ -72,7 +72,6 @@ $configInitCommands = @(
     @{ Command = "config init -f";          Name = "Config init force"}
     @{ Command = "config init --help";      Name = "Config init help flag"}
     @{ Command = "config init --version";   Name = "Config init version flag"}
-
 )
 
 Run-TestBlock -BlockName "Details" -Tests $detailsCommands

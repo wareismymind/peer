@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Peer.GitHub;
+using Peer.GitHub.GraphQL.PullRequestSearch;
 using Peer.Verbs;
 
 namespace Peer.Apps.AppBuilder;
@@ -41,6 +44,13 @@ public class VerbBuilder<T>
     public VerbBuilder<T> WithCustomHelp<THelp>() where THelp : class, IHelpTextFormatter<T>
     {
         _services.AddSingleton<IHelpTextFormatter<T>, THelp>();
+        return this;
+    }
+
+    public VerbBuilder<T> WithRunTimeConfig<TRegHandler>() where TRegHandler : class, IRunTimeConfigHandler
+    {
+        _services.TryAddSingleton<TRegHandler>();
+        _services.AddSingleton<IRunTimeConfigHandler<T>, RunTimeConfigMapping<T, TRegHandler>>();
         return this;
     }
 }

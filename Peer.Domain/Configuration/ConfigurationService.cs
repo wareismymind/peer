@@ -12,15 +12,17 @@ namespace Peer.Domain.Configuration
     public class ConfigurationService : IConfigurationService
     {
         private readonly Dictionary<string, IRegistrationHandler> _handlers;
+        private readonly IConfiguration _config;
 
-        public ConfigurationService(IEnumerable<IRegistrationHandler> handlers)
+        public ConfigurationService(IEnumerable<IRegistrationHandler> handlers, IConfiguration config)
         {
             _handlers = handlers.ToDictionary(x => x.ProviderKey, x => x);
+            _config = config;
         }
 
-        public Result<None, ConfigError> RegisterProvidersForConfiguration(IConfiguration configuration, IServiceCollection services)
+        public Result<None, ConfigError> RegisterProvidersForConfiguration(IServiceCollection services)
         {
-            var providerTypes = configuration.GetSection("Providers").GetChildren();
+            var providerTypes = _config.GetSection("Providers").GetChildren();
 
             if (!providerTypes.Any())
             {
@@ -34,7 +36,7 @@ namespace Peer.Domain.Configuration
                     return ConfigError.ProviderNotMatched;
                 }
 
-                return handler.Register(providerConfig)
+                return handler.Register(providerConfig, services)
                     .MapError(err => err switch
                     {
                         RegistrationError.BadConfig => ConfigError.InvalidProviderValues,
