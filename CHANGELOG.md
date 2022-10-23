@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0](https://www.github.com/wareismymind/peer/compare/v1.9.1...v1.10.0) (2022-10-23)
+
+
+### Features
+
+* add config subcommands (and move to an app builder setup) ([#166](https://www.github.com/wareismymind/peer/issues/166)) ([9d5f33b](https://www.github.com/wareismymind/peer/commit/9d5f33ba7e9a8f8b21b4949db0d93ead75dd7774))
+
 ### [1.9.1](https://www.github.com/wareismymind/peer/compare/v1.9.0...v1.9.1) (2022-10-08)
 
 
