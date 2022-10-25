@@ -48,7 +48,6 @@ namespace Peer
                     var configPath = Environment.GetEnvironmentVariable("PEER_CONFIGPATH")
                                      ?? Constants.DefaultConfigPath;
 
-                    //
                     if (configPath.StartsWith("~/"))
                     {
 
