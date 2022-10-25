@@ -36,7 +36,7 @@ public class AppBuilder
         return this;
     }
 
-    public AppBuilder WithSharedServiceConfig(Func<IServiceCollection, Result<IServiceCollection, ConfigError>> config)
+    public AppBuilder WithSharedRuntimeConfig(Func<IServiceCollection, Result<IServiceCollection, ConfigError>> config)
     {
         _services.AddSingleton<IServiceSetupHandler>(new FuncServiceSetupHandler(config));
         return this;

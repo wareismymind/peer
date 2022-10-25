@@ -2,7 +2,10 @@
   "profiles": {
     "Peer": {
       "commandName": "Project",
-      "commandLineArgs": "show"
+      "commandLineArgs": "config show,",
+      "environmentVariables": {
+        "PEER_CONFIGPATH": "~/.config/mynewpeer.json"
+      }
     }
   }
 }

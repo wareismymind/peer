@@ -85,3 +85,24 @@ Peer requires a few things to run properly on different platforms. This list may
 - Tier 3 (We don't have the hardware to test but we'll do our best!)
   - win-arm64
   - osx-arm64
+
+## Environment variables
+
+All of peer configuration can be done either in an environment variable or within the config file. Nesting is done in environment variables with double underscores. So to set WatchIntervalSeconds variable you can simply do 
+
+in sh-like terminals
+
+```sh
+export PEER__WATCHINTERVALSECONDS=30
+```
+
+or in powershell/pwsh
+
+```powershell
+$env:PEER__WATCHINTERVALSECONDS=30 
+```
+
+Some specially named variables are respected during the config load and editor opening commands:
+
+- `PEER_CONFIGPATH` if this is set then peer will look for its config there instead of the default locations
+- `EDITOR` peer will invoke your editor for commands that require it such as `config edit`. If this variable isn't set peer will open it using the default handler on your operating system

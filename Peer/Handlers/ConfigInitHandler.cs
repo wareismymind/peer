@@ -5,12 +5,15 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Peer.Apps;
 using Peer.ConfigSections;
+using Peer.Parsing;
 using Peer.Verbs;
 
 namespace Peer.Handlers;
 
 public class ConfigInitHandler : IHandler<ConfigInitOptions>
 {
+    private readonly PeerEnvironmentOptions _opts;
+
     private const string _defaultConfig = @"
 {
     ""Peer"": {
@@ -46,16 +49,21 @@ public class ConfigInitHandler : IHandler<ConfigInitOptions>
 }
 ";
 
+    public ConfigInitHandler(PeerEnvironmentOptions opts)
+    {
+        _opts = opts;
+    }
+
     public async Task<int> HandleAsync(ConfigInitOptions opts, IServiceCollection services, CancellationToken token = default)
     {
-        if (File.Exists(Constants.DefaultConfigPath) && !opts.Force)
+        if (File.Exists(_opts.ConfigPath) && !opts.Force)
         {
             var forceName = opts.GetOptionLongName(nameof(opts.Force));
             Console.WriteLine($"You already have a config file! If you want it overwritten use the --{forceName} option");
             return 1;
         }
 
-        await using var file = File.Create(Constants.DefaultConfigPath);
+        await using var file = File.Create(_opts.ConfigPath);
         await using var writer = new StreamWriter(file);
         await writer.WriteAsync(_defaultConfig);
         return 0;
