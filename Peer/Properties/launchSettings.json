@@ -2,9 +2,9 @@
   "profiles": {
     "Peer": {
       "commandName": "Project",
-      "commandLineArgs": "config show,",
+      "commandLineArgs": "config edit",
       "environmentVariables": {
-        "PEER_CONFIGPATH": "~/.config/mynewpeer.json"
+        "EDITOR": "code -r"
       }
     }
   }

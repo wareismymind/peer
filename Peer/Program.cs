@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -57,15 +58,17 @@ namespace Peer
                     }
 
                     var editor = Environment.GetEnvironmentVariable("EDITOR");
+                    var inMemory = new Dictionary<string, string?>
+                    {
+                        ["Peer:Environment:ConfigPath"] = configPath,
+                        ["Peer:Environment:Editor"] = editor
+                    };
 
-                    configBuilder.AddJsonFile(configPath, optional: true)
+                    configBuilder
+                        .AddInMemoryCollection(inMemory)
+                        .AddJsonFile(configPath, optional: true)
                         .SetFileLoadExceptionHandler(x => x.Ignore = true)
-                        .AddEnvironmentVariables()
-                        .AddInMemoryCollection(new Dictionary<string, string?>
-                        {
-                            ["Peer:Environment:ConfigPath"] = configPath,
-                            ["Peer:Environment:Editor"] = editor
-                        });
+                        .AddEnvironmentVariables();
                 });
 
             builder.WithVerb<ConfigOptions>(
