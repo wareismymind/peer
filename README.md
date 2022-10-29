@@ -88,19 +88,19 @@ Peer requires a few things to run properly on different platforms. This list may
 
 ## Environment variables
 
-All of peer configuration can be done either in an environment variable or within the config file. Nesting is done in environment variables with double underscores. So to set WatchIntervalSeconds variable you can simply do 
+Peer configuration can be specified in the config file or in environment variables. Environment variables take precedence over the config file. When using environment variables, the levels of nesting are represented using double underscores. For example, the environment variable `PEER__WATCHINTERVALSECONDS` would override the `Peer.WatchInvervalSeconds` value in the config file.
 
-in sh-like terminals
-
-```sh
+Setting a config variable in sh-like shells
+\```
 export PEER__WATCHINTERVALSECONDS=30
-```
+\```
 
-or in powershell/pwsh
 
-```powershell
-$env:PEER__WATCHINTERVALSECONDS=30 
-```
+Setting a config variable in pwsh/powershell
+\```
+$env:PEER__WATCHINTERVALSECONDS = 20
+\```
+
 
 Some specially named variables are respected during the config load and editor opening commands:
 
