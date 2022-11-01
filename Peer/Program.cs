@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,13 +40,34 @@ namespace Peer
             };
 
             Console.OutputEncoding = Encoding.UTF8;
-            
+
             var builder = new AppBuilder(new ServiceCollection())
                 .WithParseTimeServiceConfig(SetupParseTimeServices)
-                .WithSharedServiceConfig(SetupServices)
+                .WithSharedRuntimeConfig(SetupServices)
                 .WithConfiguration(configBuilder =>
                 {
-                    configBuilder.AddJsonFile(Constants.DefaultConfigPath, optional: true)
+                    var configPath = Environment.GetEnvironmentVariable("PEER_CONFIGPATH")
+                                     ?? Constants.DefaultConfigPath;
+
+                    if (configPath.StartsWith("~/"))
+                    {
+
+                        configPath = Path.Join(
+                            Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                            configPath[2..]);
+                    }
+
+                    var editor = Environment.GetEnvironmentVariable("EDITOR");
+                    var inMemory = new Dictionary<string, string?>
+                    {
+                        ["Peer:Environment:ConfigPath"] = configPath,
+                        ["Peer:Environment:Editor"] = editor
+                    };
+
+                    configBuilder
+                        .AddInMemoryCollection(inMemory)
+                        .AddJsonFile(configPath, optional: true)
+                        .SetFileLoadExceptionHandler(x => x.Ignore = true)
                         .AddEnvironmentVariables();
                 });
 
@@ -221,7 +244,10 @@ namespace Peer
             services.AddSingleton<ISymbolProvider, DefaultEmojiProvider>();
             services.AddSingleton<ICheckSymbolProvider, DefaultEmojiProvider>();
             services.AddSingleton<IRegistrationHandler, GitHubWebRegistrationHandler>();
-
+            services.AddSingleton(
+                sp => sp.GetRequiredService<IConfiguration>()
+                    .GetSection("Peer:Environment")
+                    .Get<PeerEnvironmentOptions>());
             return new Result<IServiceCollection, ConfigError>(services);
         }
 

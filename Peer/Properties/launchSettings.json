@@ -2,7 +2,10 @@
   "profiles": {
     "Peer": {
       "commandName": "Project",
-      "commandLineArgs": "show"
+      "commandLineArgs": "config edit",
+      "environmentVariables": {
+        "EDITOR": "code -r"
+      }
     }
   }
 }

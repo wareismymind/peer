@@ -85,3 +85,24 @@ Peer requires a few things to run properly on different platforms. This list may
 - Tier 3 (We don't have the hardware to test but we'll do our best!)
   - win-arm64
   - osx-arm64
+
+## Environment variables
+
+Peer configuration can be specified in the config file or in environment variables. Environment variables take precedence over the config file. When using environment variables, the levels of nesting are represented using double underscores. For example, the environment variable `PEER__WATCHINTERVALSECONDS` would override the `Peer.WatchInvervalSeconds` value in the config file.
+
+Setting a config variable in sh-like shells
+```
+export PEER__WATCHINTERVALSECONDS=30
+```
+
+
+Setting a config variable in pwsh/powershell
+```
+$env:PEER__WATCHINTERVALSECONDS = 20
+```
+
+
+Some specially named variables are respected during the config load and editor opening commands:
+
+- `PEER_CONFIGPATH` if this is set then peer will look for its config there instead of the default locations
+- `EDITOR` peer will invoke your editor for commands that require it such as `config edit`. If this variable isn't set peer will open it using the default handler on your operating system

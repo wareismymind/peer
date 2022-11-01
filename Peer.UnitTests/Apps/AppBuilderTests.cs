@@ -42,7 +42,7 @@ public class AppBuilderTests
         {
             var called = false;
             var underTest = Construct();
-            underTest.WithSharedServiceConfig(
+            underTest.WithSharedRuntimeConfig(
                 sp =>
                 {
                     called = true;
@@ -60,7 +60,7 @@ public class AppBuilderTests
         {
             var called = false;
             var underTest = Construct();
-            underTest.WithSharedServiceConfig(
+            underTest.WithSharedRuntimeConfig(
                 sp =>
                 {
                     called = true;

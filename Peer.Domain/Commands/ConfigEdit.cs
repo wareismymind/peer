@@ -51,9 +51,19 @@ public class ConfigEdit
     private Result<Process, ConfigEditError> OpenWithEditor(string path)
     {
         var split = _config.Editor!.Split(' ').ToArray();
-        return Process.Start(split[0], split[1..].Append(path));
-    }
+        var os = _infoProvider.GetPlatform().OkOr(ConfigEditError.UnsupportedOs);
 
+        return os.Map(os =>
+            Process.Start(
+                new ProcessStartInfo
+                {
+                    FileName = split[0],
+                    Arguments = string.Join(' ', split.Skip(1).Append(path)),
+                    UseShellExecute = os == OSPlatform.Windows
+                })
+                .ValueOr(ConfigEditError.ProcessFailedToOpen))
+            .Flatten();
+    }
 
     private Result<Process, ConfigEditError> OpenWithOsDefault(string path)
     {
@@ -63,12 +73,8 @@ public class ConfigEdit
             .Map(
                 os => os switch
                 {
-                    _ when os == OSPlatform.Windows => Process.Start(
-                            new ProcessStartInfo { UseShellExecute = true, FileName = path })!.AsMaybe()
-                        .OkOr(() => ConfigEditError.ProcessFailedToOpen),
-                    _ when os == OSPlatform.Linux => new Result<Process, ConfigEditError>(
-                        Process.Start("xdg-open", path)),
-                    _ when os == OSPlatform.OSX => new Result<Process, ConfigEditError>(Process.Start("open", path)),
+                    _ when os == OSPlatform.Windows => Process.Start(new ProcessStartInfo { UseShellExecute = true, FileName = path }).ValueOr(ConfigEditError.ProcessFailedToOpen),
+                    _ when os == OSPlatform.OSX => Process.Start("open", path).ValueOr(ConfigEditError.ProcessFailedToOpen),
                     _ => new Result<Process, ConfigEditError>(ConfigEditError.UnsupportedOs)
                 })
             .Flatten();
