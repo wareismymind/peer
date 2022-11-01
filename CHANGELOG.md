@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.0](https://www.github.com/wareismymind/peer/compare/v1.10.0...v1.11.0) (2022-11-01)
+
+
+### Features
+
+* configurable configfile path ([#171](https://www.github.com/wareismymind/peer/issues/171)) ([8fea83b](https://www.github.com/wareismymind/peer/commit/8fea83b4d5ce4778e57a42ea5087ad5876b3e007))
+
 ## [1.10.0](https://www.github.com/wareismymind/peer/compare/v1.9.1...v1.10.0) (2022-10-23)
 
 
