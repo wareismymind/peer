@@ -12,6 +12,7 @@ using Peer.Commands;
 using Peer.ConfigSections;
 using Peer.Configuration;
 using Peer.Domain;
+using Peer.Domain.Configuration;
 using Peer.Domain.Util;
 using Peer.Formatters;
 using Peer.Handlers;

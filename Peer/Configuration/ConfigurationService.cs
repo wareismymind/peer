@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Peer.Domain.Configuration;
 using Peer.Domain.Exceptions;
 using Peer.Domain.Util;
 using wimm.Secundatives;

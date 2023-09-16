@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using wimm.Secundatives;
 
-namespace Peer.Configuration
+namespace Peer.Domain.Configuration
 {
     public interface IRegistrationHandler
     {

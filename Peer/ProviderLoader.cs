@@ -4,18 +4,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Peer.Apps.AppBuilder;
 using Peer.Configuration;
+using Peer.Domain.Configuration;
 using wimm.Secundatives;
 
 namespace Peer;
 
-public class ProviderLoader : IRunTimeConfigHandler
+public class ProviderLoader(IEnumerable<IRegistrationHandler> registrationHandlers) : IRunTimeConfigHandler
 {
-    private readonly List<IRegistrationHandler> _registrationHandlers;
-
-    public ProviderLoader(IEnumerable<IRegistrationHandler> registrationHandlers)
-    {
-        _registrationHandlers = registrationHandlers.ToList();
-    }
+    private readonly List<IRegistrationHandler> _registrationHandlers = registrationHandlers.ToList();
 
     public Result<None, ConfigError> ConfigureServices(IServiceCollection services, IConfiguration config)
     {
