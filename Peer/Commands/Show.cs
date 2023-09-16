@@ -12,31 +12,21 @@ using wimm.Secundatives;
 
 namespace Peer.Commands
 {
-    public class Show
+    public class Show(
+        IPullRequestService prService,
+        IListFormatter formatter,
+        IConsoleWriter writer,
+        ShowConfig config,
+        ISorter<PullRequest>? sorter = null,
+        IEnumerable<IFilter>? filters = null)
     {
-        private readonly IPullRequestService _pullRequestService;
-        private readonly IListFormatter _formatter;
-        private readonly IConsoleWriter _writer;
-        private readonly ISorter<PullRequest>? _sorter;
-        private readonly List<IFilter> _filters;
+        private readonly IPullRequestService _pullRequestService = prService;
+        private readonly IListFormatter _formatter = formatter;
+        private readonly IConsoleWriter _writer = writer;
+        private readonly ISorter<PullRequest>? _sorter = sorter;
+        private readonly List<IFilter> _filters = filters?.ToList() ?? new();
 
-        public ShowConfig Config { get; }
-
-        public Show(
-            IPullRequestService prService,
-            IListFormatter formatter,
-            IConsoleWriter writer,
-            ShowConfig config,
-            ISorter<PullRequest>? sorter = null,
-            IEnumerable<IFilter>? filters = null)
-        {
-            _pullRequestService = prService;
-            _formatter = formatter;
-            _writer = writer;
-            Config = config;
-            _sorter = sorter;
-            _filters = filters?.ToList() ?? new();
-        }
+        public ShowConfig Config { get; } = config;
 
         public async Task<Result<None, ShowError>> ShowAsync(ShowArguments args, CancellationToken token = default)
         {

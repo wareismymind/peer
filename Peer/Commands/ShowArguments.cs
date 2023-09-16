@@ -1,11 +1,7 @@
 ﻿namespace Peer.Commands
 {
-    public class ShowArguments
+    public class ShowArguments(int count)
     {
-        public int Count { get; }
-        public ShowArguments(int count)
-        {
-            Count = count;
-        }
+        public int Count { get; } = count;
     }
 }
