@@ -2,19 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Peer.Apps.AppBuilder;
+using Peer.Commands;
 using Peer.ConfigSections;
+using Peer.Configuration;
 using Peer.Domain;
-using Peer.Domain.Commands;
 using Peer.Domain.Configuration;
-using Peer.Domain.Formatters;
 using Peer.Domain.Util;
+using Peer.Formatters;
 using Peer.GitHub;
 using Peer.Handlers;
 using Peer.Parsing;
@@ -247,7 +247,7 @@ namespace Peer
             services.AddSingleton(
                 sp => sp.GetRequiredService<IConfiguration>()
                     .GetSection("Peer:Environment")
-                    .Get<PeerEnvironmentOptions>());
+                    .Get<PeerEnvironmentOptions>()!);
             return new Result<IServiceCollection, ConfigError>(services);
         }
 

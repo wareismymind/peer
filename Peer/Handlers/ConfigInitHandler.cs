@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Peer.Apps;
-using Peer.ConfigSections;
 using Peer.Parsing;
 using Peer.Verbs;
 

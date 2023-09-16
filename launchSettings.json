@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "composeLaunchAction": "None",
+      "composeLaunchServiceName": "peer.daemon.linux",
+      "serviceActions": {
+        "peer.daemon.linux": "StartDebugging",
+        "cli": "StartWithoutDebugging"
+      }
+    }
+  }
+}

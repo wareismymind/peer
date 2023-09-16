@@ -11,7 +11,6 @@ namespace Peer.Domain.Exceptions
         }
 
         protected UnreachableException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
         {
         }
     }

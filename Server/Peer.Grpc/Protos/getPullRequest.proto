@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+option csharp_namespace = "Peerless";
+// package peerless;
+
+service PullRequestGrpcService {
+	rpc GetPullRequest(GetPullRequestRequest) returns (GetPullRequestResponse);
+	rpc ListPullRequests(ListPullRequestsRequest) returns(ListPullRequestsResponse);
+}
+
+
+message PullRequestModel {
+	string id = 1;
+	string url = 2;
+	IdentifierModel identifier = 3;
+}
+
+message IdentifierModel {
+	string id = 1;
+	string repo = 2;
+	string owner = 3;
+	string provider = 4;
+	string author = 5;
+}
+
+message DescriptorModel {
+	string title = 1;
+	string description = 2;
+}
+
+enum PRStatus {
+	unknown = 0;
+	draft = 1;
+	conflict = 2;
+	failed_checks = 3;
+	actions_queued = 4;
+	actions_pending = 5;
+	awaiting_review = 6;
+	fixes_requested = 7;
+	ready_to_merge = 8;
+	merged = 9;
+	stale = 10;
+}
+
+message State {
+	PRStatus status = 1;
+	int32 total_comments = 2;
+    int32 active_comments =3;
+}
+
+message ListPullRequestsRequest {
+	string query = 1;
+}
+
+message ListPullRequestsResponse {
+	repeated PullRequestModel values = 1;
+}
+
+message GetPullRequestRequest{
+	int32 id = 1;
+}
+
+message GetPullRequestResponse {
+	PullRequestModel value = 1;
+}

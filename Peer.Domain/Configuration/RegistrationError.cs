@@ -1,9 +1,8 @@
-﻿namespace Peer.Domain.Configuration
+﻿namespace Peer.Domain.Configuration;
+
+public enum RegistrationError
 {
-    public enum RegistrationError
-    {
-        Fire,
-        ProviderMismatch,
-        BadConfig,
-    }
+    Fire,
+    ProviderMismatch,
+    BadConfig,
 }

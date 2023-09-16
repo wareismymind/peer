@@ -1,0 +1,18 @@
+{
+  "profiles": {
+    "Peer.Daemon.Linux": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:59768;http://localhost:59769"
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchBrowser": false,
+      "publishAllPorts": true,
+      "useSSL": false
+    }
+  }
+}

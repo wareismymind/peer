@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Peer.Domain;
-using Peer.Domain.Filters;
+using Peer.Filters;
 using wimm.Secundatives;
 using wimm.Secundatives.Extensions;
 

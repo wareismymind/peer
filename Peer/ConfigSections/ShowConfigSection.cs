@@ -1,4 +1,4 @@
-﻿using Peer.Domain.Configuration.CommandConfigs;
+﻿using Peer.Configuration.CommandConfigs;
 
 namespace Peer.ConfigSections
 {
