@@ -1,4 +1,5 @@
-﻿using CommandLine;
+﻿using System.Diagnostics.CodeAnalysis;
+using CommandLine;
 using CommandLine.Text;
 
 namespace Peer.Verbs

@@ -19,7 +19,8 @@ namespace Peer.GitHub
         public Result<None, RegistrationError> Register(IConfigurationSection config, IServiceCollection services)
         {
             var childConfigs = config.GetChildren().Select(x => x.Get<GitHubHandlerConfig>())
-                            .Select(x => x.Into())
+                            .Where(x => x != null)
+                            .Select(x => x!.Into())
                             .Collect();
 
             if (childConfigs.IsError)

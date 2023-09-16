@@ -93,7 +93,6 @@ public class AppBuilderTests
         }
     }
 
-
     private AppBuilder Construct()
     {
         _services = new ServiceCollection();

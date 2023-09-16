@@ -247,7 +247,7 @@ namespace Peer
             services.AddSingleton(
                 sp => sp.GetRequiredService<IConfiguration>()
                     .GetSection("Peer:Environment")
-                    .Get<PeerEnvironmentOptions>());
+                    .Get<PeerEnvironmentOptions>()!);
             return new Result<IServiceCollection, ConfigError>(services);
         }
 

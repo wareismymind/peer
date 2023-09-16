@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Configurations>Debug;Release;Tool</Configurations>
@@ -13,7 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Interactive.Async" Version="5.1.0" />
+    <PackageReference Include="System.Interactive.Async" Version="6.0.1" />
   </ItemGroup>
 
   <ItemGroup>

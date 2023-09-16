@@ -38,7 +38,6 @@ public class ConfigEdit
             ? OpenWithOsDefault(path)
             : OpenWithEditor(path);
 
-
         if (proc.IsError)
         {
             return proc.Error;

@@ -27,7 +27,7 @@ namespace Peer.Domain.Commands
                 {
                     FindError.AmbiguousMatch => OpenError.AmbiguousPattern,
                     FindError.NotFound => OpenError.NotFound,
-                    _ => throw new UnreachableException()
+                    _ => throw new Exceptions.UnreachableException()
                 })
                 .Map(pr => OpenUrl(pr.Url).OkOr(OpenError.FailedToOpen));
 
