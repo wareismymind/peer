@@ -1,6 +1,7 @@
 ﻿using System;
+using Peer.Domain;
 
-namespace Peer.Domain.Filters
+namespace Peer.Filters
 {
     public class PropertySelector<T> : IPropertySelector
     where T : IComparable

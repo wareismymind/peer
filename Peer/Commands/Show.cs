@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Peer.Configuration.CommandConfigs;
 using Peer.Domain;
 using Peer.Domain.Exceptions;
-using Peer.Domain.Filters;
+using Peer.Filters;
 using wimm.Secundatives;
 
 namespace Peer.Commands

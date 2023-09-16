@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Peer.Domain;
 
-namespace Peer.Domain.Filters
+namespace Peer.Filters
 {
     public class RegexFilter : IFilter
     {

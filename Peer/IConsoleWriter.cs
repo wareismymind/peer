@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 
-namespace Peer.Domain
+namespace Peer
 {
     public interface IConsoleWriter
     {

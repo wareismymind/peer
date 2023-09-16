@@ -15,6 +15,7 @@ using Peer.Domain;
 using Peer.Domain.Configuration;
 using Peer.Domain.Util;
 using Peer.Formatters;
+using Peer.GitHub;
 using Peer.Handlers;
 using Peer.Parsing;
 using Peer.Verbs;

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Peer.Domain;
 using wimm.Secundatives;
 
 namespace Peer.Commands

@@ -1,6 +1,7 @@
-﻿using wimm.Secundatives;
+﻿using Peer.Domain;
+using wimm.Secundatives;
 
-namespace Peer.Domain
+namespace Peer
 {
     public interface ISymbolProvider
     {

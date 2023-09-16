@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using Peer.Domain;
 
-namespace Peer.Domain.Filters
+namespace Peer.Filters
 {
     public interface IFilter
     {

@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using Peer.Domain;
 using Peer.Domain.Exceptions;
-using Peer.Domain.Filters;
+using Peer.Filters;
 using wimm.Secundatives;
 using wimm.Secundatives.Extensions;
 

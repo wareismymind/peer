@@ -1,8 +1,9 @@
-﻿using Peer.Domain.Exceptions;
+﻿using Peer.Domain;
+using Peer.Domain.Exceptions;
 using Peer.Domain.Util;
 using wimm.Secundatives;
 
-namespace Peer.Domain
+namespace Peer
 {
     public class DefaultEmojiProvider : ISymbolProvider, ICheckSymbolProvider
     {

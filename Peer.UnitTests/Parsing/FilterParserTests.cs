@@ -1,6 +1,6 @@
 ﻿using System;
 using Peer.Domain;
-using Peer.Domain.Filters;
+using Peer.Filters;
 using Peer.Parsing;
 using Peer.UnitTests.Util;
 using Xunit;

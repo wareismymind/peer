@@ -1,7 +1,6 @@
 ﻿using System;
 using Moq;
 using Peer.Commands;
-using Peer.Domain;
 using Peer.UnitTests.Util;
 using Xunit;
 

@@ -8,10 +8,9 @@ using Peer.Domain;
 using Peer.Domain.Configuration;
 using Peer.Domain.GraphQL;
 using Peer.Domain.Util;
-using Peer.GitHub;
 using wimm.Secundatives;
 
-namespace Peer.Handlers
+namespace Peer.GitHub
 {
     public class GitHubWebRegistrationHandler : IRegistrationHandler
     {

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Peer.Domain;
 
-namespace Peer.Domain.Filters
+namespace Peer.Filters
 {
     public class EnumMatchingFilter<T> : IFilter
         where T : struct, IComparable
