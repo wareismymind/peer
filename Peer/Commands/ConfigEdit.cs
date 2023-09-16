@@ -10,18 +10,11 @@ using wimm.Secundatives.Extensions;
 
 namespace Peer.Commands;
 
-public class ConfigEdit
+public class ConfigEdit(ConfigEditConfig config, IOSInfoProvider infoProvider, IFileOperations fileOps)
 {
-    private readonly IOSInfoProvider _infoProvider;
-    private readonly ConfigEditConfig _config;
-    private readonly IFileOperations _fileOps;
-
-    public ConfigEdit(ConfigEditConfig config, IOSInfoProvider infoProvider, IFileOperations fileOps)
-    {
-        _config = config;
-        _infoProvider = infoProvider;
-        _fileOps = fileOps;
-    }
+    private readonly IOSInfoProvider _infoProvider = infoProvider;
+    private readonly ConfigEditConfig _config = config;
+    private readonly IFileOperations _fileOps = fileOps;
 
     public Task<Result<None, ConfigEditError>> RunAsync()
     {
