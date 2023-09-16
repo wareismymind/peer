@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Peer.Domain;
-using Peer.Domain.Formatters;
+using Peer.Formatters;
 using Peer.UnitTests.Util;
 using Xunit;
 

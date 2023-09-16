@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using CommandLine;
 using Peer.Apps.AppBuilder;
 using Peer.Verbs;

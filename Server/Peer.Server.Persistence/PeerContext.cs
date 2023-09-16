@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Peer.Domain;
 
 namespace Peer.Server.Persistence
 {
@@ -10,7 +9,7 @@ namespace Peer.Server.Persistence
         {
         }
 
-        public DbSet<PullRequestModel> PullRequests { get;set;}
+        public DbSet<PullRequestModel> PullRequests { get; set; }
     }
 
     public class PullRequestModel

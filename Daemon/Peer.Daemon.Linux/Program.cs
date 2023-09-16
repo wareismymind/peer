@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Peer.Server;
-using Peer.Server.Persistence;
 
-namespace Peer.Daemon
+namespace Peer.Daemon.Linux
 {
     internal class Program
     {
@@ -22,7 +21,7 @@ namespace Peer.Daemon
                     });
                 });
             });
-            
+
             await app.RunAsync();
         }
     }

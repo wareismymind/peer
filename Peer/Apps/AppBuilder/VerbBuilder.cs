@@ -1,12 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Peer.GitHub;
-using Peer.GitHub.GraphQL.PullRequestSearch;
 using Peer.Verbs;
 
 namespace Peer.Apps.AppBuilder;
@@ -15,7 +12,7 @@ public class VerbBuilder<T>(IServiceCollection services)
 {
     private readonly IServiceCollection _services = services;
 
-    public VerbBuilder<T> WithHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]THandler>() where THandler : class, IHandler<T>
+    public VerbBuilder<T> WithHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler>() where THandler : class, IHandler<T>
     {
         _services.AddSingleton<IHandler<T>, THandler>();
         _services.AddSingleton<IHandler, HandlerWrapper<T>>();
@@ -37,7 +34,7 @@ public class VerbBuilder<T>(IServiceCollection services)
         return this;
     }
 
-    public VerbBuilder<T> WithCustomHelp<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]  THelp>() where THelp : class, IHelpTextFormatter<T>
+    public VerbBuilder<T> WithCustomHelp<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THelp>() where THelp : class, IHelpTextFormatter<T>
     {
         _services.AddSingleton<IHelpTextFormatter<T>, THelp>();
         return this;

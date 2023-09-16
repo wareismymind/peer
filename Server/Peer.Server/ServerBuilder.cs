@@ -1,12 +1,9 @@
-﻿using Grpc.Core.Interceptors;
-using Grpc.Core;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Peer.Server.Persistence;
-using static Peerless.PullRequestGrpcService;
 using Peer.Server.Services;
 
 namespace Peer.Server

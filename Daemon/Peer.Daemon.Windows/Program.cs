@@ -1,8 +1,5 @@
-using Grpc.Core;
-using Grpc.Core.Interceptors;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Peer.Server;
-using static Peerless.PullRequestGrpcService;
 
 namespace Peer.Daemon.Windows;
 

@@ -3,7 +3,7 @@ using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Peer.Apps.AppBuilder;
-using Peer.Domain.Configuration;
+using Peer.Configuration;
 using wimm.Secundatives;
 
 namespace Peer;

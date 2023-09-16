@@ -5,7 +5,7 @@ using CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using Peer.Apps;
 using Peer.Apps.AppBuilder;
-using Peer.Domain.Configuration;
+using Peer.Configuration;
 using wimm.Secundatives;
 using Xunit;
 
